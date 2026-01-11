@@ -1,12 +1,16 @@
 <template>
-  <div v-if="isVisible" class="chat-container">
+  <div v-if="isVisible" class="h-full flex flex-col border-2 border-white bg-black">
     <!-- Header -->
-    <header class="chat-header">
-      <h3 class="chat-title">{{ channelName }}</h3>
+    <header class="p-2 border-b-2 border-white bg-black flex justify-between items-center">
+      <h3 class="text-mono text-xs uppercase tracking-widest text-gray-400">CHANNEL: {{ channelName.toUpperCase() }}</h3>
+      <div v-if="cooldownRemaining > 0" class="text-red-600 text-xs font-bold animate-pulse">COOLDOWN: {{ cooldownRemaining }}s</div>
     </header>
 
     <!-- Messages Area -->
-    <div class="messages-area" ref="messagesContainer">
+    <div class="flex-1 overflow-y-auto p-4 space-y-1 font-mono text-sm bg-black" ref="messagesContainer">
+      <div v-if="messages.length === 0" class="text-center text-gray-700 py-10">
+        NO DATA TRANSMITTED
+      </div>
       <ChatBubble
         v-for="message in messages"
         :key="message.id"
@@ -19,41 +23,35 @@
     </div>
     
     <!-- Footer -->
-    <footer class="chat-footer">
-      <!-- Quick Reaction Buttons (Phase Débat uniquement) -->
-      <div 
-        v-if="showQuickReactions" 
-        class="quick-reactions"
-      >
+    <footer class="p-2 border-t-2 border-white bg-black">
+      <!-- Quick Reactions -->
+      <div v-if="showQuickReactions" class="flex gap-2 mb-2 justify-center overflow-x-auto pb-2">
         <button
           v-for="reaction in quickReactions"
           :key="reaction.emoji"
           @click="sendQuickReaction(reaction.emoji)"
-          class="quick-reaction-btn"
+          class="border border-gray-600 hover:border-white hover:bg-white hover:text-black p-2 min-w-[40px] text-center transition-colors"
           :disabled="cooldownRemaining > 0"
-          :title="cooldownRemaining > 0 ? `Attendez ${cooldownRemaining}s...` : reaction.label"
         >
           {{ reaction.emoji }}
         </button>
       </div>
 
-      <!-- Input Area -->
-      <div class="input-area">
+      <!-- Input -->
+      <div class="flex gap-0 border-2 border-white">
         <input
           v-model="newMessage"
           @keyup.enter="sendMessage"
-          :placeholder="cooldownRemaining > 0 ? `Attendez ${cooldownRemaining}s...` : 'Votre message...'"
+          :placeholder="cooldownRemaining > 0 ? 'WAITING...' : 'ENTER COMMAND...'"
           :disabled="cooldownRemaining > 0"
-          class="chat-input"
+          class="flex-1 bg-black text-white p-2 font-mono outline-none placeholder-gray-700"
         />
         <button 
           @click="sendMessage" 
           :disabled="!newMessage.trim() || cooldownRemaining > 0 || isSending" 
-          class="send-button"
-          :title="cooldownRemaining > 0 ? `Attendez ${cooldownRemaining} seconde(s)` : 'Envoyer le message'"
-          aria-label="Envoyer le message"
+          class="px-4 bg-white text-black hover:bg-red-600 hover:text-white disabled:bg-gray-800 disabled:text-gray-600 transition-colors uppercase font-bold"
         >
-          <Send class="send-icon" />
+          SEND
         </button>
       </div>
     </footer>
@@ -97,12 +95,12 @@ const currentUserId = computed(() => authStore.user?.id);
 
 const channelName = computed(() => {
   const names = {
-    lobby: 'Chat du Lobby',
-    global: 'Agora du Village',
-    wolves: 'Horde des Loups',
-    dead: 'Le Cimetière',
+    lobby: 'LOBBY',
+    global: 'VILLAGE',
+    wolves: 'WOLVES',
+    dead: 'GRAVEYARD',
   };
-  return names[props.channel] || 'Chat';
+  return names[props.channel] || 'UNKNOWN';
 });
 
 const quickReactions = [
@@ -117,7 +115,6 @@ async function loadMessages() {
   try {
     const response = await axios.get(`/games/${gameStore.currentGame.id}/messages/${props.channel}`);
     const loadedMessages = response.data.messages || [];
-    // Ajouter le channel à chaque message
     messages.value = loadedMessages.map(msg => ({
       ...msg,
       channel: props.channel
@@ -125,7 +122,6 @@ async function loadMessages() {
     scrollToBottom();
   } catch (error) {
     console.error('Error loading messages:', error);
-    // Si l'endpoint n'existe pas, initialiser un tableau vide
     messages.value = [];
   }
 }
@@ -140,19 +136,14 @@ async function sendMessage() {
       channel: props.channel
     });
     newMessage.value = '';
-    
-    // Démarrez le cooldown de 10 secondes
-    startCooldown(10);
+    startCooldown(5);
   } catch (error) {
     console.error('Error sending message:', error);
-    
-    // Si c'est une erreur 429 (rate limit), utiliser le cooldown du serveur
     if (error.response?.status === 429) {
-      const cooldown = error.response?.data?.cooldown_remaining || 10;
+      const cooldown = error.response?.data?.cooldown_remaining || 5;
       startCooldown(cooldown);
-      
       if (window.showNotification) {
-        window.showNotification(error.response?.data?.message || 'Veuillez attendre avant d\'envoyer un nouveau message', 'warning');
+        window.showNotification(error.response?.data?.message || 'Veuillez attendre', 'warning');
       }
     }
   } finally {
@@ -162,12 +153,9 @@ async function sendMessage() {
 
 function startCooldown(seconds) {
   cooldownRemaining.value = seconds;
-  
-  // Nettoyer l'intervalle précédent s'il existe
   if (cooldownInterval.value) {
     clearInterval(cooldownInterval.value);
   }
-  
   cooldownInterval.value = setInterval(() => {
     cooldownRemaining.value--;
     if (cooldownRemaining.value <= 0) {
@@ -186,20 +174,12 @@ async function sendQuickReaction(emoji) {
       content: emoji,
       channel: props.channel
     });
-    
-    // Démarrez le cooldown de 10 secondes
-    startCooldown(10);
+    startCooldown(5);
   } catch (error) {
     console.error('Error sending quick reaction:', error);
-    
-    // Si c'est une erreur 429 (rate limit), utiliser le cooldown du serveur
     if (error.response?.status === 429) {
-      const cooldown = error.response?.data?.cooldown_remaining || 10;
+      const cooldown = error.response?.data?.cooldown_remaining || 5;
       startCooldown(cooldown);
-      
-      if (window.showNotification) {
-        window.showNotification(error.response?.data?.message || 'Veuillez attendre avant d\'envoyer un nouveau message', 'warning');
-      }
     }
   } finally {
     isSending.value = false;
@@ -225,7 +205,6 @@ watch(() => gameStore.chatMessages, (newMessages) => {
   }
 }, { deep: true });
 
-// Watcher pour s'abonner au channel chat quand le jeu est disponible
 watch(() => gameStore.currentGame, (newGame) => {
   if (newGame && newGame.id) {
     gameStore.joinChatChannel(props.channel);
@@ -234,13 +213,11 @@ watch(() => gameStore.currentGame, (newGame) => {
 
 onMounted(() => {
   loadMessages();
-  // Joindre le channel chat si le jeu existe
   if (gameStore.currentGame) {
     gameStore.joinChatChannel(props.channel);
   }
 });
 
-// Nettoyer l'intervalle lors du démontage
 onBeforeUnmount(() => {
   if (cooldownInterval.value) {
     clearInterval(cooldownInterval.value);
@@ -249,279 +226,5 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
-.chat-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background: var(--color-glass-surface);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--color-glass-border);
-  border-radius: 1rem;
-  overflow: hidden;
-}
-
-.chat-header {
-  padding: 0.75rem;
-  text-align: center;
-  border-bottom: 1px solid var(--color-glass-border);
-  flex-shrink: 0;
-}
-
-.chat-title {
-  font-family: var(--font-serif);
-  font-size: 0.875rem;
-  color: var(--color-cream);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  margin: 0;
-}
-
-.messages-area {
-  flex: 1;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 0.375rem 0.625rem;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.messages-area::-webkit-scrollbar {
-  width: 6px;
-}
-
-.messages-area::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.messages-area::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-}
-
-.messages-area::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-.chat-footer {
-  padding: 0.75rem;
-  border-top: 1px solid var(--color-glass-border);
-  flex-shrink: 0;
-}
-
-.quick-reactions {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-  justify-content: center;
-}
-
-.quick-reaction-btn {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 50%;
-  background: var(--color-glass-surface);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid var(--color-glass-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.25rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.quick-reaction-btn:hover:not(:disabled) {
-  border-color: rgba(254, 243, 199, 0.5);
-  transform: scale(1.1);
-}
-
-.quick-reaction-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.input-area {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.chat-input {
-  flex: 1;
-  background: rgba(17, 24, 39, 0.5);
-  color: white;
-  padding: 0.5rem 1rem;
-  border: 2px solid transparent;
-  border-radius: 9999px;
-  font-family: var(--font-sans);
-  font-size: 0.875rem;
-  transition: all 0.2s ease;
-}
-
-.chat-input::placeholder {
-  color: rgba(254, 243, 199, 0.4);
-}
-
-.chat-input:focus {
-  outline: none;
-  border-color: var(--color-soft-gold);
-  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.3);
-}
-
-.send-button {
-  padding: 0.5rem;
-  border-radius: 50%;
-  background: var(--color-soft-gold);
-  color: var(--color-text-dark);
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.send-button:hover:not(:disabled) {
-  background: var(--color-soft-gold-hover);
-}
-
-.send-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.send-icon {
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-/* Firefox scrollbar */
-.messages-area {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
-}
-
-/* Responsive */
-@media (max-width: 640px) {
-  .chat-container {
-    border-radius: 0.75rem;
-  }
-  
-  .chat-header {
-    padding: 0.5rem;
-  }
-  
-  .chat-title {
-    font-size: 0.75rem;
-  }
-  
-  .chat-footer {
-    padding: 0.5rem;
-  }
-  
-  .quick-reaction-btn {
-    width: 2rem;
-    height: 2rem;
-    font-size: 1rem;
-  }
-  
-  .chat-input {
-    padding: 0.375rem 0.75rem;
-    font-size: 0.8125rem;
-  }
-  
-  .send-button {
-    padding: 0.375rem;
-  }
-  
-  .send-icon {
-    width: 1rem;
-    height: 1rem;
-  }
-}
-
-@media (max-width: 360px) {
-  .chat-container {
-    border-radius: 0.5rem;
-  }
-  
-  .chat-header {
-    padding: 0.375rem;
-  }
-  
-  .chat-title {
-    font-size: 0.625rem;
-  }
-  
-  .chat-footer {
-    padding: 0.375rem;
-  }
-  
-  .quick-reactions {
-    gap: 0.375rem;
-    margin-bottom: 0.375rem;
-  }
-  
-  .quick-reaction-btn {
-    width: 1.75rem;
-    height: 1.75rem;
-    font-size: 0.875rem;
-  }
-  
-  .input-area {
-    gap: 0.375rem;
-  }
-  
-  .chat-input {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-  }
-  
-  .send-button {
-    padding: 0.25rem;
-  }
-  
-  .send-icon {
-    width: 0.875rem;
-    height: 0.875rem;
-  }
-  
-  .messages-area {
-    padding: 0.25rem 0.5rem;
-  }
-}
-
-@media (max-width: 320px) {
-  .input-area {
-    flex-wrap: wrap;
-  }
-  
-  .chat-input {
-    width: 100%;
-    margin-bottom: 0.25rem;
-  }
-  
-  .send-button {
-    width: 100%;
-    border-radius: 0.5rem;
-  }
-  
-  .quick-reactions {
-    flex-wrap: wrap;
-  }
-}
-
-/* Prefers-reduced-motion */
-@media (prefers-reduced-motion: reduce) {
-  .quick-reaction-btn {
-    transition: none;
-  }
-  
-  .send-button {
-    transition: none;
-  }
-}
+/* No scoped styles needed, using utility classes */
 </style>
