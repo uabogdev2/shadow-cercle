@@ -1,26 +1,19 @@
 <template>
   <button
-    v-motion
-    :initial="{ opacity: 0, scale: 0.95 }"
-    :enter="{ opacity: 1, scale: 1 }"
-    :transition="{ type: 'spring', stiffness: 400, damping: 25 }"
-    :while-hover="!isDisabled ? { scale: 1.05 } : {}"
-    :while-tap="!isDisabled ? { scale: 0.95 } : {}"
     :disabled="isDisabled"
     :class="[
-      'action-button font-serif font-bold tracking-wider uppercase',
-      'flex items-center justify-center gap-3 text-center',
-      'border-2 rounded-lg transition-all duration-300',
-      'disabled:cursor-not-allowed disabled:grayscale disabled:opacity-60',
+      'btn-brutal',
       fullWidth ? 'w-full' : 'w-auto',
       variantClasses,
       sizeClasses,
     ]"
     @click="$emit('click')"
   >
-    <Loader2Icon v-if="loading" class="w-5 h-5 animate-spin" />
-    <component v-else-if="icon" :is="icon" class="w-5 h-5" />
-    <span class="pt-0.5"><slot /></span>
+    <div class="flex items-center justify-center gap-2">
+        <Loader2Icon v-if="loading" class="w-5 h-5 animate-spin" />
+        <component v-else-if="icon" :is="icon" class="w-5 h-5" />
+        <span><slot /></span>
+    </div>
   </button>
 </template>
 
@@ -51,42 +44,21 @@ const isDisabled = computed(() => props.disabled || props.loading);
 
 const variantClasses = computed(() => {
   const variants = {
-    primary: 'bg-soft-gold/90 border-soft-gold text-text-dark shadow-[0_0_15px_var(--color-soft-gold)] hover:bg-soft-gold',
-    secondary: 'bg-glass-surface border-glass-border text-text-light hover:border-cream/80 hover:text-cream',
-    danger: 'bg-blood-red/90 border-blood-red text-white shadow-[0_0_15px_var(--color-blood-red)] hover:bg-blood-red',
-    magic: 'bg-electric-violet/90 border-electric-violet text-white shadow-[0_0_15px_var(--color-electric-violet)] hover:bg-electric-violet',
-    disabled: 'bg-gray-600/50 border-gray-600/50 text-gray-400 cursor-not-allowed'
+    primary: 'bg-black text-white hover:bg-white hover:text-black border-white',
+    secondary: 'bg-black text-gray-300 border-gray-600 hover:border-white hover:text-white',
+    danger: 'bg-black text-red-600 border-red-600 hover:bg-red-600 hover:text-black',
+    magic: 'bg-black text-purple-500 border-purple-500 hover:bg-purple-500 hover:text-black',
+    disabled: 'bg-gray-900 border-gray-800 text-gray-600 cursor-not-allowed pointer-events-none'
   };
   return variants[props.variant] || variants.primary;
 });
 
 const sizeClasses = computed(() => {
   const sizes = {
-    sm: 'px-4 py-2 text-xs',
-    md: 'px-8 py-3 text-sm',
-    lg: 'px-10 py-4 text-base'
+    sm: 'p-2 text-xs',
+    md: 'p-3 text-sm',
+    lg: 'p-4 text-base'
   };
   return sizes[props.size] || sizes.md;
 });
 </script>
-
-<style scoped>
-.action-button {
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Responsive */
-@media (max-width: 360px) {
-  .action-button {
-    font-size: 0.75rem;
-    padding: 0.5rem 0.75rem;
-  }
-}
-
-/* Prefers-reduced-motion */
-@media (prefers-reduced-motion: reduce) {
-  .action-button {
-    transition: none;
-  }
-}
-</style>
