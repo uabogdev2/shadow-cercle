@@ -104,6 +104,13 @@ export const useGameStore = defineStore('game', () => {
   
   const canAct = computed(() => {
     if (!currentPlayer.value) return false;
+    
+    // FLOW CANON: Special case for hunter - can act even if dead
+    const hunterPhases = ['hunter_action', 'hunter_day_action'];
+    if (hunterPhases.includes(phase.value) && currentPlayer.value.role === 'hunter') {
+      return true; // Hunter can shoot even if dead (that's the whole point)
+    }
+    
     if (!currentPlayer.value.is_alive) return false;
     
     // FLOW CANON: Vérifier la phase et le rôle
@@ -113,8 +120,6 @@ export const useGameStore = defineStore('game', () => {
       'night_witch': ['witch'],
       'night_guard': ['guard'],
       'night_cupid': ['cupid'],
-      'hunter_action': ['hunter'],      // FLOW CANON: Chasseur peut tirer après mort la nuit
-      'hunter_day_action': ['hunter'],  // FLOW CANON: Chasseur peut tirer après élimination par vote
       'day_vote': ['all']
     };
     
