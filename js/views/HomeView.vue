@@ -1,40 +1,38 @@
 <template>
-  <div class="home-view min-h-screen w-full flex flex-col items-center justify-center p-4 relative overflow-hidden">
+  <div class="home-view">
     <!-- Animated Background -->
-    <div class="absolute inset-0 bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950">
+    <div class="home-background">
       <!-- Aurora effect -->
-      <div class="absolute inset-0 opacity-30">
-        <div class="absolute top-0 left-1/4 w-96 h-96 bg-violet-600/20 rounded-full filter blur-3xl animate-float"></div>
-        <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan-600/20 rounded-full filter blur-3xl animate-float" style="animation-delay: 2s;"></div>
-        <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-indigo-600/20 rounded-full filter blur-3xl animate-float" style="animation-delay: 4s;"></div>
+      <div class="aurora-layer">
+        <div class="aurora-orb aurora-orb-1 animate-float"></div>
+        <div class="aurora-orb aurora-orb-2 animate-float" style="animation-delay: 2s;"></div>
+        <div class="aurora-orb aurora-orb-3 animate-float" style="animation-delay: 4s;"></div>
       </div>
       <!-- Particle dust effect -->
-      <div class="absolute inset-0" style="background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 50px 50px;"></div>
+      <div class="particle-dust"></div>
     </div>
 
     <!-- Moon in corner -->
-    <div class="absolute top-8 right-8 w-16 h-16 rounded-full bg-gradient-to-br from-slate-200 to-slate-400 shadow-[0_0_40px_rgba(248,250,252,0.3)] opacity-60"></div>
+    <div class="moon-indicator"></div>
 
     <!-- Header / Logo -->
-    <div class="relative z-10 text-center mb-12 w-full max-w-md">
-      <h1 class="text-cinzel text-5xl md:text-6xl text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-300 animate-glow-pulse mb-3">
-        Loup-Garou
-      </h1>
-      <div class="h-px w-48 mx-auto bg-gradient-to-r from-transparent via-amber-500/50 to-transparent mb-3"></div>
-      <p class="text-slate-400 text-sm tracking-widest uppercase">Le Village des Ombres</p>
+    <div class="header-logo">
+      <h1 class="main-title">Loup-Garou</h1>
+      <div class="title-divider"></div>
+      <p class="subtitle">Le Village des Ombres</p>
     </div>
 
     <!-- Main Glass Panel -->
-    <div class="relative z-10 glass-card w-full max-w-md p-6 md:p-8">
+    <div class="glass-card-container">
 
       <!-- Not Logged In -->
-      <div v-if="!authStore.user" class="flex flex-col gap-6">
-        <div class="text-center pb-4 border-b border-white/10">
-          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/30 mb-4">
-            <div class="w-2 h-2 rounded-full bg-violet-500 animate-pulse"></div>
-            <span class="text-violet-400 text-sm">Connexion requise</span>
+      <div v-if="!authStore.user" class="not-logged-in-container">
+        <div class="text-center-section">
+          <div class="connection-badge">
+            <div class="badge-dot"></div>
+            <span class="badge-text">Connexion requise</span>
           </div>
-          <p class="text-slate-400 text-sm">Entrez dans le village pour commencer</p>
+          <p class="instruction-text">Entrez dans le village pour commencer</p>
         </div>
         
         <ActionButton
@@ -50,29 +48,29 @@
       </div>
 
       <!-- Logged In -->
-      <div v-else class="flex flex-col gap-6">
+      <div v-else class="logged-in-container">
         <!-- User Info -->
-        <div class="flex items-center gap-4 p-4 rounded-xl bg-slate-800/30 border border-white/5">
-          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-display text-xl shadow-lg shadow-violet-500/20">
+        <div class="user-info-container">
+          <div class="user-avatar">
             {{ authStore.user.name?.charAt(0)?.toUpperCase() || '?' }}
           </div>
-          <div class="flex-1">
-            <p class="text-white font-medium text-lg">{{ authStore.user.name || 'Inconnu' }}</p>
-            <div class="flex items-center gap-2 text-emerald-400 text-sm">
-              <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+          <div class="user-details">
+            <p class="user-name">{{ authStore.user.name || 'Inconnu' }}</p>
+            <div class="user-status">
+              <div class="status-dot"></div>
               <span>Connecté</span>
             </div>
           </div>
           <button 
             @click="handleLogout" 
-            class="p-2 rounded-lg hover:bg-red-500/10 text-slate-400 hover:text-red-400 transition-colors"
+            class="logout-button"
           >
             <LogOutIcon class="w-5 h-5" />
           </button>
         </div>
 
         <!-- Actions -->
-        <div class="flex flex-col gap-4">
+        <div class="actions-container">
           <ActionButton
             variant="primary"
             :icon="PlusIcon"
@@ -84,22 +82,18 @@
             Créer une Partie
           </ActionButton>
 
-          <div class="relative my-2">
-            <div class="absolute inset-0 flex items-center">
-              <div class="w-full border-t border-slate-700"></div>
-            </div>
-            <div class="relative flex justify-center text-sm">
-              <span class="px-4 bg-transparent text-slate-500">ou</span>
-            </div>
+          <div class="divider-container">
+            <div class="divider-line"></div>
+            <span class="divider-text">ou</span>
           </div>
 
-          <div class="flex gap-2">
+          <div class="join-game-container">
             <input
               v-model="joinCode"
               type="text"
               placeholder="CODE"
               maxlength="5"
-              class="flex-1 bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-center text-xl font-mono uppercase text-white placeholder-slate-600 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 focus:outline-none transition-all"
+              class="join-code-input"
               @keyup.enter="joinGame"
             />
             <ActionButton
@@ -112,10 +106,10 @@
           </div>
 
           <!-- Test Mode (subtle) -->
-          <div class="mt-4 text-center">
+          <div class="test-mode-container">
             <button 
               @click="startTestGame" 
-              class="text-slate-600 text-xs hover:text-violet-400 transition-colors flex items-center justify-center gap-2 mx-auto"
+              class="test-mode-button"
             >
               <SparklesIcon class="w-3 h-3" />
               <span>Mode Test</span>
@@ -129,41 +123,39 @@
     <Teleport to="body">
       <div 
         v-if="showCreateGame" 
-        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        class="modal-overlay"
         @click.self="showCreateGame = false"
       >
         <!-- Backdrop -->
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+        <div class="modal-backdrop"></div>
         
         <!-- Modal -->
-        <div class="relative glass-card w-full max-w-sm p-6 shadow-2xl shadow-violet-500/10">
+        <div class="modal-content">
           <button 
             @click="showCreateGame = false" 
-            class="absolute top-4 right-4 p-1 text-slate-400 hover:text-white transition-colors"
+            class="modal-close-button"
           >
             <XIcon class="w-5 h-5" />
           </button>
 
-          <h3 class="text-cinzel text-2xl text-amber-400 mb-6 text-center">Configuration</h3>
+          <h3 class="modal-title">Configuration</h3>
 
-          <div class="mb-8">
-            <label class="block text-slate-400 text-sm mb-3">Nombre de joueurs</label>
-            <div class="grid grid-cols-3 gap-2">
+          <div class="modal-section">
+            <label class="modal-label">Nombre de joueurs</label>
+            <div class="player-count-grid">
               <button 
                 v-for="count in [8, 10, 12]"
                 :key="count"
                 @click="playerCount = count"
-                class="player-count-btn py-4 rounded-xl font-display text-xl transition-all duration-200"
-                :class="playerCount === count 
-                  ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 shadow-lg shadow-amber-500/25' 
-                  : 'bg-slate-800/50 text-slate-400 border border-slate-700/50 hover:border-amber-500/50 hover:text-amber-400'"
+                class="player-count-btn"
+                :class="{ 'player-count-btn-active': playerCount === count }"
               >
                 {{ count }}
               </button>
             </div>
           </div>
 
-          <div class="grid grid-cols-2 gap-3">
+          <div class="modal-actions">
             <ActionButton variant="secondary" @click="showCreateGame = false">
               Annuler
             </ActionButton>
@@ -251,8 +243,91 @@ async function startTestGame() {
 
 <style scoped>
 .home-view {
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Forcer l'affichage horizontal de tous les éléments texte */
+.home-view * {
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  display: block;
+}
+
+.home-view .flex,
+.home-view [class*="flex"] {
+  display: flex !important;
+}
+
+.home-view .inline-flex,
+.home-view [class*="inline-flex"] {
+  display: inline-flex !important;
+}
+
+.home-view .flex-col,
+.home-view [class*="flex-col"] {
+  flex-direction: column !important;
+}
+
+.home-view .flex-row,
+.home-view [class*="flex-row"] {
+  flex-direction: row !important;
+}
+
+.home-view .items-center,
+.home-view [class*="items-center"] {
+  align-items: center !important;
+}
+
+.home-view .justify-center,
+.home-view [class*="justify-center"] {
+  justify-content: center !important;
+}
+
+.home-view .gap-2,
+.home-view .gap-3,
+.home-view .gap-4,
+.home-view .gap-6,
+.home-view [class*="gap-"] {
+  display: flex !important;
+  gap: 0.5rem;
+}
+
+.home-view .gap-3 {
+  gap: 0.75rem;
+}
+
+.home-view .gap-4 {
+  gap: 1rem;
+}
+
+.home-view .gap-6 {
+  gap: 1.5rem;
+}
+
+/* Forcer le texte à s'afficher horizontalement */
+.home-view p,
+.home-view span,
+.home-view h1,
+.home-view h2,
+.home-view h3,
+.home-view h4,
+.home-view h5,
+.home-view h6,
+.home-view label,
+.home-view button,
+.home-view input {
+  display: inline-block !important;
+  white-space: normal !important;
+  word-wrap: break-word !important;
+  line-height: normal !important;
 }
 
 .text-cinzel {
@@ -267,6 +342,245 @@ async function startTestGame() {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 24px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Containers avec flex explicite */
+.not-logged-in-container,
+.logged-in-container,
+.actions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.connection-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  background: rgba(124, 58, 237, 0.1);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  margin-bottom: 1rem;
+}
+
+.connection-badge > * {
+  display: inline-block;
+}
+
+.user-info-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: rgba(30, 41, 59, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.user-info-container > * {
+  display: block;
+}
+
+.join-game-container {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.join-code-input {
+  flex: 1;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  text-align: center;
+  font-size: 1.25rem;
+  font-family: monospace;
+  text-transform: uppercase;
+  color: white;
+}
+
+.join-code-input::placeholder {
+  color: rgb(71, 85, 105);
+}
+
+.join-code-input:focus {
+  border-color: rgba(124, 58, 237, 0.5);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+.divider-container {
+  position: relative;
+  margin: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.divider-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgb(51, 65, 85);
+}
+
+.divider-text {
+  position: relative;
+  padding: 0 1rem;
+  background: transparent;
+  color: rgb(100, 116, 139);
+  font-size: 0.875rem;
+}
+
+.text-center-section {
+  text-align: center;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.badge-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: rgb(124, 58, 237);
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.badge-text {
+  color: rgb(167, 139, 250);
+  font-size: 0.875rem;
+}
+
+.instruction-text {
+  color: rgb(148, 163, 184);
+  font-size: 0.875rem;
+}
+
+.user-avatar {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 9999px;
+  background: linear-gradient(to bottom right, rgb(124, 58, 237), rgb(79, 70, 229));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.2);
+}
+
+.user-details {
+  flex: 1;
+}
+
+.user-name {
+  color: white;
+  font-weight: 500;
+  font-size: 1.125rem;
+  margin: 0;
+}
+
+.user-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgb(52, 211, 153);
+  font-size: 0.875rem;
+}
+
+.status-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: rgb(16, 185, 129);
+}
+
+.logout-button {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: transparent;
+  border: none;
+  color: rgb(148, 163, 184);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logout-button:hover {
+  background: rgba(239, 68, 68, 0.1);
+  color: rgb(248, 113, 113);
+}
+
+.test-mode-container {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.test-mode-button {
+  color: rgb(71, 85, 105);
+  font-size: 0.75rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: color 0.2s;
+}
+
+.test-mode-button:hover {
+  color: rgb(167, 139, 250);
+}
+
+.header-logo {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  margin-bottom: 3rem;
+  width: 100%;
+  max-width: 28rem;
+}
+
+.main-title {
+  font-family: 'Cinzel', 'Playfair Display', serif;
+  font-size: 3rem;
+  background: linear-gradient(to right, rgb(252, 211, 77), rgb(250, 204, 21), rgb(252, 211, 77));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.75rem;
+  animation: glow-text 3s ease-in-out infinite;
+}
+
+.title-divider {
+  height: 1px;
+  width: 12rem;
+  margin: 0 auto 0.75rem;
+  background: linear-gradient(to right, transparent, rgba(245, 158, 11, 0.5), transparent);
+}
+
+.subtitle {
+  color: rgb(148, 163, 184);
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .animate-glow-pulse {
@@ -292,6 +606,208 @@ async function startTestGame() {
   }
   50% {
     transform: translateY(-20px) translateX(10px);
+  }
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  position: relative;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(124, 58, 237, 0.1);
+  width: 100%;
+  max-width: 24rem;
+  padding: 1.5rem;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.25rem;
+  background: transparent;
+  border: none;
+  color: rgb(148, 163, 184);
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.modal-close-button:hover {
+  color: white;
+}
+
+.modal-title {
+  font-family: 'Cinzel', 'Playfair Display', serif;
+  font-size: 1.5rem;
+  color: rgb(251, 191, 36);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.modal-section {
+  margin-bottom: 2rem;
+}
+
+.modal-label {
+  display: block;
+  color: rgb(148, 163, 184);
+  font-size: 0.875rem;
+  margin-bottom: 0.75rem;
+}
+
+.player-count-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.player-count-btn {
+  padding: 1rem 0;
+  border-radius: 0.75rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  transition: all 0.2s;
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  background: rgba(30, 41, 59, 0.5);
+  color: rgb(148, 163, 184);
+  cursor: pointer;
+}
+
+.player-count-btn:hover {
+  border-color: rgba(251, 191, 36, 0.5);
+  color: rgb(251, 191, 36);
+}
+
+.player-count-btn-active {
+  background: linear-gradient(to right, rgb(245, 158, 11), rgb(234, 179, 8));
+  color: rgb(15, 23, 42);
+  box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.25);
+  border-color: transparent;
+}
+
+.modal-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.glass-card-container {
+  position: relative;
+  z-index: 10;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+/* Background elements */
+.home-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom right, rgb(2, 6, 23), rgb(49, 46, 129), rgb(2, 6, 23));
+}
+
+.aurora-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.3;
+}
+
+.aurora-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(60px);
+}
+
+.aurora-orb-1 {
+  top: 0;
+  left: 25%;
+  width: 24rem;
+  height: 24rem;
+  background: rgba(124, 58, 237, 0.2);
+}
+
+.aurora-orb-2 {
+  bottom: 25%;
+  right: 25%;
+  width: 20rem;
+  height: 20rem;
+  background: rgba(6, 182, 212, 0.2);
+}
+
+.aurora-orb-3 {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16rem;
+  height: 16rem;
+  background: rgba(79, 70, 229, 0.2);
+}
+
+.particle-dust {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.moon-indicator {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 9999px;
+  background: linear-gradient(to bottom right, rgb(226, 232, 240), rgb(148, 163, 184));
+  box-shadow: 0 0 40px rgba(248, 250, 252, 0.3);
+  opacity: 0.6;
+}
+
+@media (min-width: 768px) {
+  .glass-card-container {
+    padding: 2rem;
+  }
+  
+  .main-title {
+    font-size: 3.75rem;
   }
 }
 </style>

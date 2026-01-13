@@ -175,8 +175,11 @@ async function skipAction() {
 
 <style scoped>
 .witch-phase {
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
 }
 
 .glass-card {

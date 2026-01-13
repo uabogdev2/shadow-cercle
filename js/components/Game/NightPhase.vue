@@ -1,6 +1,6 @@
 <!-- js/components/Game/NightPhase.vue -->
 <template>
-  <div class="night-phase h-screen w-screen flex flex-col relative overflow-hidden" :class="phaseClasses">
+  <div class="night-phase" :class="phaseClasses">
     <!-- Background with vignette for wolves -->
     <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-indigo-950/80 to-slate-950">
       <div v-if="isWerewolf" class="absolute inset-0 vignette-blood"></div>
@@ -10,18 +10,18 @@
     <div class="absolute top-6 right-6 w-12 h-12 rounded-full bg-gradient-to-br from-slate-200 to-slate-400 shadow-[0_0_40px_rgba(248,250,252,0.3)] opacity-60 z-20"></div>
 
     <!-- Header -->
-    <header class="relative z-10 flex-shrink-0 p-4 md:p-6">
-      <div class="glass-card p-4 flex justify-between items-center">
-        <div class="flex items-center gap-4">
+    <header class="night-phase-header">
+      <div class="glass-card night-phase-header-content">
+        <div class="night-phase-header-left">
           <div 
-            class="w-12 h-12 rounded-xl flex items-center justify-center"
+            class="night-phase-icon"
             :style="{ background: `${roleColor}20`, border: `1px solid ${roleColor}40` }"
           >
-            <component :is="roleIcon" class="w-6 h-6" :style="{ color: roleColor }" />
+            <component :is="roleIcon" class="night-phase-icon-svg" :style="{ color: roleColor }" />
           </div>
-          <div>
-            <p class="text-slate-500 text-xs uppercase tracking-wider">Nuit {{ gameStore.currentGame?.day_number }}</p>
-            <p class="text-lg font-medium" :style="{ color: roleColor }">{{ getPhaseTitle() }}</p>
+          <div class="night-phase-header-text">
+            <p class="night-phase-subtitle">Nuit {{ gameStore.currentGame?.day_number }}</p>
+            <p class="night-phase-title" :style="{ color: roleColor }">{{ getPhaseTitle() }}</p>
           </div>
         </div>
         <Timer :seconds="gameStore.timer" variant="circular" size="sm" />
@@ -29,10 +29,10 @@
     </header>
 
     <!-- Main Action Area -->
-    <main class="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 pb-4">
-      <div v-if="gameStore.canAct">
-        <p class="text-slate-400 text-center mb-4">Sélectionnez votre cible</p>
-        <div class="grid grid-cols-2 gap-3">
+    <main class="night-phase-main">
+      <div v-if="gameStore.canAct" class="night-phase-action-area">
+        <p class="night-phase-instruction">Sélectionnez votre cible</p>
+        <div class="night-phase-players-grid">
           <PlayerCard
             v-for="player in availableTargets"
             :key="player.id"
@@ -44,18 +44,18 @@
           />
         </div>
       </div>
-      <div v-else class="h-full flex flex-col items-center justify-center">
-        <div class="glass-card p-8 text-center">
-          <MoonIcon class="w-12 h-12 text-violet-400/50 mx-auto mb-4" />
-          <p class="text-slate-400 text-lg mb-2">Mode Veille</p>
-          <p class="text-slate-600 text-sm">En attente des autres joueurs...</p>
+      <div v-else class="night-phase-waiting">
+        <div class="glass-card night-phase-waiting-card">
+          <MoonIcon class="night-phase-waiting-icon" />
+          <p class="night-phase-waiting-title">Mode Veille</p>
+          <p class="night-phase-waiting-text">En attente des autres joueurs...</p>
         </div>
       </div>
     </main>
 
     <!-- Footer with action button -->
-    <footer class="relative z-10 flex-shrink-0 p-4 md:p-6">
-      <div class="glass-card p-4">
+    <footer class="night-phase-footer">
+      <div class="glass-card night-phase-footer-content">
         <ActionButton
           v-if="selectedTarget && gameStore.canAct"
           :variant="roleButtonVariant"
@@ -66,7 +66,7 @@
         >
           {{ getButtonText() }}
         </ActionButton>
-        <div v-else-if="gameStore.canAct" class="text-center text-slate-500 py-2">
+        <div v-else-if="gameStore.canAct" class="night-phase-footer-message">
           Sélectionnez une cible
         </div>
       </div>
@@ -191,8 +191,164 @@ async function submitAction() {
 
 <style scoped>
 .night-phase {
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Header */
+.night-phase-header {
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .night-phase-header {
+    padding: 1.5rem;
+  }
+}
+
+.night-phase-header-content {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.night-phase-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.night-phase-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.night-phase-icon-svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.night-phase-header-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.night-phase-subtitle {
+  color: rgb(100, 116, 139);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.night-phase-title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Main */
+.night-phase-main {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  overflow-y: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .night-phase-main {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+.night-phase-action-area {
+  display: flex;
+  flex-direction: column;
+}
+
+.night-phase-instruction {
+  color: rgb(148, 163, 184);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.night-phase-players-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+}
+
+.night-phase-waiting {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.night-phase-waiting-card {
+  padding: 2rem;
+  text-align: center;
+}
+
+.night-phase-waiting-icon {
+  width: 3rem;
+  height: 3rem;
+  color: rgba(167, 139, 250, 0.5);
+  margin: 0 auto 1rem;
+  display: block;
+}
+
+.night-phase-waiting-title {
+  color: rgb(148, 163, 184);
+  font-size: 1.125rem;
+  margin-bottom: 0.5rem;
+}
+
+.night-phase-waiting-text {
+  color: rgb(71, 85, 105);
+  font-size: 0.875rem;
+}
+
+/* Footer */
+.night-phase-footer {
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .night-phase-footer {
+    padding: 1.5rem;
+  }
+}
+
+.night-phase-footer-content {
+  padding: 1rem;
+}
+
+.night-phase-footer-message {
+  text-align: center;
+  color: rgb(100, 116, 139);
+  padding: 0.5rem 0;
 }
 
 .glass-card {

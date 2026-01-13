@@ -409,7 +409,7 @@ export const useGameStore = defineStore('game', () => {
         // Ne pas ignorer même si c'est un "retour en arrière" - le backend sait ce qu'il fait
         // (sauf pour lobby et game_end qui sont des phases spéciales)
         // FLOW CANON: Ordre des phases
-        const phaseOrder = ['lobby', 'role_reveal', 'night_cupid', 'night_wolves', 'night_guard', 'night_witch', 'night_seer', 'night_processing', 'day_reveal', 'day_debate', 'day_vote', 'day_vote_result', 'day_last_words', 'day_execution', 'game_end'];
+        const phaseOrder = ['lobby', 'role_reveal', 'night_start', 'night_cupid', 'night_wolves', 'night_guard', 'night_witch', 'night_seer', 'night_processing', 'day_reveal', 'day_debate', 'day_vote', 'day_vote_result', 'day_last_words', 'day_execution', 'game_end'];
         const currentIndex = phaseOrder.indexOf(phase.value);
         const newIndex = phaseOrder.indexOf(e.phase);
         

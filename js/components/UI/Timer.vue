@@ -1,7 +1,7 @@
 <template>
-  <div class="timer-container flex items-center justify-center" :class="containerClass">
-    <!-- Circular Timer (Default) -->
-    <div v-if="variant === 'circular' || variant === 'digital'" class="relative">
+  <div class="timer-container" :class="containerClass">
+    <!-- Circular Timer -->
+    <div v-if="variant === 'circular'" class="timer-circular">
       <!-- SVG Circle Progress -->
       <svg 
         class="timer-circle" 
@@ -37,29 +37,35 @@
       
       <!-- Time Display -->
       <div 
-        class="absolute inset-0 flex items-center justify-center"
+        class="timer-display"
         :class="[textSizeClass, textColorClass, urgentClass]"
       >
-        <span class="font-mono font-bold tabular-nums tracking-wider">
-          {{ formatTime(timeLeft) }}
-        </span>
+        <span class="timer-text">{{ formatTime(displayTime) }}</span>
       </div>
     </div>
 
-    <!-- Minimal Timer (just text) -->
-    <div v-else-if="variant === 'minimal'" :class="[textSizeClass, textColorClass, urgentClass]">
-      <span class="font-mono font-bold tabular-nums tracking-wider">
-        {{ formatTime(timeLeft) }}
-      </span>
+    <!-- Digital Timer -->
+    <div v-else-if="variant === 'digital'" class="timer-digital" :class="[textSizeClass, textColorClass, urgentClass]">
+      <div class="timer-digital-display">
+        <span class="timer-text">{{ formatTime(displayTime) }}</span>
+      </div>
+    </div>
+
+    <!-- Minimal Timer -->
+    <div v-else class="timer-minimal" :class="[textSizeClass, textColorClass, urgentClass]">
+      <span class="timer-text">{{ formatTime(displayTime) }}</span>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { useGameStore } from '@/stores/gameStore';
 
 const props = defineProps({
-  seconds: { type: Number, required: true },
+  seconds: { type: Number, default: 60 },
+  phaseEndsAt: { type: String, default: null }, // ISO timestamp from backend
+  autoSync: { type: Boolean, default: true }, // Sync with gameStore
   variant: { 
     type: String, 
     default: 'circular',
@@ -72,8 +78,9 @@ const props = defineProps({
   }
 });
 
-const emit = defineEmits(['complete']);
+const emit = defineEmits(['complete', 'tick']);
 
+const gameStore = useGameStore();
 const timeLeft = ref(props.seconds);
 const initialSeconds = ref(props.seconds);
 
@@ -82,41 +89,58 @@ const radius = 42;
 const strokeWidth = 6;
 const circumference = 2 * Math.PI * radius;
 
+// Use backend time if available
+const displayTime = computed(() => {
+  // Priority: phaseEndsAt prop > gameStore.timer > local timeLeft
+  if (props.phaseEndsAt) {
+    const endTime = new Date(props.phaseEndsAt).getTime();
+    const now = Date.now();
+    const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
+    return remaining;
+  }
+  
+  if (props.autoSync && gameStore.timer !== undefined && gameStore.timer !== null) {
+    return gameStore.timer;
+  }
+  
+  return timeLeft.value;
+});
+
 const circleSize = computed(() => {
-  const sizes = { sm: 80, md: 100, lg: 140 };
-  return sizes[props.size] || 100;
+  const sizes = { sm: 64, md: 88, lg: 120 };
+  return sizes[props.size] || 88;
 });
 
 const textSizeClass = computed(() => {
   const sizes = {
-    sm: 'text-lg',
-    md: 'text-2xl',
-    lg: 'text-4xl'
+    sm: 'timer-text-sm',
+    md: 'timer-text-md',
+    lg: 'timer-text-lg'
   };
-  return sizes[props.size] || 'text-2xl';
+  return sizes[props.size] || 'timer-text-md';
 });
 
 const containerClass = computed(() => {
   const sizes = {
-    sm: 'w-20 h-20',
-    md: 'w-24 h-24',
-    lg: 'w-36 h-36'
+    sm: 'timer-size-sm',
+    md: 'timer-size-md',
+    lg: 'timer-size-lg'
   };
-  return sizes[props.size] || 'w-24 h-24';
+  return sizes[props.size] || 'timer-size-md';
 });
 
 // Progress and color calculations
 const progress = computed(() => {
-  if (initialSeconds.value === 0) return 0;
-  return timeLeft.value / initialSeconds.value;
+  const init = initialSeconds.value || 60;
+  return displayTime.value / init;
 });
 
 const dashOffset = computed(() => {
-  return circumference * (1 - progress.value);
+  return circumference * (1 - Math.max(0, Math.min(1, progress.value)));
 });
 
-const isUrgent = computed(() => timeLeft.value <= 10 && timeLeft.value > 5);
-const isCritical = computed(() => timeLeft.value <= 5 && timeLeft.value > 0);
+const isUrgent = computed(() => displayTime.value <= 10 && displayTime.value > 5);
+const isCritical = computed(() => displayTime.value <= 5 && displayTime.value > 0);
 
 const progressColor = computed(() => {
   if (isCritical.value) return '#EF4444'; // Blood red
@@ -125,9 +149,9 @@ const progressColor = computed(() => {
 });
 
 const textColorClass = computed(() => {
-  if (isCritical.value) return 'text-red-500';
-  if (isUrgent.value) return 'text-amber-500';
-  return 'text-violet-400';
+  if (isCritical.value) return 'timer-critical';
+  if (isUrgent.value) return 'timer-urgent';
+  return 'timer-normal';
 });
 
 const urgentClass = computed(() => {
@@ -137,36 +161,104 @@ const urgentClass = computed(() => {
 });
 
 const formatTime = (secs) => {
+  if (secs === undefined || secs === null || secs < 0) secs = 0;
   const minutes = Math.floor(secs / 60);
-  const seconds = secs % 60;
+  const seconds = Math.floor(secs % 60);
   return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 };
 
 let timerInterval = null;
 
+const calculateTimeFromBackend = () => {
+  if (props.phaseEndsAt) {
+    const endTime = new Date(props.phaseEndsAt).getTime();
+    const now = Date.now();
+    const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
+    timeLeft.value = remaining;
+    initialSeconds.value = Math.max(initialSeconds.value, remaining);
+    return remaining;
+  }
+  return null;
+};
+
 const startTimer = () => {
   clearInterval(timerInterval);
-  initialSeconds.value = props.seconds;
-  timeLeft.value = props.seconds;
+  
+  // Try to get time from backend first
+  const backendTime = calculateTimeFromBackend();
+  if (backendTime === null) {
+    initialSeconds.value = props.seconds;
+    timeLeft.value = props.seconds;
+  }
   
   timerInterval = setInterval(() => {
-    if (timeLeft.value > 0) {
-      timeLeft.value--;
-    } else {
+    // Re-sync with backend if available
+    if (props.phaseEndsAt) {
+      calculateTimeFromBackend();
+    } else if (!props.autoSync || gameStore.timer === undefined) {
+      // Only decrement locally if not syncing
+      if (timeLeft.value > 0) {
+        timeLeft.value--;
+        emit('tick', timeLeft.value);
+      }
+    }
+    
+    if (displayTime.value <= 0) {
       emit('complete');
       clearInterval(timerInterval);
     }
   }, 1000);
 };
 
-watch(() => props.seconds, startTimer);
+// Watch for prop changes
+watch(() => props.seconds, (newVal) => {
+  if (!props.phaseEndsAt && !props.autoSync) {
+    initialSeconds.value = newVal;
+    timeLeft.value = newVal;
+    startTimer();
+  }
+});
+
+watch(() => props.phaseEndsAt, () => {
+  startTimer();
+});
+
+// Watch gameStore timer for syncing
+watch(() => gameStore.timer, (newVal) => {
+  if (props.autoSync && newVal !== undefined) {
+    if (initialSeconds.value < newVal) {
+      initialSeconds.value = newVal;
+    }
+  }
+});
+
 onMounted(startTimer);
 onUnmounted(() => clearInterval(timerInterval));
 </script>
 
 <style scoped>
+/* ============================================
+   TIMER COMPONENT - MOBILE FIRST
+   ============================================ */
+
 .timer-container {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Size variants */
+.timer-size-sm { width: 64px; height: 64px; }
+.timer-size-md { width: 88px; height: 88px; }
+.timer-size-lg { width: 120px; height: 120px; }
+
+/* Circular Timer */
+.timer-circular {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .timer-circle {
@@ -181,31 +273,62 @@ onUnmounted(() => clearInterval(timerInterval));
   opacity: 0.3;
 }
 
-/* Urgent animation */
+.timer-display {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Digital Timer */
+.timer-digital {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-digital-display {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+}
+
+/* Text styles */
+.timer-text {
+  font-family: 'Inter', monospace;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.05em;
+}
+
+.timer-text-sm { font-size: 0.875rem; }
+.timer-text-md { font-size: 1.25rem; }
+.timer-text-lg { font-size: 2rem; }
+
+/* Color states */
+.timer-normal { color: #A78BFA; }
+.timer-urgent { color: #F59E0B; }
+.timer-critical { color: #EF4444; }
+
+/* Animations */
 .animate-timer-urgent {
   animation: timer-pulse 1s ease-in-out infinite;
 }
 
-/* Critical animation */
 .animate-timer-critical {
   animation: timer-blink 0.5s ease-in-out infinite;
 }
 
 @keyframes timer-pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
 @keyframes timer-blink {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.6;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
 }
 </style>

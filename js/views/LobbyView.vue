@@ -1,6 +1,6 @@
 <!-- js/views/LobbyView.vue -->
 <template>
-  <div class="lobby-view h-screen w-full flex flex-col relative overflow-hidden">
+  <div class="lobby-view">
     <!-- Background -->
     <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-indigo-950/80 to-slate-950">
       <!-- Ambient orbs -->
@@ -381,8 +381,378 @@ onMounted(async () => {
 
 <style scoped>
 .lobby-view {
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background */
+.lobby-view > div:first-child {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgb(2, 6, 23), rgba(49, 46, 129, 0.8), rgb(2, 6, 23));
+}
+
+.lobby-view > div:first-child > div:first-child {
+  position: absolute;
+  top: 5rem;
+  left: 2.5rem;
+  width: 8rem;
+  height: 8rem;
+  background: rgba(245, 158, 11, 0.1);
+  border-radius: 9999px;
+  filter: blur(60px);
+}
+
+.lobby-view > div:first-child > div:last-child {
+  position: absolute;
+  bottom: 10rem;
+  right: 5rem;
+  width: 12rem;
+  height: 12rem;
+  background: rgba(124, 58, 237, 0.1);
+  border-radius: 9999px;
+  filter: blur(60px);
+}
+
+/* Header */
+.lobby-view header {
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .lobby-view header {
+    padding: 1.5rem;
+  }
+}
+
+.lobby-view header > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+}
+
+.lobby-view header > div > div:first-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.lobby-view header > div > div:first-child > span {
+  color: rgb(100, 116, 139);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.lobby-view header > div > div:first-child > div {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.lobby-view header > div > div:first-child > div > h1 {
+  font-family: 'Cinzel', 'Playfair Display', serif;
+  font-size: 1.875rem;
+  color: rgb(251, 191, 36);
+  letter-spacing: 0.05em;
+  transition: color 0.2s;
+}
+
+@media (min-width: 768px) {
+  .lobby-view header > div > div:first-child > div > h1 {
+    font-size: 2.25rem;
+  }
+}
+
+.lobby-view header > div > div:first-child > div:hover > h1 {
+  color: rgb(253, 224, 71);
+}
+
+.lobby-view header > div > div:first-child > div > div {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: rgba(30, 41, 59, 0.5);
+  transition: background 0.2s;
+}
+
+.lobby-view header > div > div:first-child > div:hover > div {
+  background: rgba(251, 191, 36, 0.2);
+}
+
+.lobby-view header > div > div:last-child {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.lobby-view header button {
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  color: rgb(148, 163, 184);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lobby-view header button:hover {
+  border-color: rgba(124, 58, 237, 0.5);
+  color: rgb(167, 139, 250);
+}
+
+.lobby-view header button:last-child {
+  border-color: rgba(127, 29, 29, 0.5);
+  color: rgb(248, 113, 113);
+}
+
+.lobby-view header button:last-child:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.5);
+}
+
+/* Section */
+.lobby-view section {
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .lobby-view section {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+.lobby-view section > div > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.lobby-view section > div > div:first-child > h2 {
+  color: rgb(203, 213, 225);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lobby-view section > div > div:first-child > div {
+  color: rgb(100, 116, 139);
+  font-size: 0.75rem;
+}
+
+.lobby-view section > div > div:last-child {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.lobby-view section > div > div:last-child > div {
+  flex-shrink: 0;
+  width: 6rem;
+  height: 8rem;
+  border-radius: 0.75rem;
+  border: 2px dashed rgba(51, 65, 85, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.lobby-view section > div > div:last-child > div > span {
+  color: rgb(51, 65, 85);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+/* Main */
+.lobby-view main {
+  position: relative;
+  z-index: 10;
+  flex: 1;
+  min-height: 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .lobby-view main {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+.lobby-view main > div {
+  height: 100%;
+}
+
+/* Footer */
+.lobby-view footer {
+  position: relative;
+  z-index: 10;
+  flex-shrink: 0;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .lobby-view footer {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+.lobby-view footer > div {
+  padding: 1rem;
+}
+
+.lobby-view footer button > span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+/* Modal */
+.lobby-view [class*="fixed"] {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.lobby-view [class*="fixed"] > div:first-child {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+}
+
+.lobby-view [class*="fixed"] > div:last-child {
+  position: relative;
+  padding: 1.5rem;
+  max-width: 24rem;
+  width: 100%;
+  text-align: center;
+}
+
+.lobby-view [class*="fixed"] > div:last-child > button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  color: rgb(148, 163, 184);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.lobby-view [class*="fixed"] > div:last-child > button:hover {
+  color: white;
+}
+
+.lobby-view [class*="fixed"] > div:last-child > h3 {
+  font-family: 'Cinzel', 'Playfair Display', serif;
+  font-size: 1.25rem;
+  color: rgb(251, 191, 36);
+  margin-bottom: 1rem;
+}
+
+.lobby-view [class*="fixed"] > div:last-child > div {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: white;
+  border-radius: 0.75rem;
+}
+
+.lobby-view [class*="fixed"] > div:last-child > p {
+  color: rgb(148, 163, 184);
+  font-size: 0.875rem;
+}
+
+/* Player actions modal */
+.lobby-view [class*="fixed"] > div:last-child > h3:not(:first-child) {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: white;
+  margin-bottom: 1.5rem;
+}
+
+.lobby-view [class*="fixed"] > div:last-child > div:has(button) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  background: transparent;
+  padding: 0;
+}
+
+.lobby-view [class*="fixed"] > div:last-child > div:has(button) > button {
+  position: static;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: rgba(30, 41, 59, 0.5);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+  color: rgb(203, 213, 225);
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.lobby-view [class*="fixed"] > div:last-child > div:has(button) > button:hover {
+  border-color: rgba(251, 191, 36, 0.5);
+  background: rgba(251, 191, 36, 0.1);
+}
+
+.lobby-view [class*="fixed"] > div:last-child > div:has(button) > button:last-child {
+  border-color: rgba(127, 29, 29, 0.5);
+  color: rgb(248, 113, 113);
+}
+
+.lobby-view [class*="fixed"] > div:last-child > div:has(button) > button:last-child:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.5);
 }
 
 .text-cinzel {

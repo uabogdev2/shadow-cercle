@@ -66,7 +66,11 @@ watch(() => gameStore.currentGame?.state?.vote_result, () => updateExecutedPlaye
 
 <style scoped>
 .last-words {
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
   min-height: 100dvh;
 }
 

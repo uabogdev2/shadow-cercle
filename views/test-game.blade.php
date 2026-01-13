@@ -15,6 +15,15 @@
         </header>
 
         <form id="testForm" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div class="flex flex-col gap-2 md:col-span-2">
+                <label class="flex items-center gap-2">MODE</label>
+                <select name="mode" class="bg-black border border-white p-2 text-white focus:outline-none focus:border-red-600">
+                    <option value="phpunit_flow" selected>PHPUnit - GameFlowStateMachineTest (nouveau flow night_start)</option>
+                    <option value="phpunit_full">PHPUnit - GameFullPlaythroughTest (partie complète tous rôles)</option>
+                    <option value="simulation_full">Simulation artisan game:test-full (legacy)</option>
+                </select>
+            </div>
+
             <div class="flex flex-col gap-2">
                 <label>PLAYERS</label>
                 <input type="number" name="players" value="18" class="bg-black border border-white p-2 text-white placeholder-gray-500 focus:outline-none focus:border-red-600">
@@ -73,17 +82,28 @@
                     body: params.toString()
                 });
 
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                
-                const data = await response.json();
-                
-                if (data.success) {
-                    status.innerHTML = '<div class="text-green-500 border border-green-500 p-2 uppercase">SUCCESS (CODE 0)</div>';
+                let data;
+                if (!response.ok) {
+                    // Essayer quand même de lire la réponse JSON pour afficher l'erreur serveur
+                    try {
+                        data = await response.json();
+                    } catch (err) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
                 } else {
-                    status.innerHTML = '<div class="text-red-500 border border-red-500 p-2 uppercase">FAILURE (CODE ' + (data.exit_code || 1) + ')</div>';
+                    data = await response.json();
+                }
+                
+                const mode = formData.get('mode');
+                const label = mode === 'phpunit_flow' ? 'PHPUNIT FLOW' : 'SIMULATION';
+                const exitCode = data && typeof data.exit_code !== 'undefined' ? data.exit_code : 'N/A';
+                if (data && data.success) {
+                    status.innerHTML = '<div class="text-green-500 border border-green-500 p-2 uppercase">' + label + ' SUCCESS (CODE ' + exitCode + ')</div>';
+                } else {
+                    status.innerHTML = '<div class="text-red-500 border border-red-500 p-2 uppercase">' + label + ' FAILURE (CODE ' + exitCode + ')</div>';
                 }
 
-                output.textContent = data.output || data.error;
+                output.textContent = (data && (data.output || data.error || data.trace)) ? (data.output || data.error || data.trace) : 'No output';
                 output.scrollTop = output.scrollHeight;
 
             } catch (error) {

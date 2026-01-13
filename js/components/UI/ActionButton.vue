@@ -7,12 +7,13 @@
       variantClasses,
       sizeClasses,
       glowClass,
+      loading ? 'btn-loading' : ''
     ]"
-    @click="$emit('click')"
+    @click="handleClick"
   >
-    <div class="flex items-center justify-center gap-3">
-      <Loader2Icon v-if="loading" class="w-5 h-5 animate-spin" />
-      <component v-else-if="icon" :is="icon" class="w-5 h-5" />
+    <div class="action-button-content">
+      <Loader2Icon v-if="loading" class="action-button-icon action-button-icon-spin" />
+      <component v-else-if="icon" :is="icon" class="action-button-icon" />
       <span class="btn-text"><slot /></span>
     </div>
   </button>
@@ -26,7 +27,7 @@ const props = defineProps({
   variant: {
     type: String,
     default: 'primary',
-    validator: (value) => ['primary', 'secondary', 'danger', 'magic', 'gold', 'emerald', 'disabled'].includes(value)
+    validator: (value) => ['primary', 'secondary', 'danger', 'magic', 'gold', 'emerald', 'neutral', 'ghost', 'disabled'].includes(value)
   },
   disabled: { type: Boolean, default: false },
   loading: { type: Boolean, default: false },
@@ -40,65 +41,87 @@ const props = defineProps({
   glow: { type: Boolean, default: false }
 });
 
-defineEmits(['click']);
+const emit = defineEmits(['click']);
 
 const isDisabled = computed(() => props.disabled || props.loading);
+
+function handleClick(event) {
+  if (event && typeof event.stopPropagation === 'function') {
+    event.stopPropagation();
+  }
+  emit('click', event);
+}
 
 const variantClasses = computed(() => {
   const variants = {
     primary: `
-      bg-gradient-to-r from-amber-500/20 to-yellow-600/10
-      border border-amber-500
-      text-amber-300
-      hover:from-amber-500 hover:to-yellow-600
-      hover:text-slate-900
-      hover:shadow-[0_0_30px_rgba(245,158,11,0.5)]
+      bg-gradient-to-r from-[#F59E0B]/25 to-[#F59E0B]/15
+      border border-[#F59E0B]
+      text-[#FCD34D]
+      hover:from-[#F59E0B] hover:to-[#D97706]
+      hover:text-[#0F172A]
+      hover:shadow-[0_10px_30px_rgba(245,158,11,0.35)]
+      active:scale-98
     `,
     secondary: `
-      bg-slate-800/50
-      border border-slate-600
-      text-slate-300
-      hover:border-slate-400
+      bg-white/5
+      border border-white/10
+      text-slate-200
+      hover:border-white/30
       hover:text-white
-      hover:bg-slate-700/50
+      hover:bg-white/10
     `,
     danger: `
-      bg-gradient-to-r from-red-500/20 to-rose-600/10
-      border border-red-500
-      text-red-400
-      hover:from-red-500 hover:to-rose-600
+      bg-gradient-to-r from-[#EF4444]/25 to-[#EF4444]/10
+      border border-[#EF4444]
+      text-[#FCA5A5]
+      hover:from-[#EF4444] hover:to-[#B91C1C]
       hover:text-white
-      hover:shadow-[0_0_30px_rgba(239,68,68,0.5)]
+      hover:shadow-[0_10px_30px_rgba(239,68,68,0.35)]
     `,
     magic: `
-      bg-gradient-to-r from-violet-500/20 to-purple-600/10
-      border border-violet-500
-      text-violet-400
-      hover:from-violet-500 hover:to-purple-600
+      bg-gradient-to-r from-[#7C3AED]/25 to-[#7C3AED]/10
+      border border-[#7C3AED]
+      text-[#A78BFA]
+      hover:from-[#7C3AED] hover:to-[#5B21B6]
       hover:text-white
-      hover:shadow-[0_0_30px_rgba(124,58,237,0.5)]
+      hover:shadow-[0_10px_30px_rgba(124,58,237,0.35)]
     `,
     gold: `
-      bg-gradient-to-r from-yellow-500/20 to-amber-600/10
-      border border-yellow-500
-      text-yellow-400
-      hover:from-yellow-500 hover:to-amber-500
-      hover:text-slate-900
-      hover:shadow-[0_0_30px_rgba(234,179,8,0.5)]
+      bg-gradient-to-r from-[#FBBF24]/25 to-[#F59E0B]/15
+      border border-[#FBBF24]
+      text-[#FDE68A]
+      hover:from-[#FBBF24] hover:to-[#D97706]
+      hover:text-[#0F172A]
+      hover:shadow-[0_10px_30px_rgba(251,191,36,0.35)]
     `,
     emerald: `
-      bg-gradient-to-r from-emerald-500/20 to-green-600/10
-      border border-emerald-500
-      text-emerald-400
-      hover:from-emerald-500 hover:to-green-600
+      bg-gradient-to-r from-[#10B981]/25 to-[#10B981]/10
+      border border-[#10B981]
+      text-[#6EE7B7]
+      hover:from-[#10B981] hover:to-[#0F766E]
       hover:text-white
-      hover:shadow-[0_0_30px_rgba(16,185,129,0.5)]
+      hover:shadow-[0_10px_30px_rgba(16,185,129,0.35)]
+    `,
+    neutral: `
+      bg-slate-800/60
+      border border-slate-700
+      text-slate-200
+      hover:border-slate-500
+      hover:bg-slate-700/60
+    `,
+    ghost: `
+      bg-transparent
+      border border-transparent
+      text-slate-300
+      hover:border-white/20
+      hover:bg-white/5
     `,
     disabled: `
       bg-slate-800/30
       border border-slate-700
       text-slate-600
-      cursor-not-allowed
+      cursor: not-allowed
       pointer-events-none
     `
   };
@@ -107,9 +130,9 @@ const variantClasses = computed(() => {
 
 const sizeClasses = computed(() => {
   const sizes = {
-    sm: 'px-4 py-2 text-xs',
-    md: 'px-6 py-3 text-sm',
-    lg: 'px-8 py-4 text-base'
+    sm: 'px-4 py-2 text-xs rounded-md',
+    md: 'px-6 py-3 text-sm rounded-lg',
+    lg: 'px-8 py-4 text-base rounded-xl'
   };
   return sizes[props.size] || sizes.md;
 });
@@ -117,11 +140,12 @@ const sizeClasses = computed(() => {
 const glowClass = computed(() => {
   if (!props.glow || props.disabled) return '';
   const glowColors = {
-    primary: 'shadow-[0_0_20px_rgba(245,158,11,0.3)]',
-    danger: 'shadow-[0_0_20px_rgba(239,68,68,0.3)]',
-    magic: 'shadow-[0_0_20px_rgba(124,58,237,0.3)]',
-    gold: 'shadow-[0_0_20px_rgba(234,179,8,0.3)]',
-    emerald: 'shadow-[0_0_20px_rgba(16,185,129,0.3)]'
+    primary: 'shadow-[0_0_25px_rgba(245,158,11,0.35)]',
+    danger: 'shadow-[0_0_25px_rgba(239,68,68,0.35)]',
+    magic: 'shadow-[0_0_25px_rgba(124,58,237,0.35)]',
+    gold: 'shadow-[0_0_25px_rgba(251,191,36,0.35)]',
+    emerald: 'shadow-[0_0_25px_rgba(16,185,129,0.35)]',
+    neutral: 'shadow-[0_0_20px_rgba(148,163,184,0.25)]'
   };
   return glowColors[props.variant] || '';
 });
@@ -167,9 +191,39 @@ const glowClass = computed(() => {
   box-shadow: none;
 }
 
+.btn-loading {
+  cursor: progress;
+}
+
 .btn-text {
   position: relative;
   z-index: 1;
+}
+
+.action-button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.action-button-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  flex-shrink: 0;
+}
+
+.action-button-icon-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes shimmer {

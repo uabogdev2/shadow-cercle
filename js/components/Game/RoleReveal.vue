@@ -26,7 +26,10 @@
         <!-- Card Back (Mystical Pattern) -->
         <div class="card-face card-back absolute inset-0 backface-hidden rounded-2xl overflow-hidden">
           <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 via-violet-900 to-purple-900"></div>
-          <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"40\" fill=\"none\" stroke=\"rgba(255,255,255,0.1)\" stroke-width=\"0.5\"/><circle cx=\"50\" cy=\"50\" r=\"30\" fill=\"none\" stroke=\"rgba(255,255,255,0.1)\" stroke-width=\"0.5\"/><circle cx=\"50\" cy=\"50\" r=\"20\" fill=\"none\" stroke=\"rgba(255,255,255,0.1)\" stroke-width=\"0.5\"/></svg>'); background-size: 60px 60px;"></div>
+          <div 
+            class="absolute inset-0 pattern-overlay" 
+            :style="{ backgroundImage: `url('data:image/svg+xml;charset=utf-8,${patternSvg}')`, backgroundSize: '60px 60px' }"
+          ></div>
           <div class="absolute inset-0 flex flex-col items-center justify-center p-6">
             <div class="w-24 h-24 rounded-full bg-gradient-to-br from-violet-500/30 to-indigo-500/30 border-2 border-violet-400/30 flex items-center justify-center mb-4 animate-pulse">
               <MoonIcon class="w-12 h-12 text-violet-300" />
@@ -53,17 +56,29 @@
               <p class="text-slate-400 text-sm uppercase tracking-wider">{{ roleData.team }}</p>
             </div>
 
-            <!-- Role Icon -->
+            <!-- Role Icon/Image -->
             <div class="flex-1 flex items-center justify-center">
               <div 
-                class="w-28 h-28 rounded-full flex items-center justify-center"
+                class="w-32 h-32 rounded-full flex items-center justify-center overflow-hidden relative"
                 :style="{ 
                   background: `linear-gradient(135deg, ${roleColor}20 0%, ${roleColor}10 100%)`,
                   border: `2px solid ${roleColor}40`,
                   boxShadow: `0 0 40px ${roleColor}30`
                 }"
               >
-                <span class="text-6xl">{{ roleIcon }}</span>
+                <!-- Image du rôle -->
+                <img 
+                  v-if="!imageError"
+                  :src="roleImagePath" 
+                  :alt="roleData.name"
+                  class="w-full h-full object-cover"
+                  @error="imageError = true"
+                />
+                <!-- Fallback emoji si l'image ne charge pas -->
+                <span 
+                  v-else
+                  class="text-6xl"
+                >{{ roleIcon }}</span>
               </div>
             </div>
 
@@ -88,7 +103,7 @@
         :full-width="true"
         :loading="isConfirming"
         :glow="true"
-        @click.stop="confirmRole"
+        @click="confirmRole"
       >
         J'accepte mon sort
       </ActionButton>
@@ -121,6 +136,13 @@ const isFlipped = ref(false);
 const confirmed = ref(false);
 const isConfirming = ref(false);
 const result = ref(null);
+const imageError = ref(false);
+
+// SVG pattern encodé pour le background de la carte
+const patternSvg = computed(() => {
+  const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/><circle cx="50" cy="50" r="30" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/><circle cx="50" cy="50" r="20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></svg>';
+  return encodeURIComponent(svg);
+});
 
 const roleData = computed(() => {
   const role = gameStore.currentPlayer?.role || 'villager';
@@ -169,9 +191,9 @@ const roleData = computed(() => {
     },
     fool: { 
       name: 'Idiot du Village', 
-      description: 'Vous pensez être la voyante... mais vos visions sont-elles fiables ?', 
+      description: 'Votre but: vous faire éliminer par le vote du village ! Si vous êtes exécuté, vous gagnez seul !', 
       color: '#8B5CF6',
-      team: 'Équipe du Village'
+      team: 'Solitaire'
     },
     villager: { 
       name: 'Villageois', 
@@ -198,15 +220,41 @@ const roleIcon = computed(() => {
   return icons[gameStore.currentPlayer?.role] || '❓';
 });
 
+// Mapping des rôles vers les noms de fichiers d'images
+const roleImagePath = computed(() => {
+  const roleImageMap = {
+    werewolf: 'loup.webp',
+    seer: 'voyante.webp',
+    witch: 'sorcière.webp',
+    guard: 'garde.webp',
+    hunter: 'chasseur.webp',
+    cupid: 'cupidon.webp',
+    elder: 'Ancien.webp',
+    fool: 'fou.webp',
+    villager: 'villageois.webp'
+  };
+  
+  const role = gameStore.currentPlayer?.role || 'villager';
+  const imageName = roleImageMap[role] || 'villageois.webp';
+  return `/storage/images/roles/${imageName}`;
+});
+
 const roleColor = computed(() => roleData.value.color);
 
 const flipCard = () => {
   if (!isFlipped.value) {
     isFlipped.value = true;
+    // Réinitialiser l'erreur d'image lors du retournement
+    imageError.value = false;
   }
 };
 
-async function confirmRole() {
+async function confirmRole(event) {
+  // CORRECTION: event peut être undefined si ActionButton n'émet pas l'événement
+  if (event && typeof event.stopPropagation === 'function') {
+    event.stopPropagation();
+  }
+  
   if (confirmed.value || isConfirming.value) return;
   if (gameStore.currentPlayer?.metadata?.role_revealed) {
     confirmed.value = true;
@@ -252,8 +300,13 @@ onMounted(() => {
 
 <style scoped>
 .role-reveal-view {
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .text-cinzel {

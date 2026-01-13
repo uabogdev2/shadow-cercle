@@ -10,90 +10,53 @@
     @click="handleClick"
   >
     <!-- Glass Background -->
-    <div class="absolute inset-0 bg-gradient-to-br from-slate-800/40 to-slate-900/60 backdrop-blur-sm"></div>
-    
-    <!-- Neon Border Glow (when selected) -->
-    <div 
-      v-if="isSelected" 
-      class="absolute inset-0 pointer-events-none"
-      :class="selectionGlowClass"
-    ></div>
+    <div class="player-card-bg"></div>
+
+    <!-- Selection Glow -->
+    <div v-if="isSelected" class="player-card-glow" :class="selectionGlowClass"></div>
 
     <!-- Dead Overlay -->
-    <div v-if="isDead" class="absolute inset-0 z-20 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div class="transform -rotate-12 px-3 py-1 border-2 border-red-500/60 bg-red-950/50">
-        <span class="text-red-400 font-display text-sm uppercase tracking-widest">Mort</span>
+    <div v-if="isDead" class="player-card-dead-overlay">
+      <div class="player-card-dead-tag">
+        <span>Mort</span>
       </div>
     </div>
 
     <!-- Main Content -->
     <div class="relative z-10 flex flex-col h-full">
       <!-- Top Badge Area -->
-      <div class="flex justify-between items-start p-2">
-        <!-- Host Crown -->
-        <div 
-          v-if="isHost" 
-          class="flex items-center gap-1 px-2 py-0.5 bg-amber-500/20 border border-amber-500/50 rounded-full"
-        >
-          <CrownIcon class="w-3 h-3 text-amber-400" />
-          <span class="text-[10px] text-amber-400 font-medium uppercase">Hôte</span>
+      <div class="player-card-top">
+        <div v-if="isHost" class="player-card-host">
+          <CrownIcon class="w-3 h-3 text-amber-300" />
+          <span>Hôte</span>
         </div>
         <div v-else class="w-4"></div>
-        
-        <!-- Ready Indicator -->
-        <div 
-          v-if="isReady && !isDead" 
-          class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"
-        ></div>
+
+        <div v-if="isReady && !isDead" class="player-card-ready"></div>
       </div>
 
       <!-- Avatar Area -->
-      <div class="flex-1 flex items-center justify-center px-2 py-3">
-        <div 
-          class="relative w-14 h-14 rounded-full flex items-center justify-center"
-          :class="avatarBorderClass"
-        >
-          <!-- Avatar Background with gradient -->
-          <div class="absolute inset-1 rounded-full bg-gradient-to-br from-slate-700 to-slate-800"></div>
-          
-          <!-- Initial or Icon -->
-          <span class="relative z-10 font-display text-2xl text-white">
-            {{ getInitials(name) }}
-          </span>
-          
-          <!-- Glow effect for avatar -->
-          <div 
-            v-if="!isDead" 
-            class="absolute inset-0 rounded-full opacity-30"
-            :class="avatarGlowClass"
-          ></div>
+      <div class="player-card-avatar-wrap">
+        <div class="player-card-avatar" :class="avatarBorderClass">
+          <div class="player-card-avatar-bg"></div>
+          <span class="player-card-avatar-text">{{ getInitials(name) }}</span>
+          <div v-if="!isDead" class="player-card-avatar-glow" :class="avatarGlowClass"></div>
         </div>
       </div>
 
       <!-- Bottom Name Area -->
-      <div class="p-2 border-t border-white/10 bg-black/20">
-        <p 
-          class="text-center font-medium truncate"
-          :class="[
-            isDead ? 'text-slate-500' : 'text-slate-200',
-            size === 'small' ? 'text-xs' : 'text-sm'
-          ]"
-        >
-          {{ name }}
-        </p>
+      <div class="player-card-name">
+        <p :class="nameClasses">{{ name }}</p>
+        <p v-if="statusLabel" class="player-card-status">{{ statusLabel }}</p>
       </div>
     </div>
 
     <!-- Selection Indicator Ring -->
-    <div 
-      v-if="isSelected" 
-      class="absolute inset-0 rounded-xl pointer-events-none"
-      :class="selectionBorderClass"
-    ></div>
+    <div v-if="isSelected" class="player-card-ring" :class="selectionBorderClass"></div>
 
     <!-- Hover Shimmer Effect -->
-    <div class="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity pointer-events-none">
-      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-700"></div>
+    <div class="player-card-shimmer">
+      <div class="player-card-shimmer-inner"></div>
     </div>
   </div>
 </template>
@@ -124,6 +87,12 @@ const emit = defineEmits(['click']);
 
 const isDead = computed(() => props.status === 'dead');
 const isReady = computed(() => props.status === 'ready');
+const statusLabel = computed(() => {
+  if (isDead.value) return 'Mort';
+  if (isReady.value) return 'Prêt';
+  if (props.status === 'waiting') return 'En attente';
+  return '';
+});
 
 const cardSize = computed(() => {
   const sizes = {
@@ -139,6 +108,17 @@ const baseClasses = computed(() => {
   if (props.isSelected) return 'border-2 rounded-xl';
   if (isReady.value) return 'border border-emerald-500/50 rounded-xl';
   return 'border border-slate-600/30 rounded-xl hover:border-slate-500/50';
+});
+
+const nameClasses = computed(() => {
+  const sizes = {
+    small: 'text-xs',
+    normal: 'text-sm',
+    large: 'text-base'
+  };
+  const sizeClass = sizes[props.size] || sizes.normal;
+  const colorClass = isDead.value ? 'text-slate-500 player-card-name-dead' : 'text-slate-100';
+  return ['font-medium truncate', sizeClass, colorClass].join(' ');
 });
 
 const selectionBorderClass = computed(() => {
@@ -222,5 +202,185 @@ const getInitials = (name) => {
 
 .player-card-dead {
   cursor: default;
+}
+
+.player-card-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(30, 41, 59, 0.6) 100%);
+  backdrop-filter: blur(12px);
+  border-radius: 1rem;
+}
+
+.player-card-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  pointer-events: none;
+}
+
+.player-card-dead-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at center, rgba(0,0,0,0.7), rgba(0,0,0,0.8));
+  backdrop-filter: blur(6px);
+}
+
+.player-card-dead-tag {
+  transform: rotate(-8deg);
+  padding: 0.3rem 0.75rem;
+  border: 2px solid rgba(239,68,68,0.6);
+  background: rgba(127,29,29,0.35);
+  text-transform: uppercase;
+  color: #FCA5A5;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+}
+
+.player-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0.5rem;
+}
+
+.player-card-host {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background: rgba(245, 158, 11, 0.16);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 9999px;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #FCD34D;
+}
+
+.player-card-ready {
+  width: 10px;
+  height: 10px;
+  border-radius: 9999px;
+  background: #10B981;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+  animation: pulse-ready 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-ready {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+}
+
+.player-card-avatar-wrap {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 0.5rem;
+}
+
+.player-card-avatar {
+  position: relative;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.player-card-avatar-bg {
+  position: absolute;
+  inset: 0.2rem;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, rgba(51,65,85,0.8) 0%, rgba(30,41,59,0.8) 100%);
+}
+
+.player-card-avatar-text {
+  position: relative;
+  z-index: 1;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.25rem;
+  color: #F8FAFC;
+}
+
+.player-card-avatar-glow {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  opacity: 0.35;
+}
+
+.player-card-name {
+  padding: 0.6rem 0.75rem;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  background: rgba(0,0,0,0.25);
+  text-align: center;
+}
+
+.player-card-name p {
+  margin: 0;
+}
+
+.player-card-status {
+  color: #94A3B8;
+  font-size: 0.7rem;
+  margin-top: 0.15rem;
+}
+
+.player-card-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  pointer-events: none;
+}
+
+.player-card-shimmer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.player-card:hover .player-card-shimmer {
+  opacity: 1;
+}
+
+.player-card-shimmer-inner {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+  transform: translateX(-100%);
+  animation: shimmer-move 1.2s ease-in-out infinite;
+}
+
+@keyframes shimmer-move {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.player-card:hover:not(.player-card-dead) {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
+
+.player-card-name-dead {
+  text-decoration: line-through;
+  opacity: 0.55;
+}
+
+.player-card-dead-overlay::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.08), transparent 50%),
+              radial-gradient(circle at 70% 70%, rgba(255,255,255,0.06), transparent 50%);
+  mix-blend-mode: screen;
 }
 </style>

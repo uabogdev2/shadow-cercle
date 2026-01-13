@@ -144,6 +144,11 @@ watch(() => gameStore.currentGame, (newGame) => {
 
 <style scoped>
 .game-view {
+  height: 100vh;
+  height: 100dvh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
   background: linear-gradient(135deg, #020617 0%, #312e81 100%);
   background-attachment: fixed;
 }
