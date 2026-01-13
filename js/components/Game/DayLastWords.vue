@@ -1,28 +1,52 @@
 <!-- DayLastWords.vue -->
 <template>
-  <div class="h-screen w-screen bg-black flex flex-col items-center justify-center p-4">
-    <div v-if="executedPlayer" class="max-w-xl w-full text-center">
-      <div class="border-b-2 border-white pb-4 mb-6">
-        <h1 class="text-display text-4xl text-white">FINAL STATEMENT</h1>
-        <p class="text-mono text-xs text-gray-500 uppercase mt-2">PRISONER: {{ executedPlayer.user?.name }}</p>
-      </div>
-      
-      <div class="p-8 border border-gray-800 bg-gray-900/50 relative">
-        <div class="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-white"></div>
-        <div class="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-white"></div>
-        <p class="text-mono text-lg text-white italic">"..."</p>
-      </div>
-      
-      <p class="text-mono text-xs text-gray-600 mt-8 uppercase animate-pulse">CHANNEL OPEN FOR 30 SECONDS</p>
+  <div class="last-words h-screen w-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
+    <!-- Background -->
+    <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-red-950/20 to-slate-950">
+      <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-violet-500/10 rounded-full filter blur-3xl"></div>
     </div>
-    <div v-else class="text-center border border-gray-800 p-4">
-      <p class="text-mono text-gray-500">NO EXECUTION - NO LAST WORDS</p>
+
+    <!-- Vignette -->
+    <div class="absolute inset-0 vignette-dark pointer-events-none"></div>
+
+    <!-- Content -->
+    <div v-if="executedPlayer" class="relative z-10 max-w-md w-full text-center">
+      <div class="mb-6">
+        <h1 class="text-cinzel text-2xl text-amber-400 mb-2">Dernières Paroles</h1>
+        <div class="h-px w-24 mx-auto bg-gradient-to-r from-transparent via-amber-500/50 to-transparent"></div>
+      </div>
+      
+      <div class="glass-card p-8 mb-6">
+        <div class="w-16 h-16 rounded-full bg-slate-800 border-2 border-red-500/50 mx-auto mb-4 flex items-center justify-center">
+          <span class="text-2xl font-display text-white">
+            {{ executedPlayer.user?.name?.[0]?.toUpperCase() }}
+          </span>
+        </div>
+        
+        <p class="text-white text-xl font-medium mb-4">{{ executedPlayer.user?.name }}</p>
+        
+        <div class="p-4 rounded-xl bg-slate-800/50 border border-white/5">
+          <QuoteIcon class="w-6 h-6 text-slate-600 mb-2 mx-auto" />
+          <p class="text-slate-400 italic">Le condamné peut maintenant s'exprimer...</p>
+        </div>
+      </div>
+      
+      <div class="flex items-center justify-center gap-2 text-slate-500 text-sm">
+        <ClockIcon class="w-4 h-4" />
+        <span>30 secondes pour les dernières paroles</span>
+      </div>
+    </div>
+    
+    <div v-else class="relative z-10 glass-card p-8 text-center">
+      <p class="text-slate-400">Pas d'exécution prévue</p>
     </div>
   </div>
 </template>
+
 <script setup>
 import { ref, onMounted, watch } from 'vue';
 import { useGameStore } from '@/stores/gameStore';
+import { Quote as QuoteIcon, Clock as ClockIcon } from 'lucide-vue-next';
 
 const gameStore = useGameStore();
 const executedPlayer = ref(null);
@@ -39,3 +63,26 @@ function updateExecutedPlayer() {
 onMounted(() => updateExecutedPlayer());
 watch(() => gameStore.currentGame?.state?.vote_result, () => updateExecutedPlayer(), { deep: true });
 </script>
+
+<style scoped>
+.last-words {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.text-cinzel {
+  font-family: 'Cinzel', 'Playfair Display', serif;
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+
+.vignette-dark {
+  background: radial-gradient(ellipse at center, transparent 20%, rgba(0, 0, 0, 0.5) 100%);
+}
+</style>
