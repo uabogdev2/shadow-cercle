@@ -1,71 +1,142 @@
 <!-- WitchPhase.vue -->
 <template>
-  <div class="h-screen w-screen bg-black flex flex-col p-4 border-2 border-purple-900">
-    <header class="flex justify-between items-center border-b border-purple-900 pb-4 mb-4">
-      <div>
-        <p class="text-mono text-xs text-purple-700">NIGHT SEQUENCE</p>
-        <p class="text-display text-xl text-purple-500">WITCH PROTOCOL</p>
+  <div class="witch-phase h-screen w-screen flex flex-col relative overflow-hidden">
+    <!-- Mystical Background -->
+    <div class="absolute inset-0 bg-gradient-to-b from-purple-950/50 via-slate-950 to-slate-950">
+      <div class="absolute top-20 left-10 w-32 h-32 bg-emerald-500/10 rounded-full filter blur-3xl"></div>
+      <div class="absolute bottom-40 right-10 w-48 h-48 bg-pink-500/10 rounded-full filter blur-3xl"></div>
+    </div>
+
+    <!-- Moon -->
+    <div class="absolute top-6 right-6 w-12 h-12 rounded-full bg-gradient-to-br from-slate-200 to-slate-400 shadow-[0_0_40px_rgba(248,250,252,0.3)] opacity-60 z-20"></div>
+
+    <!-- Header -->
+    <header class="relative z-10 flex-shrink-0 p-4 md:p-6">
+      <div class="glass-card p-4 flex justify-between items-center border-pink-500/30">
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-pink-500/20 border border-pink-500/40 flex items-center justify-center">
+            <FlaskConicalIcon class="w-6 h-6 text-pink-400" />
+          </div>
+          <div>
+            <p class="text-slate-500 text-xs uppercase tracking-wider">Phase de Nuit</p>
+            <p class="text-pink-400 text-lg font-medium">La Sorcière</p>
+          </div>
+        </div>
+        <Timer :seconds="gameStore.timer" variant="circular" size="sm" />
       </div>
-      <Timer :seconds="gameStore.timer" variant="digital" size="sm" />
     </header>
 
-    <main class="flex-1 overflow-y-auto">
+    <main class="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 pb-4">
       <template v-if="gameStore.canAct">
-        <div class="border border-purple-900 p-4 mb-6 text-center">
-          <p class="text-mono text-xs text-purple-400 mb-2">TARGET STATUS:</p>
+        <!-- Target Status -->
+        <div class="glass-card p-4 mb-6 text-center" :class="wolvesTarget ? 'border-red-500/30' : 'border-emerald-500/30'">
+          <p class="text-slate-500 text-xs uppercase tracking-wider mb-2">Victime des loups</p>
           <div v-if="wolvesTarget">
-            <p class="text-display text-2xl text-red-600">{{ wolvesTarget.user?.name.toUpperCase() }}</p>
-            <p class="text-mono text-xs text-red-800">CRITICAL CONDITION</p>
+            <p class="text-2xl text-white font-medium mb-1">{{ wolvesTarget.user?.name }}</p>
+            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-sm">
+              <HeartCrackIcon class="w-4 h-4" />
+              En danger de mort
+            </span>
           </div>
           <div v-else>
-            <p class="text-mono text-sm text-green-600">STABLE</p>
+            <p class="text-emerald-400 font-medium">Personne n'a été attaqué</p>
           </div>
         </div>
 
-        <div v-if="hasHealPotion" class="mb-6">
-          <h3 class="text-mono text-sm text-green-500 mb-2 border-b border-green-900 pb-1">LIFE SERUM [1]</h3>
-          <ActionButton v-if="wolvesTarget" variant="primary" :full-width="true" @click="useHealPotion" class="border-green-600 text-green-500 hover:bg-green-900">
-            ADMINISTER TO {{ wolvesTarget.user?.name.toUpperCase() }}
-          </ActionButton>
-          <p v-else class="text-mono text-xs text-gray-600">NO TARGET AVAILABLE</p>
-        </div>
-
-        <div v-if="hasKillPotion" class="mb-6">
-          <h3 class="text-mono text-sm text-red-500 mb-2 border-b border-red-900 pb-1">DEATH TOXIN [1]</h3>
-          <div class="grid grid-cols-2 gap-2 mb-2">
-            <PlayerCard
-              v-for="player in availableKillTargets"
-              :key="player.id"
-              :name="player.user?.name || 'TARGET'"
-              :status="player.is_alive ? 'alive' : 'dead'"
-              :is-selected="selectedKillTarget?.id === player.id"
-              selection-color="purple-600"
-              size="small"
-              @click="selectKillTarget(player)"
-            />
+        <!-- Potions -->
+        <div class="grid grid-cols-2 gap-4 mb-6">
+          <!-- Heal Potion -->
+          <div 
+            class="potion-card p-4 rounded-xl text-center transition-all"
+            :class="hasHealPotion ? 'bg-emerald-500/10 border border-emerald-500/30 cursor-pointer hover:border-emerald-400' : 'bg-slate-800/30 border border-slate-700 opacity-50'"
+          >
+            <div class="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/30 mx-auto mb-3 flex items-center justify-center">
+              <span class="text-3xl">💚</span>
+            </div>
+            <p class="text-emerald-400 font-medium mb-1">Potion de Vie</p>
+            <p class="text-slate-500 text-xs">{{ hasHealPotion ? 'Disponible' : 'Utilisée' }}</p>
           </div>
-          <ActionButton v-if="selectedKillTarget" variant="danger" :full-width="true" @click="useKillPotion">
-            TERMINATE {{ selectedKillTarget.user?.name.toUpperCase() }}
-          </ActionButton>
+
+          <!-- Kill Potion -->
+          <div 
+            class="potion-card p-4 rounded-xl text-center transition-all"
+            :class="hasKillPotion ? 'bg-pink-500/10 border border-pink-500/30 cursor-pointer hover:border-pink-400' : 'bg-slate-800/30 border border-slate-700 opacity-50'"
+          >
+            <div class="w-16 h-16 rounded-full bg-pink-500/20 border border-pink-500/30 mx-auto mb-3 flex items-center justify-center">
+              <span class="text-3xl">💀</span>
+            </div>
+            <p class="text-pink-400 font-medium mb-1">Potion de Mort</p>
+            <p class="text-slate-500 text-xs">{{ hasKillPotion ? 'Disponible' : 'Utilisée' }}</p>
+          </div>
         </div>
 
-        <div class="mt-8 border-t border-purple-900 pt-4">
+        <!-- Actions -->
+        <div class="space-y-3">
+          <ActionButton 
+            v-if="hasHealPotion && wolvesTarget" 
+            variant="emerald" 
+            :full-width="true" 
+            :glow="true"
+            @click="useHealPotion"
+          >
+            <span class="flex items-center justify-center gap-2">
+              <HeartIcon class="w-5 h-5" />
+              Sauver {{ wolvesTarget.user?.name }}
+            </span>
+          </ActionButton>
+
+          <div v-if="hasKillPotion">
+            <p class="text-slate-400 text-sm text-center mb-3">Empoisonner quelqu'un :</p>
+            <div class="grid grid-cols-3 gap-2 mb-4">
+              <div 
+                v-for="player in availableKillTargets" 
+                :key="player.id"
+                class="p-2 rounded-lg text-center cursor-pointer transition-all"
+                :class="selectedKillTarget?.id === player.id 
+                  ? 'bg-pink-500/20 border-2 border-pink-500' 
+                  : 'bg-slate-800/50 border border-slate-700 hover:border-pink-500/50'"
+                @click="selectKillTarget(player)"
+              >
+                <div class="w-10 h-10 rounded-full bg-slate-700 mx-auto mb-1 flex items-center justify-center text-sm font-medium text-white">
+                  {{ player.user?.name?.[0]?.toUpperCase() }}
+                </div>
+                <p class="text-xs text-slate-300 truncate">{{ player.user?.name }}</p>
+              </div>
+            </div>
+            <ActionButton 
+              v-if="selectedKillTarget" 
+              variant="danger" 
+              :full-width="true"
+              @click="useKillPotion"
+            >
+              Empoisonner {{ selectedKillTarget.user?.name }}
+            </ActionButton>
+          </div>
+        </div>
+
+        <!-- Skip -->
+        <div class="mt-8">
           <ActionButton variant="secondary" :full-width="true" @click="skipAction">
-            STAND DOWN
+            Ne rien faire
           </ActionButton>
         </div>
       </template>
-      <div v-else class="border border-purple-900 p-8 mt-10 text-center">
-        <p class="text-mono text-purple-900">WAITING FOR WITCH...</p>
+
+      <div v-else class="h-full flex items-center justify-center">
+        <div class="glass-card p-8 text-center">
+          <FlaskConicalIcon class="w-12 h-12 text-pink-400/50 mx-auto mb-4" />
+          <p class="text-slate-400">En attente de la sorcière...</p>
+        </div>
       </div>
     </main>
   </div>
 </template>
+
 <script setup>
-import { ref, computed, watch } from 'vue';
+import { ref, computed } from 'vue';
 import { useGameStore } from '@/stores/gameStore';
+import { FlaskConical as FlaskConicalIcon, Heart as HeartIcon, HeartCrack as HeartCrackIcon } from 'lucide-vue-next';
 import ActionButton from '@/components/UI/ActionButton.vue';
-import PlayerCard from '@/components/Player/PlayerCard.vue';
 import Timer from '@/components/UI/Timer.vue';
 
 const gameStore = useGameStore();
@@ -82,7 +153,9 @@ const hasHealPotion = computed(() => witchPlayer.value?.metadata?.heal_potion !=
 const hasKillPotion = computed(() => witchPlayer.value?.metadata?.kill_potion !== false);
 const availableKillTargets = computed(() => gameStore.livingPlayers.filter(p => p.id !== witchPlayer.value?.id));
 
-function selectKillTarget(player) { if (player.id !== witchPlayer.value?.id) selectedKillTarget.value = player; }
+function selectKillTarget(player) { 
+  if (player.id !== witchPlayer.value?.id) selectedKillTarget.value = player; 
+}
 
 async function useHealPotion() {
   if (!wolvesTarget.value) return;
@@ -99,3 +172,18 @@ async function skipAction() {
   await gameStore.submitAction('witch_potion', null, { potion_type: 'skip' });
 }
 </script>
+
+<style scoped>
+.witch-phase {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+</style>

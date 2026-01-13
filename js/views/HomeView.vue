@@ -1,47 +1,72 @@
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen p-4 w-full max-w-md mx-auto">
-    <!-- Header -->
-    <div class="text-center mb-12 w-full">
-      <h1 class="text-display text-5xl text-white mb-2 tracking-tighter">WEREWOLF</h1>
-      <div class="h-1 bg-red-600 w-full mb-2"></div>
-      <div class="flex justify-between text-mono text-xs text-gray-500">
-        <span>ONLINE_PROTOCOL_V2</span>
-        <span class="animate-pulse text-green-500">SYSTEM_READY</span>
+  <div class="home-view min-h-screen w-full flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <!-- Animated Background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950">
+      <!-- Aurora effect -->
+      <div class="absolute inset-0 opacity-30">
+        <div class="absolute top-0 left-1/4 w-96 h-96 bg-violet-600/20 rounded-full filter blur-3xl animate-float"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-cyan-600/20 rounded-full filter blur-3xl animate-float" style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-indigo-600/20 rounded-full filter blur-3xl animate-float" style="animation-delay: 4s;"></div>
       </div>
+      <!-- Particle dust effect -->
+      <div class="absolute inset-0" style="background-image: radial-gradient(rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 50px 50px;"></div>
     </div>
 
-    <!-- Main Panel -->
-    <div class="panel-brutal w-full">
+    <!-- Moon in corner -->
+    <div class="absolute top-8 right-8 w-16 h-16 rounded-full bg-gradient-to-br from-slate-200 to-slate-400 shadow-[0_0_40px_rgba(248,250,252,0.3)] opacity-60"></div>
+
+    <!-- Header / Logo -->
+    <div class="relative z-10 text-center mb-12 w-full max-w-md">
+      <h1 class="text-cinzel text-5xl md:text-6xl text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-yellow-400 to-amber-300 animate-glow-pulse mb-3">
+        Loup-Garou
+      </h1>
+      <div class="h-px w-48 mx-auto bg-gradient-to-r from-transparent via-amber-500/50 to-transparent mb-3"></div>
+      <p class="text-slate-400 text-sm tracking-widest uppercase">Le Village des Ombres</p>
+    </div>
+
+    <!-- Main Glass Panel -->
+    <div class="relative z-10 glass-card w-full max-w-md p-6 md:p-8">
 
       <!-- Not Logged In -->
-      <div v-if="!authStore.user" class="flex flex-col gap-6 p-2">
-        <div class="text-center border-b border-gray-800 pb-4">
-            <span class="text-mono text-sm uppercase text-red-600 animate-pulse">Authentication Required</span>
+      <div v-if="!authStore.user" class="flex flex-col gap-6">
+        <div class="text-center pb-4 border-b border-white/10">
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/30 mb-4">
+            <div class="w-2 h-2 rounded-full bg-violet-500 animate-pulse"></div>
+            <span class="text-violet-400 text-sm">Connexion requise</span>
+          </div>
+          <p class="text-slate-400 text-sm">Entrez dans le village pour commencer</p>
         </div>
+        
         <ActionButton
           variant="primary"
           :icon="UserCircleIcon"
           :loading="authStore.isLoading"
+          :glow="true"
           @click="handleLogin"
+          :full-width="true"
         >
-          CONNECT IDENTITY
+          Entrer dans le Village
         </ActionButton>
       </div>
 
       <!-- Logged In -->
       <div v-else class="flex flex-col gap-6">
         <!-- User Info -->
-        <div class="flex items-center justify-between border-b-2 border-white pb-4 bg-gray-900 p-2">
-          <div class="flex items-center gap-3">
-            <div class="w-12 h-12 border-2 border-white bg-black text-white flex items-center justify-center font-display text-2xl">
-              {{ authStore.user.name?.charAt(0)?.toUpperCase() || '?' }}
-            </div>
-            <div class="flex flex-col">
-              <span class="text-display text-lg leading-none uppercase">{{ authStore.user.name || 'UNKNOWN' }}</span>
-              <span class="text-mono text-xs text-green-500">ACCESS GRANTED</span>
+        <div class="flex items-center gap-4 p-4 rounded-xl bg-slate-800/30 border border-white/5">
+          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center text-white font-display text-xl shadow-lg shadow-violet-500/20">
+            {{ authStore.user.name?.charAt(0)?.toUpperCase() || '?' }}
+          </div>
+          <div class="flex-1">
+            <p class="text-white font-medium text-lg">{{ authStore.user.name || 'Inconnu' }}</p>
+            <div class="flex items-center gap-2 text-emerald-400 text-sm">
+              <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+              <span>Connecté</span>
             </div>
           </div>
-          <button @click="handleLogout" class="hover:text-red-600 transition-colors border border-transparent hover:border-red-600 p-1">
+          <button 
+            @click="handleLogout" 
+            class="p-2 rounded-lg hover:bg-red-500/10 text-slate-400 hover:text-red-400 transition-colors"
+          >
             <LogOutIcon class="w-5 h-5" />
           </button>
         </div>
@@ -52,69 +77,103 @@
             variant="primary"
             :icon="PlusIcon"
             :loading="isCreating"
+            :glow="true"
             @click="showCreateGame = true"
+            :full-width="true"
           >
-            INITIATE GAME
+            Créer une Partie
           </ActionButton>
 
-          <div class="flex gap-0 pt-4 border-t border-gray-800">
+          <div class="relative my-2">
+            <div class="absolute inset-0 flex items-center">
+              <div class="w-full border-t border-slate-700"></div>
+            </div>
+            <div class="relative flex justify-center text-sm">
+              <span class="px-4 bg-transparent text-slate-500">ou</span>
+            </div>
+          </div>
+
+          <div class="flex gap-2">
             <input
               v-model="joinCode"
               type="text"
               placeholder="CODE"
               maxlength="5"
-              class="flex-1 bg-black border-2 border-r-0 border-white p-3 text-center font-mono text-xl uppercase placeholder-gray-700 focus:outline-none focus:bg-gray-900 transition-colors"
+              class="flex-1 bg-slate-800/50 border border-slate-700/50 rounded-xl px-4 py-3 text-center text-xl font-mono uppercase text-white placeholder-slate-600 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 focus:outline-none transition-all"
               @keyup.enter="joinGame"
             />
-            <button
-              class="btn-brutal w-auto px-6 border-l-2"
+            <ActionButton
+              variant="magic"
               :disabled="!joinCode || joinCode.length < 4 || isJoining"
               @click="joinGame"
             >
-              JOIN
-            </button>
+              Rejoindre
+            </ActionButton>
           </div>
 
+          <!-- Test Mode (subtle) -->
           <div class="mt-4 text-center">
-             <button @click="startTestGame" class="text-mono text-[10px] text-gray-700 hover:text-red-600 uppercase tracking-widest border border-transparent hover:border-red-600 px-2 py-1">
-                > Execute Simulation Sequence
-             </button>
+            <button 
+              @click="startTestGame" 
+              class="text-slate-600 text-xs hover:text-violet-400 transition-colors flex items-center justify-center gap-2 mx-auto"
+            >
+              <SparklesIcon class="w-3 h-3" />
+              <span>Mode Test</span>
+            </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Modal Create Game -->
-    <div v-if="showCreateGame" class="fixed inset-0 bg-black/95 flex items-center justify-center p-4 z-50">
-      <div class="panel-brutal w-full max-w-sm border-2 border-white shadow-[8px_8px_0_#ff0000]">
-        <h3 class="text-display text-2xl mb-6 text-center border-b-2 border-red-600 pb-2">CONFIGURATION</h3>
+    <!-- Create Game Modal -->
+    <Teleport to="body">
+      <div 
+        v-if="showCreateGame" 
+        class="fixed inset-0 z-50 flex items-center justify-center p-4"
+        @click.self="showCreateGame = false"
+      >
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+        
+        <!-- Modal -->
+        <div class="relative glass-card w-full max-w-sm p-6 shadow-2xl shadow-violet-500/10">
+          <button 
+            @click="showCreateGame = false" 
+            class="absolute top-4 right-4 p-1 text-slate-400 hover:text-white transition-colors"
+          >
+            <XIcon class="w-5 h-5" />
+          </button>
 
-        <div class="mb-8">
-          <label class="block text-mono text-xs mb-3 text-gray-400">PLAYER COUNT</label>
-          <div class="grid grid-cols-3 gap-0 border-2 border-white">
-            <button 
+          <h3 class="text-cinzel text-2xl text-amber-400 mb-6 text-center">Configuration</h3>
+
+          <div class="mb-8">
+            <label class="block text-slate-400 text-sm mb-3">Nombre de joueurs</label>
+            <div class="grid grid-cols-3 gap-2">
+              <button 
                 v-for="count in [8, 10, 12]"
                 :key="count"
                 @click="playerCount = count"
-                class="p-3 text-mono font-bold text-lg transition-all border-r-2 border-white last:border-r-0 hover:bg-red-900/50"
-                :class="playerCount === count ? 'bg-red-600 text-black' : 'bg-black text-white'"
-            >
+                class="player-count-btn py-4 rounded-xl font-display text-xl transition-all duration-200"
+                :class="playerCount === count 
+                  ? 'bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-900 shadow-lg shadow-amber-500/25' 
+                  : 'bg-slate-800/50 text-slate-400 border border-slate-700/50 hover:border-amber-500/50 hover:text-amber-400'"
+              >
                 {{ count }}
-            </button>
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <ActionButton variant="secondary" @click="showCreateGame = false">
+              Annuler
+            </ActionButton>
+            <ActionButton variant="primary" :loading="isCreating" @click="createGame" :glow="true">
+              Créer
+            </ActionButton>
           </div>
         </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <button @click="showCreateGame = false" class="btn-brutal text-sm border-gray-600 text-gray-500 hover:border-white hover:text-white">
-            ABORT
-          </button>
-          <ActionButton variant="primary" :loading="isCreating" @click="createGame">
-            CONFIRM
-          </ActionButton>
-        </div>
       </div>
-    </div>
-
+    </Teleport>
   </div>
 </template>
 
@@ -123,7 +182,7 @@ import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/authStore';
 import { useGameStore } from '@/stores/gameStore';
-import { UserCircle as UserCircleIcon, LogOut as LogOutIcon, Plus as PlusIcon } from 'lucide-vue-next';
+import { UserCircle as UserCircleIcon, LogOut as LogOutIcon, Plus as PlusIcon, Sparkles as SparklesIcon, X as XIcon } from 'lucide-vue-next';
 import ActionButton from '@/components/UI/ActionButton.vue';
 import axios from 'axios';
 
@@ -139,14 +198,14 @@ const isJoining = ref(false);
 
 async function handleLogin() {
   const success = await authStore.loginWithGoogle();
-  if (success && window.showNotification) window.showNotification('IDENTITY VERIFIED', 'success');
-  else if (window.showNotification) window.showNotification('ACCESS DENIED', 'error');
+  if (success && window.showNotification) window.showNotification('Bienvenue dans le Village !', 'success');
+  else if (window.showNotification) window.showNotification('Connexion échouée', 'error');
 }
 
 function handleLogout() {
   authStore.logout();
   gameStore.resetGame();
-  if (window.showNotification) window.showNotification('SESSION TERMINATED', 'info');
+  if (window.showNotification) window.showNotification('À bientôt...', 'info');
 }
 
 async function createGame() {
@@ -170,7 +229,7 @@ async function joinGame() {
     if (result?.success) {
       router.push({ name: 'lobby', params: { code: joinCode.value.toUpperCase() } });
     } else if (window.showNotification) {
-      window.showNotification(result?.message || 'CONNECTION FAILED', 'error');
+      window.showNotification(result?.message || 'Impossible de rejoindre', 'error');
     }
   } finally {
     isJoining.value = false;
@@ -181,11 +240,58 @@ async function startTestGame() {
   try {
     const response = await axios.post('/games/test', { player_count: 8 });
     if (response.data.success) {
-      if (window.showNotification) window.showNotification('SIMULATION STARTED', 'success');
+      if (window.showNotification) window.showNotification('Partie test créée', 'success');
       router.push({ name: 'lobby', params: { code: response.data.game.code } });
     }
   } catch (error) {
-      if(window.showNotification) window.showNotification('SIMULATION ERROR', 'error');
+    if(window.showNotification) window.showNotification('Erreur', 'error');
   }
 }
 </script>
+
+<style scoped>
+.home-view {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.text-cinzel {
+  font-family: 'Cinzel', 'Playfair Display', serif;
+  letter-spacing: 0.05em;
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.animate-glow-pulse {
+  animation: glow-text 3s ease-in-out infinite;
+}
+
+@keyframes glow-text {
+  0%, 100% {
+    filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.4));
+  }
+  50% {
+    filter: drop-shadow(0 0 30px rgba(245, 158, 11, 0.6));
+  }
+}
+
+.animate-float {
+  animation: float 8s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(-20px) translateX(10px);
+  }
+}
+</style>

@@ -1,65 +1,119 @@
 <!-- js/components/Game/RoleReveal.vue -->
 <template>
-  <div class="h-screen w-full flex flex-col items-center justify-center bg-black p-4">
-    <div class="w-full max-w-sm h-[500px] perspective-1000">
+  <div class="role-reveal-view h-screen w-full flex flex-col items-center justify-center p-6 relative overflow-hidden">
+    <!-- Background -->
+    <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-indigo-950 to-slate-950">
+      <!-- Mystical particles -->
+      <div class="absolute inset-0 opacity-30">
+        <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-violet-600/30 rounded-full filter blur-3xl animate-float"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-48 h-48 bg-indigo-600/30 rounded-full filter blur-3xl animate-float" style="animation-delay: 2s;"></div>
+      </div>
+    </div>
+
+    <!-- Title -->
+    <div class="relative z-10 text-center mb-8">
+      <h2 class="text-cinzel text-xl text-violet-400 uppercase tracking-widest mb-2">La Nuit Tombe</h2>
+      <p class="text-slate-500 text-sm">Découvrez votre destinée</p>
+    </div>
+
+    <!-- Tarot Card -->
+    <div class="relative z-10 w-full max-w-xs perspective-1000">
       <div
-        class="relative w-full h-full transition-transform duration-500 transform-style-3d cursor-pointer"
+        class="tarot-card relative w-full aspect-[2/3] cursor-pointer transition-transform duration-700 transform-style-3d"
         :class="{ 'rotate-y-180': isFlipped }"
         @click="flipCard"
       >
-        <!-- Front (Back of card actually) -->
-        <div class="absolute inset-0 backface-hidden bg-black border-4 border-white flex flex-col items-center justify-center p-8">
-          <div class="border-2 border-white p-4 mb-4">
-            <h2 class="text-display text-3xl text-white tracking-widest uppercase">CLASSIFIED</h2>
+        <!-- Card Back (Mystical Pattern) -->
+        <div class="card-face card-back absolute inset-0 backface-hidden rounded-2xl overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 via-violet-900 to-purple-900"></div>
+          <div class="absolute inset-0" style="background-image: url('data:image/svg+xml,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 100 100\"><circle cx=\"50\" cy=\"50\" r=\"40\" fill=\"none\" stroke=\"rgba(255,255,255,0.1)\" stroke-width=\"0.5\"/><circle cx=\"50\" cy=\"50\" r=\"30\" fill=\"none\" stroke=\"rgba(255,255,255,0.1)\" stroke-width=\"0.5\"/><circle cx=\"50\" cy=\"50\" r=\"20\" fill=\"none\" stroke=\"rgba(255,255,255,0.1)\" stroke-width=\"0.5\"/></svg>'); background-size: 60px 60px;"></div>
+          <div class="absolute inset-0 flex flex-col items-center justify-center p-6">
+            <div class="w-24 h-24 rounded-full bg-gradient-to-br from-violet-500/30 to-indigo-500/30 border-2 border-violet-400/30 flex items-center justify-center mb-4 animate-pulse">
+              <MoonIcon class="w-12 h-12 text-violet-300" />
+            </div>
+            <p class="text-cinzel text-lg text-violet-300 uppercase tracking-widest">Secret</p>
+            <p class="text-slate-400 text-xs mt-2 animate-pulse">Touchez pour révéler</p>
           </div>
-          <p class="text-mono text-sm text-gray-400 uppercase mb-8">TOP SECRET // EYES ONLY</p>
-          <div class="animate-pulse text-red-600 font-mono text-xs border border-red-600 px-2 py-1">
-            TAP TO DECRYPT
-          </div>
+          <!-- Card border -->
+          <div class="absolute inset-2 border-2 border-violet-400/20 rounded-xl pointer-events-none"></div>
         </div>
 
-        <!-- Back (Revealed Role) -->
-        <div class="absolute inset-0 backface-hidden rotate-y-180 bg-white text-black border-4 border-white flex flex-col p-6 overflow-y-auto">
-          <div class="border-b-4 border-black pb-4 mb-4 text-center">
-            <h2 class="text-display text-4xl uppercase leading-none break-words" :style="{ color: roleColor }">
-              {{ roleData.name }}
-            </h2>
-          </div>
-
-          <div class="flex-1 flex flex-col items-center mb-4">
-            <div class="w-32 h-32 border-4 border-black mb-4 bg-gray-200 flex items-center justify-center overflow-hidden">
-               <!-- Simple image or icon placeholder -->
-               <span class="text-6xl">{{ roleIcon }}</span>
+        <!-- Card Front (Role Reveal) -->
+        <div class="card-face card-front absolute inset-0 backface-hidden rotate-y-180 rounded-2xl overflow-hidden">
+          <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"></div>
+          <div class="relative h-full flex flex-col p-6">
+            <!-- Role Header -->
+            <div class="text-center mb-4 pb-4 border-b border-white/10">
+              <h3 
+                class="text-cinzel text-3xl font-bold mb-1"
+                :style="{ color: roleColor }"
+              >
+                {{ roleData.name }}
+              </h3>
+              <p class="text-slate-400 text-sm uppercase tracking-wider">{{ roleData.team }}</p>
             </div>
-            <p class="text-mono text-sm leading-relaxed text-justify border-l-4 border-black pl-4">
-              {{ roleData.description }}
-            </p>
-          </div>
 
-          <div class="mt-auto">
-            <ActionButton
-              v-if="!confirmed && gameStore.phase === 'role_reveal'"
-              variant="primary"
-              :full-width="true"
-              :loading="isConfirming"
-              @click.stop="confirmRole"
-              class="bg-black text-white hover:bg-gray-800"
-            >
-              ACKNOWLEDGE
-            </ActionButton>
-            <div v-else class="text-center font-mono text-xs uppercase animate-pulse">
-              AWAITING SQUAD SYNCHRONIZATION...
+            <!-- Role Icon -->
+            <div class="flex-1 flex items-center justify-center">
+              <div 
+                class="w-28 h-28 rounded-full flex items-center justify-center"
+                :style="{ 
+                  background: `linear-gradient(135deg, ${roleColor}20 0%, ${roleColor}10 100%)`,
+                  border: `2px solid ${roleColor}40`,
+                  boxShadow: `0 0 40px ${roleColor}30`
+                }"
+              >
+                <span class="text-6xl">{{ roleIcon }}</span>
+              </div>
+            </div>
+
+            <!-- Role Description -->
+            <div class="mt-4 p-4 rounded-xl bg-slate-800/50 border border-white/5">
+              <p class="text-slate-300 text-sm leading-relaxed text-center">
+                {{ roleData.description }}
+              </p>
             </div>
           </div>
+          <!-- Card border -->
+          <div class="absolute inset-2 border-2 rounded-xl pointer-events-none" :style="{ borderColor: `${roleColor}30` }"></div>
         </div>
       </div>
     </div>
+
+    <!-- Confirm Button -->
+    <div class="relative z-10 w-full max-w-xs mt-8">
+      <ActionButton
+        v-if="isFlipped && !confirmed && gameStore.phase === 'role_reveal'"
+        variant="magic"
+        :full-width="true"
+        :loading="isConfirming"
+        :glow="true"
+        @click.stop="confirmRole"
+      >
+        J'accepte mon sort
+      </ActionButton>
+      
+      <div v-else-if="confirmed" class="text-center">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/30">
+          <div class="w-2 h-2 rounded-full bg-violet-500 animate-pulse"></div>
+          <span class="text-violet-400 text-sm">En attente des autres joueurs...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Glow effect on reveal -->
+    <div 
+      v-if="isFlipped" 
+      class="absolute inset-0 pointer-events-none transition-opacity duration-1000"
+      :style="{ background: `radial-gradient(circle at center, ${roleColor}10 0%, transparent 60%)` }"
+    ></div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useGameStore } from '@/stores/gameStore';
+import { Moon as MoonIcon } from 'lucide-vue-next';
 import ActionButton from '@/components/UI/ActionButton.vue';
 
 const gameStore = useGameStore();
@@ -71,28 +125,85 @@ const result = ref(null);
 const roleData = computed(() => {
   const role = gameStore.currentPlayer?.role || 'villager';
   const roles = {
-    werewolf: { name: 'Werewolf', description: 'Eliminate all civilians. Work with your pack at night.', color: '#ef4444' },
-    seer: { name: 'Seer', description: 'Gather intel. Reveal one identity each night.', color: '#a855f7' },
-    witch: { name: 'Witch', description: 'Life and Death authority. One heal, one kill.', color: '#ec4899' },
-    guard: { name: 'Bodyguard', description: 'Protect a target each night.', color: '#3b82f6' },
-    hunter: { name: 'Hunter', description: 'If you die, take someone with you.', color: '#f59e0b' },
-    cupid: { name: 'Cupid', description: 'Link two fates together.', color: '#f43f5e' },
-    elder: { name: 'Elder', description: 'Tough to kill. Survives one wolf attack.', color: '#6b7280' },
-    fool: { name: 'Fool', description: 'You think you have intel, but you don\'t.', color: '#8b5cf6' },
-    villager: { name: 'Civilian', description: 'Identify and eliminate the threats via voting.', color: '#10b981' },
+    werewolf: { 
+      name: 'Loup-Garou', 
+      description: 'Chaque nuit, éliminez un villageois avec votre meute. Restez discret le jour.', 
+      color: '#EF4444',
+      team: 'Équipe des Loups'
+    },
+    seer: { 
+      name: 'Voyante', 
+      description: 'Chaque nuit, découvrez la véritable identité d\'un joueur.', 
+      color: '#7C3AED',
+      team: 'Équipe du Village'
+    },
+    witch: { 
+      name: 'Sorcière', 
+      description: 'Vous possédez deux potions: une pour sauver, une pour tuer. Utilisez-les avec sagesse.', 
+      color: '#EC4899',
+      team: 'Équipe du Village'
+    },
+    guard: { 
+      name: 'Garde', 
+      description: 'Chaque nuit, protégez un joueur de l\'attaque des loups.', 
+      color: '#3B82F6',
+      team: 'Équipe du Village'
+    },
+    hunter: { 
+      name: 'Chasseur', 
+      description: 'Si vous mourrez, emportez un joueur avec vous dans la tombe.', 
+      color: '#F59E0B',
+      team: 'Équipe du Village'
+    },
+    cupid: { 
+      name: 'Cupidon', 
+      description: 'La première nuit, liez deux joueurs par l\'amour éternel.', 
+      color: '#F43F5E',
+      team: 'Équipe du Village'
+    },
+    elder: { 
+      name: 'Ancien', 
+      description: 'Vous résistez à deux attaques des loups avant de succomber.', 
+      color: '#6B7280',
+      team: 'Équipe du Village'
+    },
+    fool: { 
+      name: 'Idiot du Village', 
+      description: 'Vous pensez être la voyante... mais vos visions sont-elles fiables ?', 
+      color: '#8B5CF6',
+      team: 'Équipe du Village'
+    },
+    villager: { 
+      name: 'Villageois', 
+      description: 'Aucun pouvoir spécial, mais votre vote compte ! Démasquez les loups.', 
+      color: '#10B981',
+      team: 'Équipe du Village'
+    },
   };
   return roles[role] || roles['villager'];
 });
 
 const roleIcon = computed(() => {
-    const icons = { werewolf: '🐺', seer: '🔮', witch: '🧪', guard: '🛡️', hunter: '🔫', cupid: '💘', elder: '👴', fool: '🃏', villager: '🧑' };
-    return icons[gameStore.currentPlayer?.role] || '❓';
+  const icons = { 
+    werewolf: '🐺', 
+    seer: '🔮', 
+    witch: '🧪', 
+    guard: '🛡️', 
+    hunter: '🏹', 
+    cupid: '💘', 
+    elder: '👴', 
+    fool: '🃏', 
+    villager: '🏠' 
+  };
+  return icons[gameStore.currentPlayer?.role] || '❓';
 });
 
 const roleColor = computed(() => roleData.value.color);
 
 const flipCard = () => {
-  if (!isFlipped.value) isFlipped.value = true;
+  if (!isFlipped.value) {
+    isFlipped.value = true;
+  }
 };
 
 async function confirmRole() {
@@ -114,7 +225,6 @@ async function confirmRole() {
   }
 }
 
-// ... Keep existing logic for watchers ...
 const hasCheckedInitialConfirmation = ref(false);
 watch(() => gameStore.currentPlayer, (player) => {
   if (!hasCheckedInitialConfirmation.value && player?.metadata?.role_revealed) {
@@ -141,8 +251,64 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.perspective-1000 { perspective: 1000px; }
-.transform-style-3d { transform-style: preserve-3d; }
-.backface-hidden { backface-visibility: hidden; }
-.rotate-y-180 { transform: rotateY(180deg); }
+.role-reveal-view {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.text-cinzel {
+  font-family: 'Cinzel', 'Playfair Display', serif;
+  letter-spacing: 0.05em;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.card-back {
+  animation: card-glow 3s ease-in-out infinite;
+}
+
+@keyframes card-glow {
+  0%, 100% {
+    box-shadow: 0 0 30px rgba(124, 58, 237, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 50px rgba(124, 58, 237, 0.5);
+  }
+}
+
+.animate-float {
+  animation: float 8s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) translateX(0);
+  }
+  50% {
+    transform: translateY(-20px) translateX(10px);
+  }
+}
+
+.tarot-card {
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
 </style>

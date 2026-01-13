@@ -1,6 +1,6 @@
 <template>
-  <div class="game-view relative h-screen w-full overflow-hidden bg-black text-white font-mono">
-    <transition name="fade" mode="out-in">
+  <div class="game-view relative h-screen w-full overflow-hidden">
+    <transition name="scale-fade" mode="out-in">
       <component :is="activeComponent" />
     </transition>
   </div>
@@ -43,9 +43,6 @@ const activeComponent = computed(() => {
 
   // Lobby and end states
   if (status === 'lobby') return LobbyView;
-  // Check both 'ended' status and 'game_end' phase for robustness:
-  // - Backend may set status='ended' before phase='game_end'
-  // - Or phase may be 'game_end' while status updates asynchronously
   if (status === 'ended' || phase === 'game_end') return GameEnd;
   
   // Role reveal phase
@@ -146,5 +143,8 @@ watch(() => gameStore.currentGame, (newGame) => {
 </script>
 
 <style scoped>
-/* Brutalist transitions are handled globally in animations.css */
+.game-view {
+  background: linear-gradient(135deg, #020617 0%, #312e81 100%);
+  background-attachment: fixed;
+}
 </style>
