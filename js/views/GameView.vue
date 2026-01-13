@@ -18,13 +18,18 @@ import GameEnd from '@/components/Game/GameEnd.vue';
 import RoleReveal from '@/components/Game/RoleReveal.vue';
 import NightStart from '@/components/Game/NightStart.vue';
 import NightSleep from '@/components/Game/NightSleep.vue';
+import NightProcessing from '@/components/Game/NightProcessing.vue';
 import DayStart from '@/components/Game/DayStart.vue';
+import DayReveal from '@/components/Game/DayReveal.vue';
 import VoteResult from '@/components/Game/VoteResult.vue';
 import DayExecution from '@/components/Game/DayExecution.vue';
 import NightPhase from '@/components/Game/NightPhase.vue';
 import DayPhase from '@/components/Game/DayPhase.vue';
 import WitchPhase from '@/components/Game/WitchPhase.vue';
 import CupidPhase from '@/components/Game/CupidPhase.vue';
+import GuardPhase from '@/components/Game/GuardPhase.vue';
+import SeerPhase from '@/components/Game/SeerPhase.vue';
+import HunterAction from '@/components/Game/HunterAction.vue';
 import DayLastWords from '@/components/Game/DayLastWords.vue';
 
 const route = useRoute();
@@ -36,48 +41,76 @@ const activeComponent = computed(() => {
   const status = gameStore.currentGame?.status;
   const phase = gameStore.phase;
 
+  // Lobby and end states
   if (status === 'lobby') return LobbyView;
-  if (status === 'ended') return GameEnd;
+  // Check both 'ended' status and 'game_end' phase for robustness:
+  // - Backend may set status='ended' before phase='game_end'
+  // - Or phase may be 'game_end' while status updates asynchronously
+  if (status === 'ended' || phase === 'game_end') return GameEnd;
   
+  // Role reveal phase
   if (hasLeftRoleReveal.value && phase === 'role_reveal') {
     return NightSleep;
   }
-  
   if (phase === 'role_reveal' && status !== 'ended' && !hasLeftRoleReveal.value) {
     return RoleReveal;
   }
+  
+  // Night transition phases
   if (phase === 'night_start') return NightStart;
-  if (phase === 'night_cupid') return CupidPhase;
-  if (phase === 'night_witch') return WitchPhase;
-  if (phase === 'day_reveal') return DayStart;
+  if (phase === 'night_processing') return NightProcessing;
+  
+  // Night action phases - each role has its own component
+  if (phase === 'night_cupid') {
+    if (gameStore.canAct) return CupidPhase;
+    return NightSleep;
+  }
+  
+  if (phase === 'night_wolves') {
+    if (gameStore.canAct) return NightPhase;
+    return NightSleep;
+  }
+  
+  if (phase === 'night_guard') {
+    if (gameStore.canAct) return GuardPhase;
+    return NightSleep;
+  }
+  
+  if (phase === 'night_witch') {
+    if (gameStore.canAct) return WitchPhase;
+    return NightSleep;
+  }
+  
+  if (phase === 'night_seer') {
+    if (gameStore.canAct) return SeerPhase;
+    return NightSleep;
+  }
+  
+  // Hunter phases (can occur during night or day)
+  if (phase === 'hunter_action' || phase === 'hunter_day_action') {
+    if (gameStore.canAct) return HunterAction;
+    return NightSleep;
+  }
+  
+  // Day phases
+  if (phase === 'day_reveal') return DayReveal;
+  if (phase === 'day_debate') return DayPhase;
+  if (phase === 'day_vote') return DayPhase;
   if (phase === 'day_vote_result') return VoteResult;
   if (phase === 'day_last_words') return DayLastWords;
   if (phase === 'day_execution') return DayExecution;
 
+  // Fallback for night status
   if (status === 'night') {
-    const nightActionPhases = ['night_wolves', 'night_guard', 'night_seer', 'hunter_action', 'hunter_day_action'];
-    if (phase && nightActionPhases.includes(phase)) {
-      if (gameStore.canAct) return NightPhase;
-      else return NightSleep;
-    }
-    
-    if (phase === 'night_cupid') {
-      if (gameStore.canAct) return CupidPhase;
-      else return NightSleep;
-    }
-    
-    if (phase === 'night_witch') {
-      if (gameStore.canAct) return WitchPhase;
-      else return NightSleep;
-    }
-    
     return NightSleep;
   }
   
+  // Fallback for day status
   if (status === 'day') {
     return DayPhase;
   }
 
+  // Default fallback
   return NightSleep;
 });
 
