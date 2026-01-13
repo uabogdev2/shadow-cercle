@@ -1,5 +1,5 @@
 <template>
-  <div class="game-view relative h-screen w-full overflow-hidden">
+  <div class="game-view phase-surface relative h-screen w-full overflow-hidden">
     <transition name="scale-fade" mode="out-in">
       <component :is="activeComponent" />
     </transition>
@@ -149,7 +149,7 @@ watch(() => gameStore.currentGame, (newGame) => {
   width: 100vw;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #020617 0%, #312e81 100%);
+  background: linear-gradient(160deg, #0f0f0f 0%, #1a1a1a 45%, #0d0d0d 100%);
   background-attachment: fixed;
 }
 </style>

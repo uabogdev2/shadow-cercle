@@ -2,8 +2,9 @@
 <template>
   <div class="night-processing h-screen w-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
     <!-- Background -->
-    <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-indigo-950 to-slate-950">
-      <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-violet-500/15 rounded-full filter blur-3xl"></div>
+    <div class="absolute inset-0 phase-night">
+      <div class="noise-overlay"></div>
+      <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-violet-500/18 rounded-full filter blur-3xl"></div>
     </div>
 
     <!-- Content -->

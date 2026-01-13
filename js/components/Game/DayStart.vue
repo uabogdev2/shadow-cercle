@@ -2,12 +2,13 @@
 <template>
   <div class="day-start h-screen w-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
     <!-- Day Background -->
-    <div class="absolute inset-0 bg-gradient-to-b from-amber-100/10 via-slate-900 to-slate-950">
-      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-amber-500/10 rounded-full filter blur-3xl"></div>
+    <div class="absolute inset-0 phase-day">
+      <div class="noise-overlay"></div>
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-amber-500/15 rounded-full filter blur-3xl"></div>
     </div>
 
     <!-- Sun -->
-    <div class="absolute top-10 right-10 w-16 h-16 rounded-full bg-gradient-to-br from-amber-300 to-amber-500 shadow-[0_0_50px_rgba(245,158,11,0.4)]"></div>
+    <div class="absolute top-10 right-10 w-16 h-16 rounded-full bg-gradient-to-br from-amber-200 to-amber-500 shadow-[0_0_60px_rgba(217,119,6,0.45)]"></div>
 
     <div class="relative z-10 text-center mb-8">
       <h1 class="text-cinzel text-3xl text-amber-400 mb-2">Le Jour se Lève</h1>
@@ -107,13 +108,5 @@ watch(() => gameStore.currentGame?.state?.night_deaths, () => updateNightDeaths(
 
 .text-cinzel {
   font-family: 'Cinzel', 'Playfair Display', serif;
-}
-
-.glass-card {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
 }
 </style>

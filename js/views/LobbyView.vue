@@ -388,38 +388,48 @@ onMounted(async () => {
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  background: var(--color-bg-ink);
+  color: var(--color-text-primary);
 }
 
 /* Background */
 .lobby-view > div:first-child {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, rgb(2, 6, 23), rgba(49, 46, 129, 0.8), rgb(2, 6, 23));
+  inset: 0;
+  background: var(--color-bg-ink);
+}
+
+.lobby-view > div:first-child::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--color-noise);
+  opacity: 0.18;
+  pointer-events: none;
+}
+
+.lobby-view > div:first-child > div:first-child,
+.lobby-view > div:first-child > div:last-child {
+  position: absolute;
+  filter: blur(70px);
+  border-radius: 9999px;
+  opacity: 0.75;
 }
 
 .lobby-view > div:first-child > div:first-child {
-  position: absolute;
   top: 5rem;
   left: 2.5rem;
-  width: 8rem;
-  height: 8rem;
-  background: rgba(245, 158, 11, 0.1);
-  border-radius: 9999px;
-  filter: blur(60px);
+  width: 9rem;
+  height: 9rem;
+  background: radial-gradient(circle, rgba(217, 119, 6, 0.35), transparent 60%);
 }
 
 .lobby-view > div:first-child > div:last-child {
-  position: absolute;
   bottom: 10rem;
   right: 5rem;
   width: 12rem;
   height: 12rem;
-  background: rgba(124, 58, 237, 0.1);
-  border-radius: 9999px;
-  filter: blur(60px);
+  background: radial-gradient(circle, rgba(153, 27, 27, 0.3), transparent 60%);
 }
 
 /* Header */
@@ -431,9 +441,7 @@ onMounted(async () => {
 }
 
 @media (min-width: 768px) {
-  .lobby-view header {
-    padding: 1.5rem;
-  }
+  .lobby-view header { padding: 1.5rem; }
 }
 
 .lobby-view header > div {
@@ -441,19 +449,35 @@ onMounted(async () => {
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
+  border: 2px solid rgba(62, 47, 32, 0.45);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(145deg, rgba(245, 245, 220, 0.14), rgba(245, 245, 220, 0.06));
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.lobby-view header > div::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--color-noise);
+  opacity: 0.25;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
 }
 
 .lobby-view header > div > div:first-child {
   display: flex;
   flex-direction: column;
+  gap: 0.1rem;
 }
 
 .lobby-view header > div > div:first-child > span {
-  color: rgb(100, 116, 139);
+  color: var(--color-text-secondary);
   font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 0.25rem;
+  letter-spacing: 0.08em;
 }
 
 .lobby-view header > div > div:first-child > div {
@@ -464,65 +488,70 @@ onMounted(async () => {
 }
 
 .lobby-view header > div > div:first-child > div > h1 {
-  font-family: 'Cinzel', 'Playfair Display', serif;
-  font-size: 1.875rem;
-  color: rgb(251, 191, 36);
-  letter-spacing: 0.05em;
-  transition: color 0.2s;
+  font-family: var(--font-cinzel);
+  font-size: 2rem;
+  color: var(--color-accent-paper);
+  letter-spacing: 0.08em;
+  text-shadow: var(--glow-gold);
+  transition: color var(--transition-fast);
 }
 
 @media (min-width: 768px) {
-  .lobby-view header > div > div:first-child > div > h1 {
-    font-size: 2.25rem;
-  }
+  .lobby-view header > div > div:first-child > div > h1 { font-size: 2.4rem; }
 }
 
 .lobby-view header > div > div:first-child > div:hover > h1 {
-  color: rgb(253, 224, 71);
+  color: #fcd34d;
 }
 
 .lobby-view header > div > div:first-child > div > div {
   padding: 0.5rem;
-  border-radius: 0.5rem;
-  background: rgba(30, 41, 59, 0.5);
-  transition: background 0.2s;
+  border-radius: 0.75rem;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(62, 47, 32, 0.35);
+  transition: all var(--transition-fast);
 }
 
 .lobby-view header > div > div:first-child > div:hover > div {
-  background: rgba(251, 191, 36, 0.2);
+  background: rgba(217, 119, 6, 0.18);
+  border-color: rgba(217, 119, 6, 0.5);
 }
 
 .lobby-view header > div > div:last-child {
   display: flex;
   gap: 0.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .lobby-view header button {
   padding: 0.75rem;
-  border-radius: 0.75rem;
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(51, 65, 85, 0.5);
-  color: rgb(148, 163, 184);
+  border-radius: 0.85rem;
+  background: rgba(18, 18, 18, 0.85);
+  border: 1px solid rgba(62, 47, 32, 0.4);
+  color: var(--color-text-secondary);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
 .lobby-view header button:hover {
-  border-color: rgba(124, 58, 237, 0.5);
-  color: rgb(167, 139, 250);
+  border-color: rgba(217, 119, 6, 0.5);
+  color: var(--color-accent-paper);
+  background: rgba(217, 119, 6, 0.12);
 }
 
 .lobby-view header button:last-child {
-  border-color: rgba(127, 29, 29, 0.5);
-  color: rgb(248, 113, 113);
+  border-color: rgba(153, 27, 27, 0.55);
+  color: #fca5a5;
 }
 
 .lobby-view header button:last-child:hover {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(153, 27, 27, 0.14);
+  border-color: rgba(153, 27, 27, 0.65);
 }
 
 /* Section */
@@ -530,16 +559,12 @@ onMounted(async () => {
   position: relative;
   z-index: 10;
   flex-shrink: 0;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  padding: 0 1rem;
   margin-bottom: 1rem;
 }
 
 @media (min-width: 768px) {
-  .lobby-view section {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
+  .lobby-view section { padding: 0 1.5rem; }
 }
 
 .lobby-view section > div > div:first-child {
@@ -550,19 +575,19 @@ onMounted(async () => {
 }
 
 .lobby-view section > div > div:first-child > h2 {
-  color: rgb(203, 213, 225);
-  font-size: 0.875rem;
-  font-weight: 500;
+  color: var(--color-accent-paper);
+  font-size: 0.9rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 .lobby-view section > div > div:first-child > div {
-  color: rgb(100, 116, 139);
-  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
 }
 
 .lobby-view section > div > div:last-child {
@@ -576,8 +601,10 @@ onMounted(async () => {
   flex-shrink: 0;
   width: 6rem;
   height: 8rem;
-  border-radius: 0.75rem;
-  border: 2px dashed rgba(51, 65, 85, 0.5);
+  border-radius: 0.9rem;
+  border: 2px dashed rgba(62, 47, 32, 0.55);
+  background: rgba(26, 26, 26, 0.9);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -586,7 +613,7 @@ onMounted(async () => {
 }
 
 .lobby-view section > div > div:last-child > div > span {
-  color: rgb(51, 65, 85);
+  color: rgba(255, 255, 255, 0.5);
   font-size: 0.75rem;
   text-align: center;
 }
@@ -597,42 +624,28 @@ onMounted(async () => {
   z-index: 10;
   flex: 1;
   min-height: 0;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-bottom: 1rem;
+  padding: 0 1rem 1rem;
 }
 
 @media (min-width: 768px) {
-  .lobby-view main {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
+  .lobby-view main { padding: 0 1.5rem 1rem; }
 }
 
-.lobby-view main > div {
-  height: 100%;
-}
+.lobby-view main > div { height: 100%; }
 
 /* Footer */
 .lobby-view footer {
   position: relative;
   z-index: 10;
   flex-shrink: 0;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  padding-bottom: 1.5rem;
+  padding: 0 1rem 1.5rem;
 }
 
 @media (min-width: 768px) {
-  .lobby-view footer {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
+  .lobby-view footer { padding: 0 1.5rem 1.5rem; }
 }
 
-.lobby-view footer > div {
-  padding: 1rem;
-}
+.lobby-view footer > div { padding: 1rem; }
 
 .lobby-view footer button > span {
   display: flex;
@@ -644,10 +657,7 @@ onMounted(async () => {
 /* Modal */
 .lobby-view [class*="fixed"] {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   z-index: 50;
   display: flex;
   align-items: center;
@@ -657,12 +667,9 @@ onMounted(async () => {
 
 .lobby-view [class*="fixed"] > div:first-child {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(4px);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(6px);
 }
 
 .lobby-view [class*="fixed"] > div:last-child {
@@ -671,28 +678,47 @@ onMounted(async () => {
   max-width: 24rem;
   width: 100%;
   text-align: center;
+  border: 2px solid rgba(62, 47, 32, 0.45);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(145deg, rgba(245, 245, 220, 0.14), rgba(245, 245, 220, 0.07));
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+}
+
+.lobby-view [class*="fixed"] > div:last-child::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--color-noise);
+  opacity: 0.28;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
 }
 
 .lobby-view [class*="fixed"] > div:last-child > button {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  color: rgb(148, 163, 184);
-  background: transparent;
-  border: none;
+  color: var(--color-text-secondary);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(62, 47, 32, 0.45);
+  border-radius: 0.65rem;
   cursor: pointer;
-  transition: color 0.2s;
+  transition: all var(--transition-fast);
 }
 
 .lobby-view [class*="fixed"] > div:last-child > button:hover {
-  color: white;
+  color: var(--color-accent-paper);
+  background: rgba(217, 119, 6, 0.14);
+  border-color: rgba(217, 119, 6, 0.5);
 }
 
 .lobby-view [class*="fixed"] > div:last-child > h3 {
-  font-family: 'Cinzel', 'Playfair Display', serif;
-  font-size: 1.25rem;
-  color: rgb(251, 191, 36);
+  font-family: var(--font-cinzel);
+  font-size: 1.35rem;
+  color: var(--color-accent-paper);
   margin-bottom: 1rem;
+  letter-spacing: 0.06em;
 }
 
 .lobby-view [class*="fixed"] > div:last-child > div {
@@ -700,20 +726,20 @@ onMounted(async () => {
   justify-content: center;
   margin-bottom: 1rem;
   padding: 1rem;
-  background: white;
-  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 0.9rem;
 }
 
 .lobby-view [class*="fixed"] > div:last-child > p {
-  color: rgb(148, 163, 184);
-  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
 }
 
 /* Player actions modal */
 .lobby-view [class*="fixed"] > div:last-child > h3:not(:first-child) {
-  font-size: 1.125rem;
-  font-weight: 500;
-  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-accent-paper);
   margin-bottom: 1.5rem;
 }
 
@@ -732,51 +758,37 @@ onMounted(async () => {
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  border-radius: 0.75rem;
-  background: rgba(30, 41, 59, 0.5);
-  border: 1px solid rgba(51, 65, 85, 0.5);
-  color: rgb(203, 213, 225);
+  border-radius: 0.85rem;
+  background: rgba(26, 26, 26, 0.92);
+  border: 1px solid rgba(62, 47, 32, 0.45);
+  color: var(--color-text-primary);
   text-align: left;
-  transition: all 0.2s;
+  transition: all var(--transition-fast);
 }
 
 .lobby-view [class*="fixed"] > div:last-child > div:has(button) > button:hover {
-  border-color: rgba(251, 191, 36, 0.5);
-  background: rgba(251, 191, 36, 0.1);
+  border-color: rgba(217, 119, 6, 0.6);
+  background: rgba(217, 119, 6, 0.12);
 }
 
 .lobby-view [class*="fixed"] > div:last-child > div:has(button) > button:last-child {
-  border-color: rgba(127, 29, 29, 0.5);
-  color: rgb(248, 113, 113);
+  border-color: rgba(153, 27, 27, 0.55);
+  color: #fca5a5;
 }
 
 .lobby-view [class*="fixed"] > div:last-child > div:has(button) > button:last-child:hover {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(153, 27, 27, 0.14);
+  border-color: rgba(153, 27, 27, 0.65);
 }
 
 .text-cinzel {
-  font-family: 'Cinzel', 'Playfair Display', serif;
+  font-family: var(--font-cinzel);
 }
 
-.glass-card {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-}
-
-.scrollbar-thin::-webkit-scrollbar {
-  height: 4px;
-}
-
-.scrollbar-thin::-webkit-scrollbar-track {
-  background: transparent;
-}
-
+.scrollbar-thin::-webkit-scrollbar { height: 4px; }
+.scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 2px;
 }
 </style>

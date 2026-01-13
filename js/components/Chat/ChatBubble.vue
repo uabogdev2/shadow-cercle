@@ -44,48 +44,16 @@ const props = defineProps({
 });
 
 const bubbleClasses = computed(() => {
-  if (props.isOwn) {
-    return `
-      bg-gradient-to-br from-violet-600 to-indigo-700
-      text-white
-      rounded-2xl rounded-br-md
-      shadow-lg shadow-violet-500/20
-    `;
-  }
-  // Others - different channels
-  if (props.channel === 'wolves') {
-    return `
-      bg-gradient-to-br from-red-900/60 to-rose-900/40
-      backdrop-blur-sm
-      text-red-100
-      border border-red-500/30
-      rounded-2xl rounded-bl-md
-      shadow-lg shadow-red-500/10
-    `;
-  }
-  if (props.channel === 'dead') {
-    return `
-      bg-slate-800/60
-      backdrop-blur-sm
-      text-slate-400
-      border border-slate-600/30
-      rounded-2xl rounded-bl-md
-    `;
-  }
-  // Default (global/lobby)
-  return `
-    bg-slate-800/60
-    backdrop-blur-sm
-    text-slate-200
-    border border-slate-600/30
-    rounded-2xl rounded-bl-md
-  `;
+  if (props.isOwn) return 'bubble bubble-own';
+  if (props.channel === 'wolves') return 'bubble bubble-wolves';
+  if (props.channel === 'dead') return 'bubble bubble-dead';
+  return 'bubble bubble-other';
 });
 
 const nameColor = computed(() => {
-  if (props.channel === 'wolves') return '#f87171'; // Red-400
-  if (props.channel === 'dead') return '#94a3b8'; // Slate-400
-  return '#38bdf8'; // Sky-400
+  if (props.channel === 'wolves') return '#f87171';
+  if (props.channel === 'dead') return '#94a3b8';
+  return '#f59e0b';
 });
 </script>
 
@@ -94,5 +62,39 @@ const nameColor = computed(() => {
   max-width: 100%;
   word-wrap: break-word;
   line-height: 1.4;
+}
+
+.bubble {
+  border-radius: 18px;
+  border: 1px solid rgba(226, 194, 144, 0.28);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+}
+
+.bubble-own {
+  background: linear-gradient(150deg, #0f1624 0%, #0b101b 100%);
+  border-color: rgba(124, 58, 237, 0.32);
+  color: #e4e7ed;
+  box-shadow: 0 14px 40px rgba(124, 58, 237, 0.25), 0 2px 0 rgba(226, 194, 144, 0.12);
+}
+
+.bubble-other {
+  background: linear-gradient(145deg, #f3e0b8 0%, #e2c892 100%);
+  color: #2a2112;
+  border-color: rgba(181, 138, 76, 0.45);
+  box-shadow: 0 14px 32px rgba(88, 63, 26, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.bubble-wolves {
+  background: linear-gradient(145deg, #2a0f12 0%, #3a161a 100%);
+  color: #f7d8d3;
+  border-color: rgba(248, 113, 113, 0.4);
+  box-shadow: 0 14px 36px rgba(120, 17, 20, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.bubble-dead {
+  background: linear-gradient(145deg, #2a2f38 0%, #1e222b 100%);
+  color: #cbd5e1;
+  border-color: rgba(148, 163, 184, 0.35);
+  box-shadow: 0 12px 30px rgba(15, 18, 24, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 </style>

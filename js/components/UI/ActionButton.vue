@@ -2,7 +2,7 @@
   <button
     :disabled="isDisabled"
     :class="[
-      'eclipse-btn',
+      'folklore-btn',
       fullWidth ? 'w-full' : 'w-auto',
       variantClasses,
       sizeClasses,
@@ -54,85 +54,24 @@ function handleClick(event) {
 
 const variantClasses = computed(() => {
   const variants = {
-    primary: `
-      bg-gradient-to-r from-[#F59E0B]/25 to-[#F59E0B]/15
-      border border-[#F59E0B]
-      text-[#FCD34D]
-      hover:from-[#F59E0B] hover:to-[#D97706]
-      hover:text-[#0F172A]
-      hover:shadow-[0_10px_30px_rgba(245,158,11,0.35)]
-      active:scale-98
-    `,
-    secondary: `
-      bg-white/5
-      border border-white/10
-      text-slate-200
-      hover:border-white/30
-      hover:text-white
-      hover:bg-white/10
-    `,
-    danger: `
-      bg-gradient-to-r from-[#EF4444]/25 to-[#EF4444]/10
-      border border-[#EF4444]
-      text-[#FCA5A5]
-      hover:from-[#EF4444] hover:to-[#B91C1C]
-      hover:text-white
-      hover:shadow-[0_10px_30px_rgba(239,68,68,0.35)]
-    `,
-    magic: `
-      bg-gradient-to-r from-[#7C3AED]/25 to-[#7C3AED]/10
-      border border-[#7C3AED]
-      text-[#A78BFA]
-      hover:from-[#7C3AED] hover:to-[#5B21B6]
-      hover:text-white
-      hover:shadow-[0_10px_30px_rgba(124,58,237,0.35)]
-    `,
-    gold: `
-      bg-gradient-to-r from-[#FBBF24]/25 to-[#F59E0B]/15
-      border border-[#FBBF24]
-      text-[#FDE68A]
-      hover:from-[#FBBF24] hover:to-[#D97706]
-      hover:text-[#0F172A]
-      hover:shadow-[0_10px_30px_rgba(251,191,36,0.35)]
-    `,
-    emerald: `
-      bg-gradient-to-r from-[#10B981]/25 to-[#10B981]/10
-      border border-[#10B981]
-      text-[#6EE7B7]
-      hover:from-[#10B981] hover:to-[#0F766E]
-      hover:text-white
-      hover:shadow-[0_10px_30px_rgba(16,185,129,0.35)]
-    `,
-    neutral: `
-      bg-slate-800/60
-      border border-slate-700
-      text-slate-200
-      hover:border-slate-500
-      hover:bg-slate-700/60
-    `,
-    ghost: `
-      bg-transparent
-      border border-transparent
-      text-slate-300
-      hover:border-white/20
-      hover:bg-white/5
-    `,
-    disabled: `
-      bg-slate-800/30
-      border border-slate-700
-      text-slate-600
-      cursor: not-allowed
-      pointer-events-none
-    `
+    primary: 'btn-variant-primary',
+    secondary: 'btn-variant-secondary',
+    danger: 'btn-variant-danger',
+    magic: 'btn-variant-magic',
+    gold: 'btn-variant-gold',
+    emerald: 'btn-variant-emerald',
+    neutral: 'btn-variant-neutral',
+    ghost: 'btn-variant-ghost',
+    disabled: 'btn-variant-disabled'
   };
   return variants[props.variant] || variants.primary;
 });
 
 const sizeClasses = computed(() => {
   const sizes = {
-    sm: 'px-4 py-2 text-xs rounded-md',
-    md: 'px-6 py-3 text-sm rounded-lg',
-    lg: 'px-8 py-4 text-base rounded-xl'
+    sm: 'btn-size-sm',
+    md: 'btn-size-md',
+    lg: 'btn-size-lg'
   };
   return sizes[props.size] || sizes.md;
 });
@@ -140,53 +79,60 @@ const sizeClasses = computed(() => {
 const glowClass = computed(() => {
   if (!props.glow || props.disabled) return '';
   const glowColors = {
-    primary: 'shadow-[0_0_25px_rgba(245,158,11,0.35)]',
-    danger: 'shadow-[0_0_25px_rgba(239,68,68,0.35)]',
-    magic: 'shadow-[0_0_25px_rgba(124,58,237,0.35)]',
-    gold: 'shadow-[0_0_25px_rgba(251,191,36,0.35)]',
-    emerald: 'shadow-[0_0_25px_rgba(16,185,129,0.35)]',
-    neutral: 'shadow-[0_0_20px_rgba(148,163,184,0.25)]'
+    primary: 'btn-glow-primary',
+    danger: 'btn-glow-danger',
+    magic: 'btn-glow-magic',
+    gold: 'btn-glow-gold',
+    emerald: 'btn-glow-emerald',
+    neutral: 'btn-glow-neutral'
   };
   return glowColors[props.variant] || '';
 });
 </script>
 
 <style scoped>
-.eclipse-btn {
+.folklore-btn {
   position: relative;
   font-family: 'Cinzel', 'Playfair Display', serif;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  border-radius: 12px;
+  border-radius: 999px;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  transition: transform 0.2s ease, box-shadow 0.3s ease, background 0.3s ease;
   overflow: hidden;
+  border: 2px solid rgba(0, 0, 0, 0.55);
+  box-shadow: 0 12px 26px rgba(0,0,0,0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
-.eclipse-btn::before {
+.folklore-btn::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
-  background-size: 200% 100%;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+  background-image: var(--color-noise);
+  mix-blend-mode: soft-light;
+  opacity: 0.7;
+  pointer-events: none;
 }
 
-.eclipse-btn:hover:not(:disabled)::before {
-  opacity: 1;
-  animation: shimmer 1.5s ease-in-out infinite;
+.folklore-btn:focus-visible {
+  outline: 2px solid var(--color-accent-paper);
+  outline-offset: 2px;
 }
 
-.eclipse-btn:active:not(:disabled) {
-  transform: scale(0.98);
+.folklore-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.45);
 }
 
-.eclipse-btn:disabled {
-  opacity: 0.5;
+.folklore-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.folklore-btn:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
   box-shadow: none;
 }
@@ -216,6 +162,72 @@ const glowClass = computed(() => {
 .action-button-icon-spin {
   animation: spin 1s linear infinite;
 }
+
+.btn-size-sm { padding: 0.55rem 1.1rem; font-size: 0.7rem; }
+.btn-size-md { padding: 0.75rem 1.4rem; font-size: 0.8rem; }
+.btn-size-lg { padding: 0.95rem 1.75rem; font-size: 0.9rem; }
+
+.btn-variant-primary {
+  background: radial-gradient(circle at 30% 30%, rgba(217, 119, 6, 0.45), rgba(217, 119, 6, 0.2));
+  color: var(--color-accent-paper);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+.btn-variant-secondary {
+  background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+  color: #e2e8f0;
+  border-color: rgba(255,255,255,0.1);
+}
+
+.btn-variant-danger {
+  background: radial-gradient(circle at 30% 30%, rgba(153, 27, 27, 0.55), rgba(127, 29, 29, 0.35));
+  color: #fef2f2;
+  border-color: rgba(153, 27, 27, 0.5);
+}
+
+.btn-variant-magic {
+  background: radial-gradient(circle at 30% 30%, rgba(124, 58, 237, 0.45), rgba(59, 7, 100, 0.35));
+  color: #ede9fe;
+  border-color: rgba(124, 58, 237, 0.4);
+}
+
+.btn-variant-gold {
+  background: linear-gradient(145deg, rgba(217, 119, 6, 0.55), rgba(180, 83, 9, 0.4));
+  color: #0f0f0f;
+  border-color: rgba(62, 47, 32, 0.4);
+}
+
+.btn-variant-emerald {
+  background: linear-gradient(145deg, rgba(16, 185, 129, 0.4), rgba(5, 150, 105, 0.3));
+  color: #f0fdfa;
+  border-color: rgba(5, 150, 105, 0.4);
+}
+
+.btn-variant-neutral {
+  background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(0,0,0,0.25));
+  color: #e5e7eb;
+  border-color: rgba(255,255,255,0.08);
+}
+
+.btn-variant-ghost {
+  background: transparent;
+  color: #cbd5e1;
+  border-color: transparent;
+}
+
+.btn-variant-disabled {
+  background: rgba(31, 41, 55, 0.4);
+  color: #9ca3af;
+  cursor: not-allowed;
+  border-color: rgba(55, 65, 81, 0.5);
+}
+
+.btn-glow-primary { box-shadow: 0 0 22px rgba(217, 119, 6, 0.35); }
+.btn-glow-danger { box-shadow: 0 0 22px rgba(153, 27, 27, 0.4); }
+.btn-glow-magic { box-shadow: 0 0 22px rgba(124, 58, 237, 0.4); }
+.btn-glow-gold { box-shadow: 0 0 22px rgba(217, 119, 6, 0.45); }
+.btn-glow-emerald { box-shadow: 0 0 22px rgba(16, 185, 129, 0.35); }
+.btn-glow-neutral { box-shadow: 0 0 18px rgba(148, 163, 184, 0.25); }
 
 @keyframes spin {
   from {

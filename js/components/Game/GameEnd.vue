@@ -1,8 +1,12 @@
 <!-- js/components/Game/GameEnd.vue -->
 <template>
-  <div class="game-end">
+  <div class="game-end phase-surface phase-night relative overflow-hidden">
     <!-- Background based on winner -->
     <div class="game-end-background" :class="backgroundClass">
+      <div class="absolute inset-0 noise-overlay"></div>
+      <div class="absolute top-[-4rem] left-12 w-72 h-72 rounded-full blur-[140px] bg-amber-500/12"></div>
+      <div class="absolute bottom-[-5rem] right-10 w-80 h-80 rounded-full blur-[150px] bg-red-500/10"></div>
+      <div class="absolute inset-0 vignette-layer" :class="vignetteClass"></div>
       <!-- Animated particles -->
       <div class="game-end-particles">
         <div v-for="i in 12" :key="i" 
@@ -15,15 +19,12 @@
           }"
         ></div>
       </div>
-      
-      <!-- Vignette overlay -->
-      <div class="game-end-vignette" :class="vignetteClass"></div>
     </div>
 
     <!-- Main Content -->
     <div class="game-end-content">
       <!-- Victory/Defeat Badge -->
-      <div class="game-end-badge-container">
+      <div class="game-end-badge-container paper-card frame-wood bg-[#0f151f]/90 border border-amber-500/20 shadow-[0_20px_60px_rgba(0,0,0,0.55)]">
         <div class="game-end-badge" :class="badgeClass">
           <span class="game-end-badge-icon">{{ winnerIcon }}</span>
         </div>
@@ -38,7 +39,7 @@
       </div>
 
       <!-- Winners Highlight (for special victories) -->
-      <div v-if="specialWinners.length > 0" class="game-end-winners">
+      <div v-if="specialWinners.length > 0" class="game-end-winners paper-card frame-wood bg-[#0f1624]/90 border border-amber-500/20 shadow-[0_18px_60px_rgba(0,0,0,0.55)]">
         <h3 class="game-end-winners-title">🎉 Vainqueurs</h3>
         <div class="game-end-winners-list">
           <div 
@@ -47,7 +48,7 @@
             class="game-end-winner-card"
             :style="{ borderColor: getRoleColor(player.role) }"
           >
-            <div class="game-end-winner-avatar" :style="{ background: `${getRoleColor(player.role)}30` }">
+            <div class="game-end-winner-avatar" :style="{ background: `${getRoleColor(player.role)}25` }">
               <span>{{ getRoleIcon(player.role) }}</span>
             </div>
             <div class="game-end-winner-info">
@@ -61,7 +62,7 @@
       </div>
 
       <!-- Players List -->
-      <div class="game-end-players glass-card">
+      <div class="game-end-players paper-card frame-wood bg-[#0f151f]/92 border border-amber-500/18 shadow-[0_18px_60px_rgba(0,0,0,0.55)]">
         <h3 class="game-end-players-title">Récapitulatif</h3>
         <div class="game-end-players-list">
           <div 
@@ -332,8 +333,8 @@ const goHome = () => {
    ============================================ */
 
 .game-end {
-  height: 100vh;
-  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
   width: 100vw;
   display: flex;
   flex-direction: column;
@@ -342,6 +343,7 @@ const goHome = () => {
   padding: 1.5rem;
   position: relative;
   overflow: hidden;
+  color: #f5f5dc;
 }
 
 /* Background Variations */
@@ -352,23 +354,33 @@ const goHome = () => {
 }
 
 .game-end-bg-village {
-  background: linear-gradient(180deg, rgba(245, 158, 11, 0.15) 0%, #020617 40%, #020617 100%);
+  background: radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.16), transparent 42%),
+    radial-gradient(circle at 80% 70%, rgba(34, 197, 94, 0.12), transparent 45%),
+    #050b13;
 }
 
 .game-end-bg-werewolves {
-  background: linear-gradient(180deg, rgba(239, 68, 68, 0.2) 0%, #020617 40%, #020617 100%);
+  background: radial-gradient(circle at 20% 20%, rgba(239, 68, 68, 0.18), transparent 40%),
+    radial-gradient(circle at 78% 72%, rgba(127, 29, 29, 0.18), transparent 46%),
+    #050b13;
 }
 
 .game-end-bg-fool {
-  background: linear-gradient(180deg, rgba(139, 92, 246, 0.2) 0%, #020617 40%, #020617 100%);
+  background: radial-gradient(circle at 20% 20%, rgba(139, 92, 246, 0.18), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(45, 212, 191, 0.14), transparent 46%),
+    #050b13;
 }
 
 .game-end-bg-lovers {
-  background: linear-gradient(180deg, rgba(236, 72, 153, 0.2) 0%, #020617 40%, #020617 100%);
+  background: radial-gradient(circle at 20% 20%, rgba(236, 72, 153, 0.18), transparent 40%),
+    radial-gradient(circle at 78% 72%, rgba(248, 113, 113, 0.16), transparent 46%),
+    #050b13;
 }
 
 .game-end-bg-draw {
-  background: linear-gradient(180deg, rgba(71, 85, 105, 0.2) 0%, #020617 40%, #020617 100%);
+  background: radial-gradient(circle at 20% 20%, rgba(148, 163, 184, 0.14), transparent 42%),
+    radial-gradient(circle at 80% 70%, rgba(100, 116, 139, 0.14), transparent 46%),
+    #050b13;
 }
 
 /* Particles */
@@ -402,18 +414,19 @@ const goHome = () => {
 }
 
 /* Vignette */
-.game-end-vignette {
+.vignette-layer {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  background: radial-gradient(ellipse at center, transparent 28%, rgba(0, 0, 0, 0.55) 100%);
 }
 
 .vignette-blood {
-  background: radial-gradient(ellipse at center, transparent 20%, rgba(127, 29, 29, 0.5) 100%);
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(127, 29, 29, 0.4) 100%);
 }
 
 .vignette-love {
-  background: radial-gradient(ellipse at center, transparent 20%, rgba(190, 24, 93, 0.3) 100%);
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(190, 24, 93, 0.32) 100%);
 }
 
 /* Content */
@@ -421,15 +434,17 @@ const goHome = () => {
   position: relative;
   z-index: 10;
   width: 100%;
-  max-width: 28rem;
+  max-width: 30rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.25rem;
 }
 
 /* Badge */
+
 .game-end-badge-container {
   text-align: center;
+  padding: 1.25rem 1rem 1.5rem;
 }
 
 .game-end-badge {
@@ -517,10 +532,6 @@ const goHome = () => {
 
 /* Winners Section */
 .game-end-winners {
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
   padding: 1rem;
 }
 
@@ -601,15 +612,18 @@ const goHome = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem;
-  background: rgba(30, 41, 59, 0.5);
-  border-radius: 0.75rem;
+  padding: 0.9rem 0.85rem;
+  background: linear-gradient(145deg, #f3e0b8 0%, #e2c892 100%);
+  border-radius: 0.9rem;
   transition: all 0.2s;
+  border: 1px solid rgba(181, 138, 76, 0.45);
+  box-shadow: 0 10px 28px rgba(88, 63, 26, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.38);
 }
 
 .game-end-player-winner {
-  background: rgba(245, 158, 11, 0.1);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  background: linear-gradient(145deg, #f8e8c8 0%, #f3d9a8 100%);
+  border-color: rgba(245, 158, 11, 0.55);
+  box-shadow: 0 12px 30px rgba(245, 158, 11, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .game-end-player-left {
@@ -630,13 +644,15 @@ const goHome = () => {
 }
 
 .game-end-player-avatar-alive {
-  background: rgba(16, 185, 129, 0.2);
-  color: #34D399;
+  background: rgba(16, 185, 129, 0.18);
+  color: #1ed89a;
+  border: 1px solid rgba(16, 185, 129, 0.45);
 }
 
 .game-end-player-avatar-dead {
-  background: rgba(71, 85, 105, 0.3);
-  color: #64748B;
+  background: rgba(71, 85, 105, 0.24);
+  color: #94a3b8;
+  border: 1px solid rgba(100, 116, 139, 0.4);
 }
 
 .game-end-player-info {
@@ -644,10 +660,10 @@ const goHome = () => {
 }
 
 .game-end-player-name {
-  color: #F8FAFC;
-  font-weight: 500;
+  color: #2a2112;
+  font-weight: 600;
   margin: 0;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -663,20 +679,14 @@ const goHome = () => {
 }
 
 .game-end-player-role {
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   margin: 0;
 }
 
+
 .game-end-player-icon {
-  font-size: 1.5rem;
+  font-size: 1.4rem;
 }
 
-/* Glass Card */
-.glass-card {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 1rem;
-}
+
 </style>

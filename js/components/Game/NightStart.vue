@@ -2,11 +2,12 @@
 <template>
   <div class="night-start h-screen w-screen flex items-center justify-center flex-col relative overflow-hidden">
     <!-- Night Background with stars -->
-    <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-indigo-950 to-slate-950">
+    <div class="absolute inset-0 phase-night">
       <!-- Stars -->
       <div class="absolute inset-0" style="background-image: radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,0.4), transparent), radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.3), transparent), radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.4), transparent), radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.3), transparent), radial-gradient(1px 1px at 160px 30px, rgba(255,255,255,0.5), transparent); background-size: 200px 100px;"></div>
+      <div class="noise-overlay"></div>
       <!-- Ambient glow -->
-      <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-violet-500/10 rounded-full filter blur-3xl"></div>
+      <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-violet-500/18 rounded-full filter blur-3xl"></div>
     </div>
 
     <!-- Moon rising -->

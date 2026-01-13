@@ -1,9 +1,10 @@
 <!-- js/components/Game/NightPhase.vue -->
 <template>
-  <div class="night-phase" :class="phaseClasses">
+  <div class="night-phase phase-surface phase-night" :class="phaseClasses">
     <!-- Background with vignette for wolves -->
-    <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-indigo-950/80 to-slate-950">
+    <div class="absolute inset-0 bg-gradient-to-b from-[#0b0c11] via-[#0f1016] to-[#0b0c11]">
       <div v-if="isWerewolf" class="absolute inset-0 vignette-blood"></div>
+      <div class="noise-overlay"></div>
     </div>
 
     <!-- Moon indicator -->
@@ -11,7 +12,7 @@
 
     <!-- Header -->
     <header class="night-phase-header">
-      <div class="glass-card night-phase-header-content">
+      <div class="paper-card frame-wood night-phase-header-content">
         <div class="night-phase-header-left">
           <div 
             class="night-phase-icon"
@@ -45,7 +46,7 @@
         </div>
       </div>
       <div v-else class="night-phase-waiting">
-        <div class="glass-card night-phase-waiting-card">
+        <div class="paper-card frame-wood night-phase-waiting-card">
           <MoonIcon class="night-phase-waiting-icon" />
           <p class="night-phase-waiting-title">Mode Veille</p>
           <p class="night-phase-waiting-text">En attente des autres joueurs...</p>
@@ -55,7 +56,7 @@
 
     <!-- Footer with action button -->
     <footer class="night-phase-footer">
-      <div class="glass-card night-phase-footer-content">
+      <div class="paper-card frame-wood night-phase-footer-content">
         <ActionButton
           v-if="selectedTarget && gameStore.canAct"
           :variant="roleButtonVariant"
@@ -198,6 +199,7 @@ async function submitAction() {
   flex-direction: column;
   position: relative;
   overflow: hidden;
+  color: #e5e7eb;
 }
 
 /* Header */
@@ -219,6 +221,8 @@ async function submitAction() {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: linear-gradient(135deg, rgba(29, 25, 20, 0.8), rgba(20, 18, 16, 0.9));
+  border-radius: 1rem;
 }
 
 .night-phase-header-left {
@@ -247,7 +251,7 @@ async function submitAction() {
 }
 
 .night-phase-subtitle {
-  color: rgb(100, 116, 139);
+  color: rgba(245, 245, 220, 0.65);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -258,6 +262,7 @@ async function submitAction() {
   font-size: 1.125rem;
   font-weight: 500;
   margin: 0;
+  font-family: 'Cinzel', 'Playfair Display', serif;
 }
 
 /* Main */
@@ -284,7 +289,7 @@ async function submitAction() {
 }
 
 .night-phase-instruction {
-  color: rgb(148, 163, 184);
+  color: rgba(245, 245, 220, 0.7);
   text-align: center;
   margin-bottom: 1rem;
 }
@@ -306,6 +311,7 @@ async function submitAction() {
 .night-phase-waiting-card {
   padding: 2rem;
   text-align: center;
+  background: linear-gradient(145deg, rgba(26, 19, 14, 0.85), rgba(15, 15, 15, 0.92));
 }
 
 .night-phase-waiting-icon {
@@ -317,13 +323,13 @@ async function submitAction() {
 }
 
 .night-phase-waiting-title {
-  color: rgb(148, 163, 184);
+  color: rgba(245, 245, 220, 0.7);
   font-size: 1.125rem;
   margin-bottom: 0.5rem;
 }
 
 .night-phase-waiting-text {
-  color: rgb(71, 85, 105);
+  color: rgba(255, 255, 255, 0.45);
   font-size: 0.875rem;
 }
 
@@ -343,24 +349,18 @@ async function submitAction() {
 
 .night-phase-footer-content {
   padding: 1rem;
+  background: linear-gradient(135deg, rgba(26, 20, 15, 0.85), rgba(14, 12, 10, 0.9));
+  border-radius: 1rem;
 }
 
 .night-phase-footer-message {
   text-align: center;
-  color: rgb(100, 116, 139);
+  color: rgba(245, 245, 220, 0.6);
   padding: 0.5rem 0;
 }
 
-.glass-card {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-}
-
 .vignette-blood {
-  background: radial-gradient(ellipse at center, transparent 30%, rgba(127, 29, 29, 0.4) 100%);
+  background: radial-gradient(ellipse at center, transparent 30%, rgba(127, 29, 29, 0.25) 100%);
   pointer-events: none;
 }
 

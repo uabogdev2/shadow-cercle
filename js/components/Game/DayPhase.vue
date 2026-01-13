@@ -2,8 +2,9 @@
 <template>
   <div class="day-phase">
     <!-- Day Background -->
-    <div class="absolute inset-0 bg-gradient-to-b from-amber-100/5 via-slate-900 to-slate-950">
-      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-80 bg-amber-500/10 rounded-full filter blur-3xl"></div>
+    <div class="absolute inset-0 phase-day">
+      <div class="noise-overlay"></div>
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-80 bg-amber-500/15 rounded-full filter blur-3xl"></div>
     </div>
 
     <!-- Sun indicator -->
@@ -152,6 +153,15 @@ async function submitVote() {
   overflow: hidden;
 }
 
+.day-phase::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--color-noise);
+  opacity: 0.12;
+  pointer-events: none;
+}
+
 /* Header */
 .day-phase-header {
   position: relative;
@@ -183,8 +193,8 @@ async function submitVote() {
   width: 3rem;
   height: 3rem;
   border-radius: 0.75rem;
-  background: rgba(245, 158, 11, 0.2);
-  border: 1px solid rgba(245, 158, 11, 0.4);
+  background: rgba(217, 119, 6, 0.18);
+  border: 1px solid rgba(217, 119, 6, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -193,7 +203,7 @@ async function submitVote() {
 .day-phase-icon-svg {
   width: 1.5rem;
   height: 1.5rem;
-  color: rgb(251, 191, 36);
+  color: #fbbf24;
 }
 
 .day-phase-header-text {
@@ -202,7 +212,7 @@ async function submitVote() {
 }
 
 .day-phase-subtitle {
-  color: rgb(100, 116, 139);
+  color: var(--color-text-secondary);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -210,7 +220,7 @@ async function submitVote() {
 }
 
 .day-phase-title {
-  color: rgb(251, 191, 36);
+  color: var(--color-accent-paper);
   font-size: 1.125rem;
   font-weight: 500;
   margin: 0;
@@ -254,21 +264,22 @@ async function submitVote() {
   gap: 0.5rem;
   padding: 0.5rem 0.75rem;
   border-radius: 0.5rem;
-  background: rgba(30, 41, 59, 0.5);
+  background: rgba(26, 26, 26, 0.9);
+  border: 1px solid rgba(62, 47, 32, 0.45);
   transition: all 0.2s;
 }
 
 .day-phase-player-badge-dead {
-  background: rgba(15, 23, 42, 0.5);
-  opacity: 0.5;
+  background: rgba(0, 0, 0, 0.45);
+  opacity: 0.6;
 }
 
 .day-phase-player-avatar {
   width: 2rem;
   height: 2rem;
   border-radius: 9999px;
-  background: rgb(51, 65, 85);
-  color: white;
+  background: radial-gradient(circle at 30% 30%, #f59e0b, #b45309);
+  color: var(--color-accent-paper);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -277,13 +288,13 @@ async function submitVote() {
 }
 
 .day-phase-player-avatar-dead {
-  background: rgb(30, 41, 59);
-  color: rgb(100, 116, 139);
+  background: rgba(0, 0, 0, 0.55);
+  color: rgba(255, 255, 255, 0.45);
 }
 
 .day-phase-player-name {
   font-size: 0.75rem;
-  color: rgb(203, 213, 225);
+  color: var(--color-text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -291,7 +302,7 @@ async function submitVote() {
 }
 
 .day-phase-player-name-dead {
-  color: rgb(71, 85, 105);
+  color: var(--color-text-muted);
   text-decoration: line-through;
 }
 
@@ -314,7 +325,7 @@ async function submitVote() {
 }
 
 .day-phase-vote-instruction {
-  color: rgb(148, 163, 184);
+  color: var(--color-text-secondary);
   text-align: center;
   margin-bottom: 1rem;
 }
@@ -341,19 +352,19 @@ async function submitVote() {
 .day-phase-eliminated-icon {
   width: 3rem;
   height: 3rem;
-  color: rgba(248, 113, 113, 0.5);
+  color: rgba(153, 27, 27, 0.65);
   margin: 0 auto 1rem;
   display: block;
 }
 
 .day-phase-eliminated-title {
-  color: rgb(248, 113, 113);
+  color: #fca5a5;
   font-size: 1.125rem;
   margin-bottom: 0.5rem;
 }
 
 .day-phase-eliminated-text {
-  color: rgb(100, 116, 139);
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
 }
 
@@ -377,26 +388,15 @@ async function submitVote() {
 
 .day-phase-footer-message {
   text-align: center;
-  color: rgb(100, 116, 139);
+  color: var(--color-text-secondary);
   font-size: 0.875rem;
   padding: 0.25rem 0;
 }
 
 .day-phase-footer-message-debate {
-  color: rgba(251, 191, 36, 0.8);
+  color: rgba(217, 119, 6, 0.85);
 }
-
-.glass-card {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-}
-
-.day-phase-players-scroll::-webkit-scrollbar {
-  height: 4px;
-}
+.day-phase-players-scroll::-webkit-scrollbar { height: 4px; }
 
 .day-phase-players-scroll::-webkit-scrollbar-track {
   background: transparent;

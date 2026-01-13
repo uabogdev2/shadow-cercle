@@ -2,8 +2,9 @@
 <template>
   <div class="night-end h-screen w-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
     <!-- Background -->
-    <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-indigo-950/80 to-slate-950">
-      <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-violet-500/10 rounded-full filter blur-3xl"></div>
+    <div class="absolute inset-0 phase-night">
+      <div class="noise-overlay"></div>
+      <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-violet-500/18 rounded-full filter blur-3xl"></div>
     </div>
 
     <!-- Content -->
@@ -97,13 +98,5 @@ onMounted(() => loadNightEvents());
 
 .text-cinzel {
   font-family: 'Cinzel', 'Playfair Display', serif;
-}
-
-.glass-card {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
 }
 </style>

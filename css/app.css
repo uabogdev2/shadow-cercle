@@ -24,18 +24,35 @@
     --font-sans: 'DM Sans', 'Inter', sans-serif;
     --font-mono: 'Inter', monospace;
 
-    /* ============================================
-       PALETTE - ÉCLIPSE & CRISTAL
-       Sombre, élégante, cinématique
-       ============================================ */
+     /* ============================================
+         PALETTE - DARK FOLKLORE
+         ============================================ */
 
-    /* Fonds - Dégradé profond */
-    --color-bg-midnight: #020617;      /* Midnight Blue */
-    --color-bg-indigo: #312e81;        /* Deep Indigo */
-    --color-bg-main: #020617;
-    --color-bg-surface: rgba(0, 0, 0, 0.4);
-    --color-bg-glass: rgba(15, 23, 42, 0.7);
-    --color-bg-glass-light: rgba(30, 41, 59, 0.5);
+     /* Fond & surfaces */
+     --color-bg-charcoal: #121212;
+     --color-bg-ink: #0A0A0A;
+     --color-bg-stone: #1A1A1A;
+     --color-bg-parchment: #F5F5DC;
+     --color-bg-parchment-veil: rgba(245, 245, 220, 0.08);
+     --color-wood-dark: #2F2618;
+     --color-wood-edge: #3E2F20;
+     --color-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='60' height='60' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
+
+     /* Accents principaux */
+     --color-accent-burnt: #D97706;     /* Burnt Orange */
+     --color-accent-blood: #991B1B;     /* Blood Red */
+     --color-accent-blood-dark: #7F1D1D;
+     --color-accent-paper: #F5F5DC;     /* Parchment */
+     --color-accent-ember: #B45309;
+     --color-accent-veil: rgba(217, 119, 6, 0.1);
+
+     /* Ancienne palette (compat) */
+     --color-bg-midnight: #020617;      /* Midnight Blue */
+     --color-bg-indigo: #312e81;        /* Deep Indigo */
+     --color-bg-main: #020617;
+     --color-bg-surface: rgba(0, 0, 0, 0.4);
+     --color-bg-glass: rgba(15, 23, 42, 0.7);
+     --color-bg-glass-light: rgba(30, 41, 59, 0.5);
 
     /* Glass - Glassmorphism */
     --color-glass-border: rgba(255, 255, 255, 0.1);
@@ -137,7 +154,9 @@ html, body {
 }
 
 body {
-    background: linear-gradient(135deg, var(--color-bg-midnight) 0%, var(--color-bg-indigo) 100%);
+    background: radial-gradient(circle at 20% 20%, rgba(217, 119, 6, 0.08), transparent 35%),
+                radial-gradient(circle at 80% 10%, rgba(153, 27, 27, 0.08), transparent 40%),
+                linear-gradient(160deg, #0c0c0c 0%, #1a1a1a 40%, #0d0d0d 100%);
     background-attachment: fixed;
     color: var(--color-text-primary);
     font-family: var(--font-ui);
@@ -413,6 +432,103 @@ input[type="number"].text-center {
 }
 
 /* ============================================
+   DARK FOLKLORE UTILITIES
+   ============================================ */
+
+.bg-charcoal {
+    background: linear-gradient(160deg, #0f0f0f 0%, #1b1b1b 45%, #0d0d0d 100%);
+}
+
+.paper-card {
+    position: relative;
+    background: linear-gradient(145deg, rgba(245, 245, 220, 0.14), rgba(245, 245, 220, 0.06));
+    border: 2px solid rgba(62, 47, 32, 0.3);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(0,0,0,0.25);
+    color: var(--color-text-primary);
+}
+
+.paper-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--color-noise);
+    mix-blend-mode: soft-light;
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+.frame-wood {
+    border: 3px solid var(--color-wood-edge);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.3), 0 12px 24px rgba(0,0,0,0.35);
+    background: linear-gradient(90deg, rgba(63, 50, 35, 0.45), rgba(47, 38, 24, 0.65));
+}
+
+.noise-overlay {
+    position: absolute;
+    inset: 0;
+    background-image: var(--color-noise);
+    opacity: 0.25;
+    pointer-events: none;
+    mix-blend-mode: soft-light;
+}
+
+.phase-surface {
+    background: radial-gradient(circle at 25% 20%, rgba(217, 119, 6, 0.08), transparent 45%),
+                radial-gradient(circle at 80% 10%, rgba(153, 27, 27, 0.08), transparent 50%),
+                linear-gradient(180deg, #0d0d0d 0%, #161616 50%, #0d0d0d 100%);
+}
+
+.phase-night {
+    background: linear-gradient(200deg, #0b0f1a 0%, #0d0d0f 40%, #0a0c12 100%);
+}
+
+.phase-day {
+    background: linear-gradient(180deg, rgba(18, 18, 18, 0.9) 0%, rgba(245, 245, 220, 0.08) 40%, rgba(18, 18, 18, 0.95) 100%);
+}
+
+.btn-seal {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-cinzel);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: radial-gradient(circle at 30% 30%, rgba(217, 119, 6, 0.35), rgba(153, 27, 27, 0.4));
+    color: var(--color-accent-paper);
+    border: 2px solid rgba(0,0,0,0.45);
+    border-radius: 999px;
+    padding: 0.85rem 1.5rem;
+    box-shadow: 0 14px 24px rgba(0,0,0,0.35), inset 0 0 0 1px rgba(255,255,255,0.08);
+    transition: transform var(--transition-fast), box-shadow var(--transition-base);
+    overflow: hidden;
+}
+
+.btn-seal::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--color-noise);
+    mix-blend-mode: soft-light;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.btn-seal:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.01);
+    box-shadow: 0 16px 32px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(255,255,255,0.12);
+}
+
+.btn-seal:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-seal:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* ============================================
    GLASSMORPHISM UTILITIES
    ============================================ */
 
@@ -441,12 +557,24 @@ input[type="number"].text-center {
 }
 
 .glass-card {
-    background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid var(--color-glass-border);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
+    position: relative;
+    background: linear-gradient(145deg, rgba(245, 245, 220, 0.12), rgba(245, 245, 220, 0.05)) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 2px solid rgba(62, 47, 32, 0.4) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(0,0,0,0.25) !important;
+    overflow: hidden;
+}
+
+.glass-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: var(--color-noise);
+    opacity: 0.35;
+    mix-blend-mode: soft-light;
+    pointer-events: none;
 }
 
 /* ============================================

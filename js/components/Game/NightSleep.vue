@@ -2,9 +2,10 @@
 <template>
   <div class="night-sleep h-screen w-screen flex items-center justify-center flex-col relative overflow-hidden">
     <!-- Dark Night Background -->
-    <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-indigo-950/80 to-slate-950">
+    <div class="absolute inset-0 phase-night">
       <!-- Stars -->
       <div class="absolute inset-0" style="background-image: radial-gradient(1px 1px at 20px 30px, rgba(255,255,255,0.3), transparent), radial-gradient(1px 1px at 40px 70px, rgba(255,255,255,0.2), transparent), radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.3), transparent), radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.2), transparent), radial-gradient(1px 1px at 160px 30px, rgba(255,255,255,0.4), transparent); background-size: 200px 100px;"></div>
+      <div class="noise-overlay"></div>
       <!-- Fireflies -->
       <div class="absolute top-1/4 left-1/4 w-2 h-2 bg-cyan-400/50 rounded-full animate-firefly"></div>
       <div class="absolute top-1/2 right-1/3 w-1 h-1 bg-cyan-300/40 rounded-full animate-firefly" style="animation-delay: 1s;"></div>

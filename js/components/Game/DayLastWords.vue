@@ -2,12 +2,10 @@
 <template>
   <div class="last-words h-screen w-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
     <!-- Background -->
-    <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-red-950/20 to-slate-950">
-      <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-violet-500/10 rounded-full filter blur-3xl"></div>
+    <div class="absolute inset-0 phase-day">
+      <div class="noise-overlay"></div>
+      <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-red-900/20 rounded-full filter blur-3xl"></div>
     </div>
-
-    <!-- Vignette -->
-    <div class="absolute inset-0 vignette-dark pointer-events-none"></div>
 
     <!-- Content -->
     <div v-if="executedPlayer" class="relative z-10 max-w-md w-full text-center">
@@ -76,17 +74,5 @@ watch(() => gameStore.currentGame?.state?.vote_result, () => updateExecutedPlaye
 
 .text-cinzel {
   font-family: 'Cinzel', 'Playfair Display', serif;
-}
-
-.glass-card {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-}
-
-.vignette-dark {
-  background: radial-gradient(ellipse at center, transparent 20%, rgba(0, 0, 0, 0.5) 100%);
 }
 </style>

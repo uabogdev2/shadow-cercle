@@ -1,24 +1,21 @@
 <!-- HunterAction.vue -->
 <template>
-  <div class="hunter-action h-screen w-screen flex flex-col relative overflow-hidden">
-    <!-- Dramatic Background -->
-    <div class="absolute inset-0 bg-gradient-to-b from-amber-950/40 via-slate-950 to-slate-950">
-      <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-amber-500/10 rounded-full filter blur-3xl"></div>
+  <div class="hunter-action phase-night relative overflow-hidden">
+    <div class="absolute inset-0 noise pointer-events-none"></div>
+    <div class="absolute inset-0" aria-hidden="true">
+      <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-amber-500/12 blur-[120px]"></div>
+      <div class="absolute bottom-6 right-10 w-48 h-48 bg-red-500/10 blur-[110px]"></div>
     </div>
 
-    <!-- Vignette -->
-    <div class="absolute inset-0 vignette-dark pointer-events-none"></div>
-
-    <!-- Header -->
     <header class="relative z-10 flex-shrink-0 p-4 md:p-6">
-      <div class="glass-card p-4 flex justify-between items-center border-amber-500/30">
+      <div class="paper-card frame-wood bg-[#0f151f]/90 border border-amber-500/25 shadow-[0_20px_60px_rgba(0,0,0,0.55)] flex justify-between items-center">
         <div class="flex items-center gap-4">
-          <div class="w-12 h-12 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center">
-            <TargetIcon class="w-6 h-6 text-amber-400" />
+          <div class="w-12 h-12 rounded-xl bg-amber-500/15 border border-amber-500/40 flex items-center justify-center shadow-[0_10px_30px_rgba(245,158,11,0.25)]">
+            <TargetIcon class="w-6 h-6 text-amber-300" />
           </div>
           <div>
-            <p class="text-red-500 text-xs uppercase tracking-wider">Urgence</p>
-            <p class="text-amber-400 text-lg font-medium">Représailles du Chasseur</p>
+            <p class="text-red-400 text-xs uppercase tracking-[0.25em]">Urgence</p>
+            <p class="text-amber-200 text-lg font-semibold">Représailles du Chasseur</p>
           </div>
         </div>
         <Timer :seconds="gameStore.timer" variant="circular" size="sm" />
@@ -27,17 +24,14 @@
 
     <main class="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 pb-4">
       <template v-if="canShoot">
-        <!-- Death notification -->
-        <div class="glass-card p-6 mb-6 border-red-500/30 text-center">
-          <SkullIcon class="w-12 h-12 text-red-500 mx-auto mb-4" />
-          <h2 class="text-red-400 text-xl font-medium mb-2">Vous avez été éliminé</h2>
-          <p class="text-slate-400 text-sm">
-            En tant que chasseur, vous pouvez emporter quelqu'un avec vous.
-          </p>
+        <div class="paper-card frame-wood bg-[#0f1624]/90 border border-red-500/30 text-center mb-6 shadow-[0_18px_60px_rgba(0,0,0,0.6)]">
+          <SkullIcon class="w-12 h-12 text-red-400 mx-auto mb-4" />
+          <h2 class="text-amber-100 text-xl font-semibold mb-2">Vous avez été éliminé</h2>
+          <p class="text-slate-300 text-sm">En tant que chasseur, vous pouvez emporter quelqu'un avec vous.</p>
         </div>
 
         <div class="text-center mb-4">
-          <p class="text-amber-300">Choisissez votre dernière cible</p>
+          <p class="text-amber-200">Choisissez votre dernière cible</p>
           <p class="text-slate-500 text-sm">(optionnel)</p>
         </div>
 
@@ -53,29 +47,24 @@
           />
         </div>
 
-        <!-- Skip option -->
-        <div class="glass-card p-4 text-center">
-          <ActionButton
-            variant="secondary"
-            :full-width="true"
-            @click="skipAction"
-          >
+        <div class="paper-card frame-wood bg-[#0f151f]/90 border border-amber-500/20 text-center">
+          <ActionButton variant="secondary" :full-width="true" @click="skipAction">
             Ne pas tirer
           </ActionButton>
         </div>
       </template>
 
       <div v-else class="h-full flex flex-col items-center justify-center">
-        <div class="glass-card p-8 text-center">
-          <TargetIcon class="w-12 h-12 text-amber-400/50 mx-auto mb-4" />
-          <p class="text-slate-400 text-lg mb-2">Action du Chasseur</p>
-          <p class="text-slate-600 text-sm">En attente de sa décision...</p>
+        <div class="paper-card frame-wood bg-[#0f1624]/85 border border-amber-500/20 text-center shadow-[0_18px_60px_rgba(0,0,0,0.55)]">
+          <TargetIcon class="w-12 h-12 text-amber-300/80 mx-auto mb-4" />
+          <p class="text-amber-100 text-lg mb-2">Action du Chasseur</p>
+          <p class="text-slate-500 text-sm">En attente de sa décision...</p>
         </div>
       </div>
     </main>
 
     <footer class="relative z-10 flex-shrink-0 p-4 md:p-6">
-      <div class="glass-card p-4">
+      <div class="paper-card frame-wood bg-[#0f151f]/90 border border-amber-500/25">
         <ActionButton
           v-if="selectedTarget && canShoot"
           variant="danger"
@@ -90,7 +79,7 @@
             Tirer sur {{ selectedTarget.user?.name }}
           </span>
         </ActionButton>
-        <div v-else-if="canShoot" class="text-center text-slate-500 py-1">
+        <div v-else-if="canShoot" class="text-center text-slate-400 py-1">
           Sélectionnez une cible ou passez
         </div>
       </div>
@@ -159,22 +148,13 @@ async function skipAction() {
 
 <style scoped>
 .hunter-action {
-  height: 100vh;
-  height: 100dvh;
+  min-height: 100vh;
+  min-height: 100dvh;
   width: 100vw;
   display: flex;
   flex-direction: column;
-}
-
-.glass-card {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-}
-
-.vignette-dark {
-  background: radial-gradient(ellipse at center, transparent 20%, rgba(0, 0, 0, 0.5) 100%);
+  background: radial-gradient(circle at 50% 30%, rgba(245, 158, 11, 0.12), transparent 35%),
+    radial-gradient(circle at 80% 80%, rgba(239, 68, 68, 0.14), transparent 40%),
+    #050b13;
 }
 </style>

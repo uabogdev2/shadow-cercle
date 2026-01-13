@@ -1,25 +1,22 @@
 <!-- SeerPhase.vue -->
 <template>
-  <div class="seer-phase h-screen w-screen flex flex-col relative overflow-hidden">
-    <!-- Mystical Background -->
-    <div class="absolute inset-0 bg-gradient-to-b from-violet-950/50 via-slate-950 to-slate-950">
-      <div class="absolute top-1/4 left-1/4 w-48 h-48 bg-violet-500/15 rounded-full filter blur-3xl"></div>
-      <div class="absolute bottom-1/4 right-1/4 w-32 h-32 bg-indigo-500/15 rounded-full filter blur-3xl"></div>
+  <div class="seer-phase phase-night relative overflow-hidden">
+    <div class="absolute inset-0 noise pointer-events-none"></div>
+    <div class="absolute inset-0" aria-hidden="true">
+      <div class="absolute -top-12 left-10 w-56 h-56 bg-indigo-500/10 blur-[110px]"></div>
+      <div class="absolute bottom-10 right-0 w-64 h-64 bg-purple-700/10 blur-[120px]"></div>
+      <div class="absolute top-10 right-8 w-14 h-14 rounded-full bg-slate-200/50 shadow-[0_0_40px_rgba(255,255,255,0.15)] opacity-70"></div>
     </div>
 
-    <!-- Moon -->
-    <div class="absolute top-6 right-6 w-12 h-12 rounded-full bg-gradient-to-br from-slate-200 to-slate-400 shadow-[0_0_40px_rgba(248,250,252,0.3)] opacity-60 z-20"></div>
-
-    <!-- Header -->
     <header class="relative z-10 flex-shrink-0 p-4 md:p-6">
-      <div class="glass-card p-4 flex justify-between items-center border-violet-500/30">
+      <div class="paper-card frame-wood bg-[#0c1422]/90 border border-violet-500/25 shadow-[0_20px_60px_rgba(0,0,0,0.55)] flex justify-between items-center">
         <div class="flex items-center gap-4">
-          <div class="w-12 h-12 rounded-xl bg-violet-500/20 border border-violet-500/40 flex items-center justify-center">
-            <EyeIcon class="w-6 h-6 text-violet-400" />
+          <div class="w-12 h-12 rounded-xl bg-violet-500/15 border border-violet-500/35 flex items-center justify-center shadow-[0_10px_30px_rgba(124,58,237,0.25)]">
+            <EyeIcon class="w-6 h-6 text-violet-300" />
           </div>
           <div>
-            <p class="text-slate-500 text-xs uppercase tracking-wider">Nuit {{ gameStore.currentGame?.day_number }}</p>
-            <p class="text-violet-400 text-lg font-medium">La Voyante</p>
+            <p class="text-slate-400 text-xs uppercase tracking-[0.25em]">Nuit {{ gameStore.currentGame?.day_number }}</p>
+            <p class="text-violet-200 text-lg font-semibold">La Voyante</p>
           </div>
         </div>
         <Timer :seconds="gameStore.timer" variant="circular" size="sm" />
@@ -28,40 +25,35 @@
 
     <main class="relative z-10 flex-1 overflow-y-auto px-4 md:px-6 pb-4">
       <template v-if="gameStore.canAct">
-        <!-- Role Revelation Result -->
         <div v-if="revealedRole" class="flex flex-col items-center justify-center py-8">
-          <div class="glass-card p-8 text-center w-full max-w-sm border-violet-500/30 relative overflow-hidden">
-            <!-- Glow effect -->
-            <div class="absolute inset-0 bg-gradient-to-br from-violet-500/10 to-transparent"></div>
-            
+          <div class="paper-card frame-wood bg-[#0f1624]/90 border border-violet-500/30 text-center w-full max-w-sm relative overflow-hidden shadow-[0_20px_80px_rgba(0,0,0,0.6)]">
+            <div class="absolute inset-0 bg-gradient-to-br from-violet-500/15 via-transparent to-indigo-500/10"></div>
             <div class="relative z-10">
-              <p class="text-slate-500 text-xs uppercase tracking-wider mb-4">Identité révélée</p>
-              
-              <div class="w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center"
-                :style="{ 
-                  background: `${getRoleColor(revealedRole)}20`,
-                  border: `2px solid ${getRoleColor(revealedRole)}40`,
-                  boxShadow: `0 0 30px ${getRoleColor(revealedRole)}30`
+              <p class="text-slate-400 text-xs uppercase tracking-[0.22em] mb-4">Identité révélée</p>
+
+              <div
+                class="w-20 h-20 rounded-full mx-auto mb-4 flex items-center justify-center shadow-[0_0_35px_rgba(124,58,237,0.25)]"
+                :style="{
+                  background: `${getRoleColor(revealedRole)}22`,
+                  border: `2px solid ${getRoleColor(revealedRole)}55`,
+                  boxShadow: `0 0 40px ${getRoleColor(revealedRole)}33`
                 }"
               >
                 <span class="text-4xl">{{ getRoleIcon(revealedRole) }}</span>
               </div>
-              
-              <p class="text-white text-xl font-medium mb-2">{{ revealedPlayerName }}</p>
-              
-              <div class="h-px w-full bg-gradient-to-r from-transparent via-white/20 to-transparent my-4"></div>
-              
-              <p 
-                class="text-cinzel text-2xl font-bold"
-                :style="{ color: getRoleColor(revealedRole) }"
-              >
+
+              <p class="text-slate-100 text-xl font-semibold mb-2">{{ revealedPlayerName }}</p>
+
+              <div class="h-px w-full bg-gradient-to-r from-transparent via-white/15 to-transparent my-4"></div>
+
+              <p class="text-cinzel text-2xl font-bold" :style="{ color: getRoleColor(revealedRole) }">
                 {{ getRoleName(revealedRole) }}
               </p>
-              
+
               <div class="mt-4">
-                <span 
-                  class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm"
-                  :class="isWerewolfRevealed ? 'bg-red-500/20 text-red-400' : 'bg-emerald-500/20 text-emerald-400'"
+                <span
+                  class="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm border"
+                  :class="isWerewolfRevealed ? 'bg-red-900/40 text-red-300 border-red-500/30' : 'bg-emerald-900/30 text-emerald-200 border-emerald-500/25'"
                 >
                   <component :is="isWerewolfRevealed ? AlertTriangleIcon : CheckCircleIcon" class="w-4 h-4" />
                   {{ isWerewolfRevealed ? 'Menace détectée !' : 'Villageois confirmé' }}
@@ -69,14 +61,13 @@
               </div>
             </div>
           </div>
-          
+
           <p class="text-slate-500 text-sm mt-4 animate-pulse">Information enregistrée...</p>
         </div>
 
-        <!-- Player Selection (if not yet revealed) -->
         <template v-else>
           <div class="text-center mb-6">
-            <p class="text-slate-400">Choisissez un joueur à sonder</p>
+            <p class="text-slate-300 tracking-wide">Choisissez un joueur à sonder</p>
           </div>
 
           <div class="grid grid-cols-2 gap-3">
@@ -94,16 +85,16 @@
       </template>
 
       <div v-else class="h-full flex flex-col items-center justify-center">
-        <div class="glass-card p-8 text-center">
-          <EyeIcon class="w-12 h-12 text-violet-400/50 mx-auto mb-4" />
-          <p class="text-slate-400 text-lg mb-2">Vision Mystique</p>
-          <p class="text-slate-600 text-sm">En attente de la révélation...</p>
+        <div class="paper-card frame-wood bg-[#0f1624]/85 border border-violet-500/25 text-center shadow-[0_18px_60px_rgba(0,0,0,0.55)]">
+          <EyeIcon class="w-12 h-12 text-violet-400/70 mx-auto mb-4" />
+          <p class="text-slate-200 text-lg mb-2">Vision mystique</p>
+          <p class="text-slate-500 text-sm">En attente de la révélation...</p>
         </div>
       </div>
     </main>
 
     <footer class="relative z-10 flex-shrink-0 p-4 md:p-6">
-      <div class="glass-card p-4">
+      <div class="paper-card frame-wood bg-[#0c1422]/90 border border-violet-500/20">
         <ActionButton
           v-if="selectedTarget && gameStore.canAct && !revealedRole"
           variant="magic"
@@ -115,7 +106,7 @@
         >
           Révéler {{ selectedTarget.user?.name }}
         </ActionButton>
-        <div v-else-if="!revealedRole && gameStore.canAct" class="text-center text-slate-500 py-1">
+        <div v-else-if="!revealedRole && gameStore.canAct" class="text-center text-slate-400 py-1">
           Sélectionnez un joueur
         </div>
       </div>
@@ -224,12 +215,14 @@ async function submitReveal() {
 .text-cinzel {
   font-family: 'Cinzel', 'Playfair Display', serif;
 }
-
-.glass-card {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+.seer-phase {
+  min-height: 100vh;
+  min-height: 100dvh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  background: radial-gradient(circle at 20% 20%, rgba(124, 58, 237, 0.08), transparent 35%),
+    radial-gradient(circle at 80% 75%, rgba(99, 102, 241, 0.12), transparent 40%),
+    #050b13;
 }
 </style>

@@ -262,7 +262,7 @@ onUnmounted(() => clearInterval(timerInterval));
 }
 
 .timer-circle {
-  filter: drop-shadow(0 0 8px rgba(124, 58, 237, 0.3));
+  filter: drop-shadow(0 0 10px rgba(124, 58, 237, 0.25)) drop-shadow(0 0 18px rgba(245, 158, 11, 0.18));
 }
 
 .timer-progress-circle {
@@ -289,11 +289,11 @@ onUnmounted(() => clearInterval(timerInterval));
 }
 
 .timer-digital-display {
-  background: rgba(15, 23, 42, 0.8);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.75rem;
-  padding: 0.5rem 1rem;
+  background: linear-gradient(145deg, #f3e0b8 0%, #e2c892 100%);
+  border: 1px solid rgba(181, 138, 76, 0.5);
+  border-radius: 0.85rem;
+  padding: 0.5rem 1.15rem;
+  box-shadow: 0 12px 28px rgba(88, 63, 26, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
 /* Text styles */
@@ -309,9 +309,9 @@ onUnmounted(() => clearInterval(timerInterval));
 .timer-text-lg { font-size: 2rem; }
 
 /* Color states */
-.timer-normal { color: #A78BFA; }
-.timer-urgent { color: #F59E0B; }
-.timer-critical { color: #EF4444; }
+.timer-normal { color: #c4b0ff; }
+.timer-urgent { color: #f8b74c; }
+.timer-critical { color: #f87171; }
 
 /* Animations */
 .animate-timer-urgent {

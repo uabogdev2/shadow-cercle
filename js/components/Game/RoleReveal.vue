@@ -1,19 +1,17 @@
 <!-- js/components/Game/RoleReveal.vue -->
 <template>
-  <div class="role-reveal-view h-screen w-full flex flex-col items-center justify-center p-6 relative overflow-hidden">
+  <div class="role-reveal-view phase-surface h-screen w-full flex flex-col items-center justify-center p-6 relative overflow-hidden">
     <!-- Background -->
-    <div class="absolute inset-0 bg-gradient-to-b from-slate-950 via-indigo-950 to-slate-950">
-      <!-- Mystical particles -->
-      <div class="absolute inset-0 opacity-30">
-        <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-violet-600/30 rounded-full filter blur-3xl animate-float"></div>
-        <div class="absolute bottom-1/4 right-1/4 w-48 h-48 bg-indigo-600/30 rounded-full filter blur-3xl animate-float" style="animation-delay: 2s;"></div>
-      </div>
+    <div class="absolute inset-0 bg-gradient-to-b from-[#0b0b0c] via-[#0f0f11] to-[#0a0a0a]">
+      <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-[#d97706]/12 rounded-full filter blur-3xl animate-float"></div>
+      <div class="absolute bottom-1/4 right-1/4 w-48 h-48 bg-[#991b1b]/12 rounded-full filter blur-3xl animate-float" style="animation-delay: 2s;"></div>
+      <div class="noise-overlay"></div>
     </div>
 
     <!-- Title -->
     <div class="relative z-10 text-center mb-8">
-      <h2 class="text-cinzel text-xl text-violet-400 uppercase tracking-widest mb-2">La Nuit Tombe</h2>
-      <p class="text-slate-500 text-sm">Découvrez votre destinée</p>
+      <h2 class="text-cinzel text-xl text-[#D97706] uppercase tracking-widest mb-2">La Nuit Tombe</h2>
+      <p class="text-[#F5F5DC]/70 text-sm">Découvrez votre destinée</p>
     </div>
 
     <!-- Tarot Card -->
@@ -25,25 +23,25 @@
       >
         <!-- Card Back (Mystical Pattern) -->
         <div class="card-face card-back absolute inset-0 backface-hidden rounded-2xl overflow-hidden">
-          <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 via-violet-900 to-purple-900"></div>
+          <div class="absolute inset-0 bg-gradient-to-br from-[#2f2618] via-[#1a120b] to-[#0f0a08]"></div>
           <div 
             class="absolute inset-0 pattern-overlay" 
             :style="{ backgroundImage: `url('data:image/svg+xml;charset=utf-8,${patternSvg}')`, backgroundSize: '60px 60px' }"
           ></div>
           <div class="absolute inset-0 flex flex-col items-center justify-center p-6">
-            <div class="w-24 h-24 rounded-full bg-gradient-to-br from-violet-500/30 to-indigo-500/30 border-2 border-violet-400/30 flex items-center justify-center mb-4 animate-pulse">
-              <MoonIcon class="w-12 h-12 text-violet-300" />
+            <div class="w-24 h-24 rounded-full bg-gradient-to-br from-[#d97706]/25 to-[#991b1b]/25 border-2 border-[#3e2f20]/70 flex items-center justify-center mb-4 animate-pulse">
+              <MoonIcon class="w-12 h-12 text-[#F5F5DC]" />
             </div>
-            <p class="text-cinzel text-lg text-violet-300 uppercase tracking-widest">Secret</p>
-            <p class="text-slate-400 text-xs mt-2 animate-pulse">Touchez pour révéler</p>
+            <p class="text-cinzel text-lg text-[#F5F5DC] uppercase tracking-widest">Secret</p>
+            <p class="text-[#F5F5DC]/70 text-xs mt-2 animate-pulse">Touchez pour révéler</p>
           </div>
           <!-- Card border -->
-          <div class="absolute inset-2 border-2 border-violet-400/20 rounded-xl pointer-events-none"></div>
+          <div class="absolute inset-2 border-2 border-[#3e2f20]/60 rounded-xl pointer-events-none"></div>
         </div>
 
         <!-- Card Front (Role Reveal) -->
         <div class="card-face card-front absolute inset-0 backface-hidden rotate-y-180 rounded-2xl overflow-hidden">
-          <div class="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900"></div>
+          <div class="absolute inset-0 bg-gradient-to-br from-[#1a1712] via-[#0f0d0c] to-[#0a0a0a]"></div>
           <div class="relative h-full flex flex-col p-6">
             <!-- Role Header -->
             <div class="text-center mb-4 pb-4 border-b border-white/10">
@@ -83,14 +81,14 @@
             </div>
 
             <!-- Role Description -->
-            <div class="mt-4 p-4 rounded-xl bg-slate-800/50 border border-white/5">
-              <p class="text-slate-300 text-sm leading-relaxed text-center">
+            <div class="mt-4 p-4 rounded-xl bg-[#1a1a1a]/80 border border-[#3e2f20]/60">
+              <p class="text-[#F5F5DC]/80 text-sm leading-relaxed text-center">
                 {{ roleData.description }}
               </p>
             </div>
           </div>
           <!-- Card border -->
-          <div class="absolute inset-2 border-2 rounded-xl pointer-events-none" :style="{ borderColor: `${roleColor}30` }"></div>
+          <div class="absolute inset-2 border-2 rounded-xl pointer-events-none" :style="{ borderColor: `${roleColor}40` }"></div>
         </div>
       </div>
     </div>
@@ -99,10 +97,11 @@
     <div class="relative z-10 w-full max-w-xs mt-8">
       <ActionButton
         v-if="isFlipped && !confirmed && gameStore.phase === 'role_reveal'"
-        variant="magic"
+        variant="gold"
         :full-width="true"
         :loading="isConfirming"
         :glow="true"
+        class="btn-seal"
         @click="confirmRole"
       >
         J'accepte mon sort
@@ -341,10 +340,10 @@ onMounted(() => {
 
 @keyframes card-glow {
   0%, 100% {
-    box-shadow: 0 0 30px rgba(124, 58, 237, 0.3);
+    box-shadow: 0 0 30px rgba(217, 119, 6, 0.28);
   }
   50% {
-    box-shadow: 0 0 50px rgba(124, 58, 237, 0.5);
+    box-shadow: 0 0 50px rgba(153, 27, 27, 0.35);
   }
 }
 

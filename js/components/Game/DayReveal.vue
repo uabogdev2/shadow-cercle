@@ -1,10 +1,12 @@
 <!-- DayReveal.vue -->
 <template>
-  <div class="day-reveal h-screen w-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
+  <div class="day-reveal phase-surface phase-day h-screen w-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
     <!-- Day Background -->
-    <div class="absolute inset-0 bg-gradient-to-b from-amber-100/10 via-slate-900 to-slate-950">
-      <!-- Sun rays -->
-      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-amber-500/10 rounded-full filter blur-3xl"></div>
+    <div class="absolute inset-0">
+      <div class="absolute inset-0 phase-day opacity-90"></div>
+      <div class="absolute top-[-2rem] left-1/2 -translate-x-1/2 w-96 h-96 bg-amber-500/14 rounded-full blur-[120px]"></div>
+      <div class="absolute bottom-[-3rem] right-10 w-80 h-80 bg-amber-400/12 rounded-full blur-[140px]"></div>
+      <div class="noise-overlay"></div>
     </div>
 
     <!-- Sun indicator -->
@@ -12,8 +14,8 @@
 
     <!-- Header -->
     <div class="relative z-10 text-center mb-8">
-      <h1 class="text-cinzel text-3xl text-amber-400 mb-2">Le Jour se Lève</h1>
-      <p class="text-slate-400">Jour {{ gameStore.currentGame?.day_number }}</p>
+      <h1 class="text-cinzel text-3xl text-[#D97706] mb-2">Le Jour se Lève</h1>
+      <p class="text-[#F5F5DC]/80">Jour {{ gameStore.currentGame?.day_number }}</p>
       <div class="h-px w-24 mx-auto mt-3 bg-gradient-to-r from-transparent via-amber-500/50 to-transparent"></div>
     </div>
 
@@ -24,10 +26,10 @@
 
     <!-- Deaths section -->
     <div v-else-if="nightDeaths.length > 0" class="relative z-10 w-full max-w-md">
-      <div class="glass-card p-6 border-red-500/30">
+      <div class="paper-card frame-wood p-6 border border-[#991b1b]/50 bg-[#150c0c]/85 shadow-[0_18px_60px_rgba(0,0,0,0.55)]">
         <div class="flex items-center justify-center gap-3 mb-6">
-          <SkullIcon class="w-6 h-6 text-red-500" />
-          <h2 class="text-red-400 text-lg font-medium">
+          <SkullIcon class="w-6 h-6 text-[#991B1B]" />
+          <h2 class="text-[#F5F5DC] text-lg font-medium">
             {{ nightDeaths.length > 1 ? 'Victimes de la nuit' : 'Victime de la nuit' }}
           </h2>
         </div>
@@ -36,17 +38,17 @@
           <div 
             v-for="death in nightDeaths" 
             :key="death.id" 
-            class="p-4 rounded-xl bg-red-500/10 border border-red-500/20"
+            class="p-4 rounded-xl bg-[#1a0f0f]/70 border border-[#991b1b]/40"
           >
             <div class="flex items-center justify-between mb-3">
               <div>
-                <p class="text-white text-xl font-medium">{{ death.user?.name }}</p>
-                <p class="text-slate-400 text-sm">{{ getRoleName(death.role) }}</p>
+                <p class="text-[#F5F5DC] text-xl font-medium">{{ death.user?.name }}</p>
+                <p class="text-[#F5F5DC]/70 text-sm">{{ getRoleName(death.role) }}</p>
               </div>
               <span class="text-4xl">{{ getRoleIcon(death.role) }}</span>
             </div>
-            <div class="flex items-center gap-2 text-red-400 text-sm">
-              <div class="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+            <div class="flex items-center gap-2 text-[#F87171] text-sm">
+              <div class="w-1.5 h-1.5 rounded-full bg-[#991b1b]"></div>
               <span>{{ getDeathReason(death.reason) }}</span>
             </div>
           </div>
@@ -56,12 +58,12 @@
 
     <!-- No deaths -->
     <div v-else class="relative z-10 w-full max-w-md">
-      <div class="glass-card p-8 text-center border-emerald-500/30">
-        <div class="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/30 mx-auto mb-4 flex items-center justify-center">
-          <CheckCircleIcon class="w-8 h-8 text-emerald-500" />
+      <div class="paper-card frame-wood p-8 text-center border border-[#0F766E]/50 bg-[#0d1417]/85 shadow-[0_18px_60px_rgba(0,0,0,0.5)]">
+        <div class="w-16 h-16 rounded-full bg-[#0F766E]/25 border border-[#0F766E]/40 mx-auto mb-4 flex items-center justify-center">
+          <CheckCircleIcon class="w-8 h-8 text-[#0F766E]" />
         </div>
-        <h2 class="text-emerald-400 text-xl font-medium mb-2">Nuit Paisible</h2>
-        <p class="text-slate-400">Personne n'est mort cette nuit</p>
+        <h2 class="text-[#F5F5DC] text-xl font-medium mb-2">Nuit Paisible</h2>
+        <p class="text-[#F5F5DC]/75">Personne n'est mort cette nuit</p>
       </div>
     </div>
 
@@ -161,13 +163,5 @@ watch(rawNightDeaths, () => updateNightDeaths(), { deep: true });
 
 .text-cinzel {
   font-family: 'Cinzel', 'Playfair Display', serif;
-}
-
-.glass-card {
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
 }
 </style>

@@ -1,13 +1,14 @@
 <template>
-  <div v-if="isVisible" class="chat-container h-full flex flex-col rounded-xl overflow-hidden" :class="containerClass">
-    <!-- Glass Background -->
-    <div class="absolute inset-0 bg-gradient-to-b from-slate-900/80 to-slate-950/90 backdrop-blur-xl"></div>
+  <div v-if="isVisible" class="chat-container h-full flex flex-col rounded-xl overflow-hidden paper-card" :class="containerClass">
+    <!-- Textured Background -->
+    <div class="absolute inset-0 bg-gradient-to-b from-[#0f0f0f]/85 to-[#1a1a1a]/90"></div>
+    <div class="noise-overlay"></div>
     
     <!-- Header -->
-    <header class="relative z-10 px-4 py-3 border-b border-white/10 flex justify-between items-center">
+    <header class="relative z-10 px-4 py-3 border-b border-[#3e2f20]/60 flex justify-between items-center">
       <div class="flex items-center gap-2">
         <component :is="channelIcon" class="w-4 h-4" :class="channelIconColor" />
-        <h3 class="text-sm font-medium text-slate-300 uppercase tracking-wider">{{ channelDisplayName }}</h3>
+        <h3 class="text-sm font-medium text-[#F5F5DC] uppercase tracking-wider">{{ channelDisplayName }}</h3>
       </div>
       <div v-if="cooldownRemaining > 0" class="flex items-center gap-2 text-amber-500">
         <ClockIcon class="w-3 h-3" />
@@ -37,14 +38,14 @@
     </div>
     
     <!-- Footer -->
-    <footer class="relative z-10 p-3 border-t border-white/10 bg-black/20">
+    <footer class="relative z-10 p-3 border-t border-[#3e2f20]/60 bg-black/30">
       <!-- Quick Reactions -->
       <div v-if="showQuickReactions" class="flex gap-2 mb-3 justify-center overflow-x-auto pb-1">
         <button
           v-for="reaction in quickReactions"
           :key="reaction.emoji"
           @click="sendQuickReaction(reaction.emoji)"
-          class="quick-reaction flex items-center justify-center w-10 h-10 rounded-lg bg-slate-800/50 border border-slate-700/50 hover:bg-slate-700/50 hover:border-slate-600 transition-all duration-200"
+          class="quick-reaction flex items-center justify-center w-10 h-10 rounded-lg bg-[#1f1a14]/70 border border-[#3e2f20]/60 hover:bg-[#2a2118] hover:border-[#d97706]/40 transition-all duration-200"
           :class="{ 'opacity-50 cursor-not-allowed': cooldownRemaining > 0 }"
           :disabled="cooldownRemaining > 0"
           :title="reaction.label"
@@ -61,13 +62,13 @@
             @keyup.enter="sendMessage"
             :placeholder="cooldownRemaining > 0 ? 'Patientez...' : 'Votre message...'"
             :disabled="cooldownRemaining > 0"
-            class="w-full bg-slate-800/50 text-slate-200 placeholder-slate-500 px-4 py-3 rounded-xl border border-slate-700/50 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 focus:outline-none transition-all duration-200"
+            class="w-full bg-[#0f0f0f]/70 text-[#F5F5DC] placeholder-slate-500 px-4 py-3 rounded-xl border border-[#3e2f20]/60 focus:border-[#d97706]/70 focus:ring-2 focus:ring-[#d97706]/25 focus:outline-none transition-all duration-200"
           />
         </div>
         <button 
           @click="sendMessage" 
           :disabled="!newMessage.trim() || cooldownRemaining > 0 || isSending" 
-          class="send-button px-4 py-3 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-medium transition-all duration-200 hover:from-violet-500 hover:to-indigo-500 hover:shadow-lg hover:shadow-violet-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none"
+          class="send-button px-4 py-3 rounded-xl bg-gradient-to-r from-[#d97706] to-[#991b1b] text-[#F5F5DC] font-medium transition-all duration-200 hover:shadow-lg hover:shadow-[#d97706]/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none"
         >
           <SendIcon class="w-5 h-5" />
         </button>
@@ -133,9 +134,9 @@ const channelIcon = computed(() => {
 
 const channelIconColor = computed(() => {
   const colors = {
-    lobby: 'text-amber-400',
-    global: 'text-sky-400',
-    wolves: 'text-red-400',
+    lobby: 'text-[#d97706]',
+    global: 'text-[#f5f5dc]',
+    wolves: 'text-[#991b1b]',
     dead: 'text-slate-500',
   };
   return colors[props.channel] || 'text-slate-400';
@@ -143,10 +144,10 @@ const channelIconColor = computed(() => {
 
 const containerClass = computed(() => {
   const classes = {
-    lobby: 'border border-amber-500/20',
-    global: 'border border-sky-500/20',
-    wolves: 'border border-red-500/30',
-    dead: 'border border-slate-600/30',
+    lobby: 'border border-[#d97706]/35 shadow-[0_10px_30px_rgba(0,0,0,0.35)]',
+    global: 'border border-[#f5f5dc]/20 shadow-[0_10px_30px_rgba(0,0,0,0.35)]',
+    wolves: 'border border-[#991b1b]/35 shadow-[0_10px_30px_rgba(0,0,0,0.35)]',
+    dead: 'border border-slate-700/40 shadow-[0_10px_30px_rgba(0,0,0,0.35)]',
   };
   return classes[props.channel] || '';
 });

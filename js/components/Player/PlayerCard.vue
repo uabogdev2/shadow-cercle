@@ -1,7 +1,7 @@
 <template>
   <div
     :class="[
-      'player-card relative overflow-hidden cursor-pointer transition-all duration-300',
+      'player-card paper-card frame-wood relative overflow-hidden cursor-pointer transition-all duration-300',
       cardSize,
       baseClasses,
       { 'player-card-dead': isDead },
@@ -104,10 +104,10 @@ const cardSize = computed(() => {
 });
 
 const baseClasses = computed(() => {
-  if (isDead.value) return 'border border-slate-700/50 rounded-xl grayscale opacity-60';
+  if (isDead.value) return 'border border-[#3a2d2d]/70 rounded-xl grayscale opacity-70';
   if (props.isSelected) return 'border-2 rounded-xl';
   if (isReady.value) return 'border border-emerald-500/50 rounded-xl';
-  return 'border border-slate-600/30 rounded-xl hover:border-slate-500/50';
+  return 'border border-[#3e2f20]/70 rounded-xl hover:border-[#d97706]/40';
 });
 
 const nameClasses = computed(() => {
@@ -117,30 +117,30 @@ const nameClasses = computed(() => {
     large: 'text-base'
   };
   const sizeClass = sizes[props.size] || sizes.normal;
-  const colorClass = isDead.value ? 'text-slate-500 player-card-name-dead' : 'text-slate-100';
+  const colorClass = isDead.value ? 'text-slate-500 player-card-name-dead' : 'text-[#F5F5DC]';
   return ['font-medium truncate', sizeClass, colorClass].join(' ');
 });
 
 const selectionBorderClass = computed(() => {
   const colors = {
-    violet: 'border-2 border-violet-500 shadow-[0_0_15px_rgba(124,58,237,0.5)]',
-    red: 'border-2 border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]',
-    blue: 'border-2 border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]',
-    gold: 'border-2 border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)]',
-    emerald: 'border-2 border-emerald-500 shadow-[0_0_15px_rgba(16,185,129,0.5)]',
-    white: 'border-2 border-white shadow-[0_0_15px_rgba(255,255,255,0.3)]'
+    violet: 'border-2 border-[#8B5CF6] shadow-[0_0_18px_rgba(139,92,246,0.45)]',
+    red: 'border-2 border-[#991B1B] shadow-[0_0_18px_rgba(153,27,27,0.5)]',
+    blue: 'border-2 border-[#1D4ED8] shadow-[0_0_18px_rgba(29,78,216,0.4)]',
+    gold: 'border-2 border-[#D97706] shadow-[0_0_18px_rgba(217,119,6,0.5)]',
+    emerald: 'border-2 border-[#0F766E] shadow-[0_0_18px_rgba(15,118,110,0.45)]',
+    white: 'border-2 border-[#F5F5DC] shadow-[0_0_18px_rgba(245,245,220,0.35)]'
   };
   return colors[props.selectionColor] || colors.violet;
 });
 
 const selectionGlowClass = computed(() => {
   const colors = {
-    violet: 'bg-violet-500/10',
-    red: 'bg-red-500/10',
-    blue: 'bg-blue-500/10',
-    gold: 'bg-amber-500/10',
-    emerald: 'bg-emerald-500/10',
-    white: 'bg-white/5'
+    violet: 'bg-[#8B5CF6]/10',
+    red: 'bg-[#991B1B]/15',
+    blue: 'bg-[#1D4ED8]/10',
+    gold: 'bg-[#D97706]/14',
+    emerald: 'bg-[#0F766E]/12',
+    white: 'bg-white/8'
   };
   return colors[props.selectionColor] || colors.violet;
 });
@@ -149,12 +149,12 @@ const avatarBorderClass = computed(() => {
   if (isDead.value) return 'border-2 border-slate-600';
   if (props.isSelected) {
     const colors = {
-      violet: 'border-2 border-violet-500',
-      red: 'border-2 border-red-500',
-      blue: 'border-2 border-blue-500',
-      gold: 'border-2 border-amber-500',
-      emerald: 'border-2 border-emerald-500',
-      white: 'border-2 border-white'
+      violet: 'border-2 border-[#8B5CF6]',
+      red: 'border-2 border-[#991B1B]',
+      blue: 'border-2 border-[#1D4ED8]',
+      gold: 'border-2 border-[#D97706]',
+      emerald: 'border-2 border-[#0F766E]',
+      white: 'border-2 border-[#F5F5DC]'
     };
     return colors[props.selectionColor] || colors.violet;
   }
@@ -165,11 +165,11 @@ const avatarBorderClass = computed(() => {
 const avatarGlowClass = computed(() => {
   if (props.isSelected) {
     const colors = {
-      violet: 'shadow-[0_0_20px_rgba(124,58,237,0.4)]',
-      red: 'shadow-[0_0_20px_rgba(239,68,68,0.4)]',
-      blue: 'shadow-[0_0_20px_rgba(59,130,246,0.4)]',
-      gold: 'shadow-[0_0_20px_rgba(245,158,11,0.4)]',
-      emerald: 'shadow-[0_0_20px_rgba(16,185,129,0.4)]'
+      violet: 'shadow-[0_0_24px_rgba(139,92,246,0.4)]',
+      red: 'shadow-[0_0_24px_rgba(153,27,27,0.4)]',
+      blue: 'shadow-[0_0_24px_rgba(29,78,216,0.38)]',
+      gold: 'shadow-[0_0_24px_rgba(217,119,6,0.4)]',
+      emerald: 'shadow-[0_0_24px_rgba(15,118,110,0.4)]'
     };
     return colors[props.selectionColor] || '';
   }
@@ -207,9 +207,19 @@ const getInitials = (name) => {
 .player-card-bg {
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.75) 0%, rgba(30, 41, 59, 0.6) 100%);
-  backdrop-filter: blur(12px);
+  background: linear-gradient(145deg, rgba(245, 245, 220, 0.09), rgba(245, 245, 220, 0.02));
   border-radius: 1rem;
+  box-shadow: inset 0 0 0 1px rgba(62,47,32,0.35), inset 0 0 24px rgba(0,0,0,0.35);
+  overflow: hidden;
+}
+
+.player-card-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: var(--color-noise);
+  opacity: 0.35;
+  mix-blend-mode: soft-light;
 }
 
 .player-card-glow {
@@ -226,17 +236,17 @@ const getInitials = (name) => {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at center, rgba(0,0,0,0.7), rgba(0,0,0,0.8));
-  backdrop-filter: blur(6px);
+  background: radial-gradient(circle at center, rgba(20,20,20,0.8), rgba(15,15,15,0.92));
+  backdrop-filter: blur(4px);
 }
 
 .player-card-dead-tag {
   transform: rotate(-8deg);
   padding: 0.3rem 0.75rem;
-  border: 2px solid rgba(239,68,68,0.6);
-  background: rgba(127,29,29,0.35);
+  border: 2px solid rgba(153,27,27,0.5);
+  background: rgba(127,29,29,0.25);
   text-transform: uppercase;
-  color: #FCA5A5;
+  color: #FECACA;
   font-size: 0.7rem;
   letter-spacing: 0.08em;
 }
@@ -253,13 +263,13 @@ const getInitials = (name) => {
   align-items: center;
   gap: 0.25rem;
   padding: 0.25rem 0.5rem;
-  background: rgba(245, 158, 11, 0.16);
-  border: 1px solid rgba(245, 158, 11, 0.4);
+  background: rgba(217, 119, 6, 0.18);
+  border: 1px solid rgba(217, 119, 6, 0.4);
   border-radius: 9999px;
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: #FCD34D;
+  color: #F5F5DC;
 }
 
 .player-card-ready {
@@ -299,7 +309,7 @@ const getInitials = (name) => {
   position: absolute;
   inset: 0.2rem;
   border-radius: 9999px;
-  background: linear-gradient(135deg, rgba(51,65,85,0.8) 0%, rgba(30,41,59,0.8) 100%);
+  background: radial-gradient(circle at 30% 30%, rgba(217,119,6,0.18), rgba(62,47,32,0.6));
 }
 
 .player-card-avatar-text {
@@ -307,7 +317,7 @@ const getInitials = (name) => {
   z-index: 1;
   font-family: 'Playfair Display', serif;
   font-size: 1.25rem;
-  color: #F8FAFC;
+  color: #F5F5DC;
 }
 
 .player-card-avatar-glow {
@@ -319,8 +329,8 @@ const getInitials = (name) => {
 
 .player-card-name {
   padding: 0.6rem 0.75rem;
-  border-top: 1px solid rgba(255,255,255,0.05);
-  background: rgba(0,0,0,0.25);
+  border-top: 1px solid rgba(62,47,32,0.35);
+  background: rgba(0,0,0,0.35);
   text-align: center;
 }
 
