@@ -43,6 +43,9 @@ const activeComponent = computed(() => {
 
   // Lobby and end states
   if (status === 'lobby') return LobbyView;
+  // Check both 'ended' status and 'game_end' phase for robustness:
+  // - Backend may set status='ended' before phase='game_end'
+  // - Or phase may be 'game_end' while status updates asynchronously
   if (status === 'ended' || phase === 'game_end') return GameEnd;
   
   // Role reveal phase

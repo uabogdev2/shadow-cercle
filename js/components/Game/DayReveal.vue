@@ -59,7 +59,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useGameStore } from '@/stores/gameStore';
 import Timer from '@/components/UI/Timer.vue';
 
@@ -67,8 +67,11 @@ const gameStore = useGameStore();
 const nightDeaths = ref([]);
 const loading = ref(true);
 
+// Computed property for raw night deaths data from game state
+const rawNightDeaths = computed(() => gameStore.currentGame?.state?.night_deaths || []);
+
 function updateNightDeaths() {
-  const deaths = gameStore.currentGame?.state?.night_deaths || [];
+  const deaths = rawNightDeaths.value;
   if (deaths.length > 0) {
     nightDeaths.value = deaths.map(death => {
       const player = gameStore.players.find(p => p.id === death.player_id);
@@ -128,5 +131,5 @@ function getDeathReason(reason) {
 }
 
 onMounted(() => updateNightDeaths());
-watch(() => gameStore.currentGame?.state?.night_deaths, () => updateNightDeaths(), { deep: true });
+watch(rawNightDeaths, () => updateNightDeaths(), { deep: true });
 </script>
