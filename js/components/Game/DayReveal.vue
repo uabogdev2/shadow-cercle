@@ -1,40 +1,53 @@
 <!-- DayReveal.vue -->
 <template>
-  <div class="h-screen w-screen bg-black flex flex-col items-center justify-center p-4">
+  <div class="day-reveal h-screen w-screen flex flex-col items-center justify-center p-6 relative overflow-hidden">
+    <!-- Day Background -->
+    <div class="absolute inset-0 bg-gradient-to-b from-amber-100/10 via-slate-900 to-slate-950">
+      <!-- Sun rays -->
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-amber-500/10 rounded-full filter blur-3xl"></div>
+    </div>
+
+    <!-- Sun indicator -->
+    <div class="absolute top-8 right-8 w-14 h-14 rounded-full bg-gradient-to-br from-amber-300 to-amber-500 shadow-[0_0_50px_rgba(245,158,11,0.4)] z-20"></div>
+
     <!-- Header -->
-    <div class="text-center mb-8">
-      <h1 class="text-display text-5xl text-white mb-2">MORNING REPORT</h1>
-      <p class="text-mono text-xs text-gray-500 uppercase">Day {{ gameStore.currentGame?.day_number }}</p>
-      <div class="h-1 bg-white w-24 mx-auto mt-2"></div>
+    <div class="relative z-10 text-center mb-8">
+      <h1 class="text-cinzel text-3xl text-amber-400 mb-2">Le Jour se Lève</h1>
+      <p class="text-slate-400">Jour {{ gameStore.currentGame?.day_number }}</p>
+      <div class="h-px w-24 mx-auto mt-3 bg-gradient-to-r from-transparent via-amber-500/50 to-transparent"></div>
     </div>
 
     <!-- Loading state -->
-    <div v-if="loading" class="text-mono text-xs animate-pulse">LOADING DATA...</div>
+    <div v-if="loading" class="relative z-10">
+      <div class="w-8 h-8 border-2 border-amber-500/30 border-t-amber-500 rounded-full animate-spin"></div>
+    </div>
 
     <!-- Deaths section -->
-    <div v-else-if="nightDeaths.length > 0" class="w-full max-w-md">
-      <div class="border-2 border-red-600 p-4">
-        <h2 class="text-mono text-red-600 text-sm uppercase mb-4 border-b border-red-900 pb-2 flex items-center justify-between">
-          <span>CASUALTIES DETECTED</span>
-          <span class="text-red-400">{{ nightDeaths.length }}</span>
-        </h2>
+    <div v-else-if="nightDeaths.length > 0" class="relative z-10 w-full max-w-md">
+      <div class="glass-card p-6 border-red-500/30">
+        <div class="flex items-center justify-center gap-3 mb-6">
+          <SkullIcon class="w-6 h-6 text-red-500" />
+          <h2 class="text-red-400 text-lg font-medium">
+            {{ nightDeaths.length > 1 ? 'Victimes de la nuit' : 'Victime de la nuit' }}
+          </h2>
+        </div>
         
         <div class="space-y-4">
           <div 
             v-for="death in nightDeaths" 
             :key="death.id" 
-            class="border border-red-900/50 p-3 bg-red-900/10"
+            class="p-4 rounded-xl bg-red-500/10 border border-red-500/20"
           >
-            <div class="flex justify-between items-start mb-2">
+            <div class="flex items-center justify-between mb-3">
               <div>
-                <p class="text-display text-xl text-white">{{ death.user?.name?.toUpperCase() }}</p>
-                <p class="text-mono text-xs text-gray-500">{{ getRoleName(death.role).toUpperCase() }}</p>
+                <p class="text-white text-xl font-medium">{{ death.user?.name }}</p>
+                <p class="text-slate-400 text-sm">{{ getRoleName(death.role) }}</p>
               </div>
-              <div class="text-2xl">{{ getRoleIcon(death.role) }}</div>
+              <span class="text-4xl">{{ getRoleIcon(death.role) }}</span>
             </div>
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 bg-red-600"></span>
-              <span class="text-mono text-xs text-red-600 uppercase">{{ getDeathReason(death.reason) }}</span>
+            <div class="flex items-center gap-2 text-red-400 text-sm">
+              <div class="w-1.5 h-1.5 rounded-full bg-red-500"></div>
+              <span>{{ getDeathReason(death.reason) }}</span>
             </div>
           </div>
         </div>
@@ -42,18 +55,20 @@
     </div>
 
     <!-- No deaths -->
-    <div v-else class="border-2 border-green-600 p-6 w-full max-w-md text-center">
-      <div class="w-12 h-12 border-2 border-green-500 mx-auto mb-4 flex items-center justify-center">
-        <span class="text-green-500 text-2xl">✓</span>
+    <div v-else class="relative z-10 w-full max-w-md">
+      <div class="glass-card p-8 text-center border-emerald-500/30">
+        <div class="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/30 mx-auto mb-4 flex items-center justify-center">
+          <CheckCircleIcon class="w-8 h-8 text-emerald-500" />
+        </div>
+        <h2 class="text-emerald-400 text-xl font-medium mb-2">Nuit Paisible</h2>
+        <p class="text-slate-400">Personne n'est mort cette nuit</p>
       </div>
-      <p class="text-display text-2xl text-green-500">ZERO CASUALTIES</p>
-      <p class="text-mono text-xs text-green-700 mt-2 uppercase">All personnel accounted for</p>
     </div>
 
-    <!-- Timer / Continue -->
-    <div class="mt-8 text-center">
-      <Timer :seconds="gameStore.timer" variant="digital" size="sm" />
-      <p class="text-mono text-xs text-gray-600 mt-4 uppercase animate-pulse">PREPARING DEBATE PROTOCOL...</p>
+    <!-- Timer -->
+    <div class="relative z-10 mt-8 text-center">
+      <Timer :seconds="gameStore.timer" variant="minimal" size="md" />
+      <p class="text-slate-500 text-sm mt-3 animate-pulse">Le débat va bientôt commencer...</p>
     </div>
   </div>
 </template>
@@ -61,13 +76,13 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import { useGameStore } from '@/stores/gameStore';
+import { Skull as SkullIcon, CheckCircle as CheckCircleIcon } from 'lucide-vue-next';
 import Timer from '@/components/UI/Timer.vue';
 
 const gameStore = useGameStore();
 const nightDeaths = ref([]);
 const loading = ref(true);
 
-// Computed property for raw night deaths data from game state
 const rawNightDeaths = computed(() => gameStore.currentGame?.state?.night_deaths || []);
 
 function updateNightDeaths() {
@@ -77,7 +92,7 @@ function updateNightDeaths() {
       const player = gameStore.players.find(p => p.id === death.player_id);
       return {
         id: death.player_id,
-        user: player?.user || { name: death.name || 'UNKNOWN' },
+        user: player?.user || { name: death.name || 'Inconnu' },
         role: death.role || player?.role || 'unknown',
         reason: death.reason || 'unknown'
       };
@@ -90,17 +105,17 @@ function updateNightDeaths() {
 
 function getRoleName(role) {
   const roleNames = {
-    werewolf: 'Werewolf',
-    seer: 'Seer',
-    witch: 'Witch',
-    guard: 'Guard',
-    hunter: 'Hunter',
-    cupid: 'Cupid',
-    elder: 'Elder',
-    fool: 'Fool',
-    villager: 'Civilian'
+    werewolf: 'Loup-Garou',
+    seer: 'Voyante',
+    witch: 'Sorcière',
+    guard: 'Garde',
+    hunter: 'Chasseur',
+    cupid: 'Cupidon',
+    elder: 'Ancien',
+    fool: 'Idiot du Village',
+    villager: 'Villageois'
   };
-  return roleNames[role] || role || 'Unknown';
+  return roleNames[role] || role || 'Inconnu';
 }
 
 function getRoleIcon(role) {
@@ -109,27 +124,46 @@ function getRoleIcon(role) {
     seer: '🔮',
     witch: '🧪',
     guard: '🛡️',
-    hunter: '🔫',
+    hunter: '🏹',
     cupid: '💘',
     elder: '👴',
     fool: '🃏',
-    villager: '🧑'
+    villager: '🏠'
   };
   return icons[role] || '❓';
 }
 
 function getDeathReason(reason) {
   const reasons = {
-    wolf_kill: 'Killed by Wolves',
-    witch_kill: 'Poisoned by Witch',
-    hunter_shoot: 'Shot by Hunter',
-    lover_death: 'Died of Heartbreak',
-    vote: 'Executed by Village',
-    unknown: 'Cause Unknown'
+    wolf_kill: 'Dévoré par les loups',
+    witch_kill: 'Empoisonné par la sorcière',
+    hunter_shoot: 'Abattu par le chasseur',
+    lover_death: 'Mort de chagrin',
+    vote: 'Exécuté par le village',
+    unknown: 'Cause inconnue'
   };
-  return reasons[reason] || reason || 'Unknown Cause';
+  return reasons[reason] || reason || 'Cause inconnue';
 }
 
 onMounted(() => updateNightDeaths());
 watch(rawNightDeaths, () => updateNightDeaths(), { deep: true });
 </script>
+
+<style scoped>
+.day-reveal {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.text-cinzel {
+  font-family: 'Cinzel', 'Playfair Display', serif;
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+</style>

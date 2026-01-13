@@ -1,22 +1,31 @@
 <template>
-  <div :class="['flex w-full mb-1', isSystem ? 'justify-center' : (isOwn ? 'justify-end' : 'justify-start')]">
+  <div :class="['flex w-full mb-2', isSystem ? 'justify-center' : (isOwn ? 'justify-end' : 'justify-start')]">
 
     <!-- System Message -->
-    <div v-if="isSystem" class="text-xs text-green-500 font-mono text-center uppercase tracking-widest border-y border-green-900 bg-green-900/10 w-full py-1">
-      > {{ message }}
+    <div v-if="isSystem" class="w-full px-4 py-2">
+      <div class="flex items-center justify-center gap-3 text-xs font-medium uppercase tracking-wider">
+        <div class="flex-1 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent"></div>
+        <span class="text-emerald-400/80">{{ message }}</span>
+        <div class="flex-1 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent"></div>
+      </div>
     </div>
 
     <!-- User Message -->
-    <div v-else class="max-w-[80%] flex flex-col">
-      <span v-if="!isOwn" class="text-[10px] uppercase font-bold mb-0 ml-1" :style="{ color: nameColor }">
-        {{ sender || 'UNKNOWN' }}
+    <div v-else class="max-w-[85%] flex flex-col" :class="isOwn ? 'items-end' : 'items-start'">
+      <!-- Sender name (only for others) -->
+      <span 
+        v-if="!isOwn" 
+        class="text-[11px] font-medium mb-1 ml-3 opacity-80"
+        :style="{ color: nameColor }"
+      >
+        {{ sender || 'Unknown' }}
       </span>
 
+      <!-- Message Bubble -->
       <div
-        class="p-2 text-sm border font-mono break-words"
+        class="message-bubble px-4 py-2 text-sm break-words"
         :class="bubbleClasses"
       >
-        <span v-if="!isOwn" class="mr-2 opacity-50">></span>
         {{ message }}
       </div>
     </div>
@@ -36,21 +45,54 @@ const props = defineProps({
 
 const bubbleClasses = computed(() => {
   if (props.isOwn) {
-    return 'bg-white text-black border-white';
+    return `
+      bg-gradient-to-br from-violet-600 to-indigo-700
+      text-white
+      rounded-2xl rounded-br-md
+      shadow-lg shadow-violet-500/20
+    `;
   }
-  // Others
+  // Others - different channels
   if (props.channel === 'wolves') {
-    return 'bg-red-900/30 text-red-100 border-red-600';
+    return `
+      bg-gradient-to-br from-red-900/60 to-rose-900/40
+      backdrop-blur-sm
+      text-red-100
+      border border-red-500/30
+      rounded-2xl rounded-bl-md
+      shadow-lg shadow-red-500/10
+    `;
   }
   if (props.channel === 'dead') {
-    return 'bg-gray-800 text-gray-400 border-gray-600';
+    return `
+      bg-slate-800/60
+      backdrop-blur-sm
+      text-slate-400
+      border border-slate-600/30
+      rounded-2xl rounded-bl-md
+    `;
   }
-  return 'bg-black text-white border-gray-600';
+  // Default (global/lobby)
+  return `
+    bg-slate-800/60
+    backdrop-blur-sm
+    text-slate-200
+    border border-slate-600/30
+    rounded-2xl rounded-bl-md
+  `;
 });
 
 const nameColor = computed(() => {
-  if (props.channel === 'wolves') return '#ef4444'; // Red-500
-  if (props.channel === 'dead') return '#9ca3af'; // Gray-400
-  return '#22d3ee'; // Cyan-400
+  if (props.channel === 'wolves') return '#f87171'; // Red-400
+  if (props.channel === 'dead') return '#94a3b8'; // Slate-400
+  return '#38bdf8'; // Sky-400
 });
 </script>
+
+<style scoped>
+.message-bubble {
+  max-width: 100%;
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+</style>

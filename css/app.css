@@ -8,45 +8,79 @@
 @source '../**/*.js';
 @source '../**/*.vue';
 
+/* ============================================
+   GOOGLE FONTS - ÉCLIPSE & CRISTAL
+   ============================================ */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap');
+
 @theme {
     /* ============================================
-       TYPOGRAPHIE - BRUTALIST
+       TYPOGRAPHIE - ÉCLIPSE & CRISTAL
        ============================================ */
-    --font-mono: 'Courier New', Courier, monospace;
-    --font-sans: 'Arial Black', 'Impact', sans-serif;
+    --font-cinzel: 'Cinzel', 'Playfair Display', serif;
+    --font-display: 'Playfair Display', 'Cinzel', serif;
+    --font-ui: 'Inter', 'DM Sans', sans-serif;
+    --font-sans: 'DM Sans', 'Inter', sans-serif;
+    --font-mono: 'Inter', monospace;
 
     /* ============================================
-       PALETTE - ABSOLUTE ZERO (NOIR & SANG)
+       PALETTE - ÉCLIPSE & CRISTAL
+       Sombre, élégante, cinématique
        ============================================ */
 
-    /* Structure */
-    --color-bg-main: #000000;
-    --color-bg-surface: #0a0a0a;
-    --color-border: #ffffff;
-    --color-border-dim: #333333;
+    /* Fonds - Dégradé profond */
+    --color-bg-midnight: #020617;      /* Midnight Blue */
+    --color-bg-indigo: #312e81;        /* Deep Indigo */
+    --color-bg-main: #020617;
+    --color-bg-surface: rgba(0, 0, 0, 0.4);
+    --color-bg-glass: rgba(15, 23, 42, 0.7);
+    --color-bg-glass-light: rgba(30, 41, 59, 0.5);
+
+    /* Glass - Glassmorphism */
+    --color-glass-border: rgba(255, 255, 255, 0.1);
+    --color-glass-border-hover: rgba(255, 255, 255, 0.2);
+    --color-glass-bg: rgba(0, 0, 0, 0.3);
 
     /* Texte */
-    --color-text-primary: #ffffff;
-    --color-text-secondary: #aaaaaa;
-    --color-text-inverse: #000000;
+    --color-text-primary: #F8FAFC;
+    --color-text-secondary: #CBD5E1;
+    --color-text-muted: #64748B;
+    --color-text-inverse: #0F172A;
 
-    /* Accents */
-    --color-accent-red: #ff0033;      /* Danger / Loups / Action */
-    --color-accent-green: #00ff66;    /* Validation / Villageois */
-    --color-accent-blue: #0066ff;     /* Info / Garde */
-    --color-accent-yellow: #ffcc00;   /* Warning / Chasseur */
-    --color-accent-purple: #cc00ff;   /* Magie / Sorcière / Voyante */
+    /* Accents - Lumière (Jour) */
+    --color-gold: #F59E0B;
+    --color-gold-light: #FCD34D;
+    --color-cream: #FFFBEB;
+    --color-amber: #D97706;
 
-    /* Rôles (Réinterprétation Néon) */
-    --color-role-werewolf: #ff0033;
-    --color-role-villager: #00ff66;
-    --color-role-seer: #cc00ff;
-    --color-role-witch: #ff00cc;
-    --color-role-guard: #0066ff;
-    --color-role-cupid: #ff3399;
-    --color-role-hunter: #ffcc00;
-    --color-role-elder: #aaaaaa;
-    --color-role-fool: #6600cc;
+    /* Accents - Magie (Nuit) */
+    --color-violet: #7C3AED;
+    --color-violet-light: #A78BFA;
+    --color-cyan: #06B6D4;
+    --color-cyan-neon: #22D3EE;
+    --color-indigo: #6366F1;
+
+    /* Accents - Danger (Loups) */
+    --color-blood: #EF4444;
+    --color-blood-dark: #B91C1C;
+    --color-blood-glow: rgba(239, 68, 68, 0.5);
+
+    /* Accents - Nature */
+    --color-emerald: #10B981;
+    --color-emerald-light: #34D399;
+    --color-rose: #F43F5E;
+    --color-rose-light: #FB7185;
+
+    /* Rôles - Couleurs thématiques */
+    --color-role-werewolf: #EF4444;
+    --color-role-villager: #10B981;
+    --color-role-seer: #7C3AED;
+    --color-role-witch: #EC4899;
+    --color-role-guard: #3B82F6;
+    --color-role-cupid: #F43F5E;
+    --color-role-hunter: #F59E0B;
+    --color-role-elder: #6B7280;
+    --color-role-fool: #8B5CF6;
 
     /* ============================================
        SPACING & SIZING
@@ -56,8 +90,31 @@
     --spacing-md: 16px;
     --spacing-lg: 24px;
     --spacing-xl: 32px;
+    --spacing-2xl: 48px;
     
-    --radius-none: 0px;
+    /* Border Radius - Soft curves */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+    --radius-full: 9999px;
+
+    /* Shadows & Glows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 16px 64px rgba(0, 0, 0, 0.6);
+    --glow-gold: 0 0 20px rgba(245, 158, 11, 0.4);
+    --glow-violet: 0 0 20px rgba(124, 58, 237, 0.4);
+    --glow-blood: 0 0 20px rgba(239, 68, 68, 0.5);
+    --glow-cyan: 0 0 20px rgba(6, 182, 212, 0.4);
+    --glow-emerald: 0 0 20px rgba(16, 185, 129, 0.4);
+
+    /* Transitions */
+    --transition-fast: 0.15s ease-out;
+    --transition-base: 0.3s ease-out;
+    --transition-slow: 0.5s ease-out;
+    --transition-card: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ============================================
@@ -70,99 +127,332 @@
 
 * {
     box-sizing: border-box;
-    border-radius: 0 !important; /* FORCE NO RADIUS PARTOUT */
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
 }
 
 body {
-    background-color: var(--color-bg-main);
+    background: linear-gradient(135deg, var(--color-bg-midnight) 0%, var(--color-bg-indigo) 100%);
+    background-attachment: fixed;
     color: var(--color-text-primary);
-    font-family: var(--font-mono);
-    line-height: 1.4;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    -webkit-font-smoothing: none;
+    font-family: var(--font-ui);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* ============================================
-   UTILITAIRES CUSTOM
+   TYPOGRAPHY CLASSES
    ============================================ */
 
-/* Text Styles */
+.text-cinzel {
+    font-family: var(--font-cinzel);
+    letter-spacing: 0.05em;
+}
+
 .text-display {
-    font-family: var(--font-sans);
-    text-transform: uppercase;
-    letter-spacing: -1px;
-    font-weight: 900;
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.02em;
 }
 
-.text-mono {
-    font-family: var(--font-mono);
+.text-ui {
+    font-family: var(--font-ui);
 }
 
-/* Borders */
-.border-brutal {
-    border: 2px solid var(--color-border);
+.text-glow-gold {
+    text-shadow: 0 0 10px var(--color-gold), 0 0 20px rgba(245, 158, 11, 0.3);
 }
 
-.border-dim {
-    border: 1px solid var(--color-border-dim);
+.text-glow-violet {
+    text-shadow: 0 0 10px var(--color-violet), 0 0 20px rgba(124, 58, 237, 0.3);
 }
 
-/* Containers */
+.text-glow-blood {
+    text-shadow: 0 0 10px var(--color-blood), 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+/* ============================================
+   GLASSMORPHISM UTILITIES
+   ============================================ */
+
+.glass {
+    background: var(--color-bg-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--color-glass-border);
+    border-radius: var(--radius-lg);
+}
+
+.glass-light {
+    background: var(--color-bg-glass-light);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--color-glass-border);
+    border-radius: var(--radius-lg);
+}
+
+.glass-dark {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-lg);
+}
+
+.glass-card {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 41, 59, 0.6) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--color-glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ============================================
+   PANEL & CONTAINER STYLES
+   ============================================ */
+
+.panel-glass {
+    background: var(--color-bg-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--color-glass-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-lg);
+}
+
 .panel-brutal {
-    background-color: var(--color-bg-surface);
-    border: 2px solid var(--color-border);
-    padding: var(--spacing-md);
-    position: relative;
+    background: var(--color-bg-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--color-glass-border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-lg);
 }
 
-/* Buttons */
+/* ============================================
+   BUTTON STYLES - ÉCLIPSE
+   ============================================ */
+
+.btn-eclipse {
+    appearance: none;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.2) 0%, rgba(217, 119, 6, 0.1) 100%);
+    border: 1px solid var(--color-gold);
+    color: var(--color-gold-light);
+    font-family: var(--font-cinzel);
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    padding: 12px 24px;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    text-transform: uppercase;
+    box-shadow: var(--glow-gold);
+}
+
+.btn-eclipse:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-amber) 100%);
+    color: var(--color-text-inverse);
+    box-shadow: 0 0 30px rgba(245, 158, 11, 0.6);
+    transform: translateY(-2px);
+}
+
+.btn-eclipse:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.btn-eclipse:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* Legacy brutal button - now styled with glass */
 .btn-brutal {
     appearance: none;
-    background: transparent;
-    border: 2px solid var(--color-border);
+    background: var(--color-bg-glass);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--color-glass-border);
     color: var(--color-text-primary);
-    font-family: var(--font-sans);
-    text-transform: uppercase;
-    font-size: 1.2rem;
-    padding: 10px 20px;
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 12px 20px;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all 0.1s steps(1);
+    transition: all var(--transition-base);
     width: 100%;
     text-align: center;
 }
 
 .btn-brutal:hover:not(:disabled) {
-    background: var(--color-text-primary);
-    color: var(--color-bg-main);
-    box-shadow: 4px 4px 0 var(--color-accent-red);
-    transform: translate(-2px, -2px);
-}
-
-.btn-brutal:active:not(:disabled) {
-    transform: translate(0, 0);
-    box-shadow: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-glass-border-hover);
+    transform: translateY(-1px);
 }
 
 .btn-brutal:disabled {
-    border-color: var(--color-border-dim);
-    color: var(--color-text-secondary);
+    opacity: 0.4;
     cursor: not-allowed;
-    opacity: 0.5;
 }
 
-/* Scrollbar */
+/* ============================================
+   NEON BORDER UTILITIES
+   ============================================ */
+
+.border-neon-gold {
+    border: 2px solid var(--color-gold);
+    box-shadow: 0 0 10px var(--color-gold), inset 0 0 10px rgba(245, 158, 11, 0.1);
+}
+
+.border-neon-violet {
+    border: 2px solid var(--color-violet);
+    box-shadow: 0 0 10px var(--color-violet), inset 0 0 10px rgba(124, 58, 237, 0.1);
+}
+
+.border-neon-blood {
+    border: 2px solid var(--color-blood);
+    box-shadow: 0 0 10px var(--color-blood), inset 0 0 10px rgba(239, 68, 68, 0.1);
+}
+
+.border-neon-cyan {
+    border: 2px solid var(--color-cyan);
+    box-shadow: 0 0 10px var(--color-cyan), inset 0 0 10px rgba(6, 182, 212, 0.1);
+}
+
+.border-neon-emerald {
+    border: 2px solid var(--color-emerald);
+    box-shadow: 0 0 10px var(--color-emerald), inset 0 0 10px rgba(16, 185, 129, 0.1);
+}
+
+/* ============================================
+   SCROLLBAR - ÉCLIPSE STYLE
+   ============================================ */
+
 ::-webkit-scrollbar {
-    width: 10px;
-    background: var(--color-bg-main);
+    width: 8px;
+    background: transparent;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--color-border-dim);
-    border: 1px solid var(--color-bg-main);
+    background: linear-gradient(180deg, var(--color-violet) 0%, var(--color-indigo) 100%);
+    border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-accent-red);
+    background: linear-gradient(180deg, var(--color-violet-light) 0%, var(--color-violet) 100%);
+}
+
+/* ============================================
+   AMBIENT BACKGROUND EFFECTS
+   ============================================ */
+
+.bg-eclipse {
+    background: linear-gradient(135deg, var(--color-bg-midnight) 0%, var(--color-bg-indigo) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.bg-eclipse::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 30% 30%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(6, 182, 212, 0.08) 0%, transparent 50%);
+    animation: aurora 20s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.bg-night {
+    background: linear-gradient(180deg, #0c1445 0%, #1e1b4b 50%, #020617 100%);
+    position: relative;
+}
+
+.bg-day {
+    background: linear-gradient(180deg, #fef3c7 0%, #fcd34d 30%, #f59e0b 100%);
+    position: relative;
+}
+
+/* Moon indicator */
+.moon-indicator {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    background: radial-gradient(circle at 30% 30%, #f8fafc 0%, #e2e8f0 50%, #94a3b8 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 30px rgba(248, 250, 252, 0.3), 0 0 60px rgba(248, 250, 252, 0.1);
+    z-index: 100;
+}
+
+/* Sun indicator */
+.sun-indicator {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle at 40% 40%, #fef3c7 0%, #fcd34d 40%, #f59e0b 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 40px rgba(245, 158, 11, 0.5), 0 0 80px rgba(245, 158, 11, 0.2);
+    z-index: 100;
+}
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
+
+.glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.float {
+    animation: float 6s ease-in-out infinite;
+}
+
+.shimmer {
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s ease-in-out infinite;
+}
+
+/* Vignette effect */
+.vignette {
+    position: relative;
+}
+
+.vignette::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.6) 100%);
+    pointer-events: none;
+}
+
+.vignette-blood::after {
+    background: radial-gradient(ellipse at center, transparent 30%, rgba(127, 29, 29, 0.4) 100%);
+}
+
+/* Selection color */
+::selection {
+    background: var(--color-violet);
+    color: white;
 }

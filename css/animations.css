@@ -1,12 +1,16 @@
 /*
-   ANIMATIONS - NÉO-BRUTALISME
-   Pas de flou, pas de fluidité excessive. Des transitions nettes.
+   ANIMATIONS - ÉCLIPSE & CRISTAL
+   Fluides, élégantes, cinématiques
 */
 
-/* Transition de base pour Vue */
+/* ============================================
+   VUE TRANSITIONS
+   ============================================ */
+
+/* Fade transition */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.1s steps(2); /* Transition sèche */
+  transition: opacity 0.4s ease-out;
 }
 
 .fade-enter-from,
@@ -14,36 +18,454 @@
   opacity: 0;
 }
 
-/* Slide Brutal */
+/* Scale Fade */
+.scale-fade-enter-active,
+.scale-fade-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.scale-fade-enter-from,
+.scale-fade-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+/* Slide Up */
 .slide-up-enter-active,
 .slide-up-leave-active {
-  transition: transform 0.2s cubic-bezier(0, 1, 0, 1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .slide-up-enter-from,
 .slide-up-leave-to {
-  transform: translateY(100%);
+  opacity: 0;
+  transform: translateY(30px);
 }
 
-/* Effets d'urgence */
-@keyframes blink-red {
-    0%, 100% { background-color: var(--color-bg-main); color: var(--color-accent-red); }
-    50% { background-color: var(--color-accent-red); color: var(--color-bg-main); }
+/* Slide Down */
+.slide-down-enter-active,
+.slide-down-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.slide-down-enter-from,
+.slide-down-leave-to {
+  opacity: 0;
+  transform: translateY(-20px);
+}
+
+/* ============================================
+   AMBIENT ANIMATIONS
+   ============================================ */
+
+/* Aurora - Ambient background movement */
+@keyframes aurora {
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg);
+    }
+    25% {
+        transform: translate(5%, 5%) rotate(2deg);
+    }
+    50% {
+        transform: translate(-5%, 2%) rotate(-1deg);
+    }
+    75% {
+        transform: translate(3%, -3%) rotate(1deg);
+    }
+}
+
+/* Glow Pulse */
+@keyframes glow-pulse {
+    0%, 100% {
+        opacity: 1;
+        filter: brightness(1);
+    }
+    50% {
+        opacity: 0.8;
+        filter: brightness(1.2);
+    }
+}
+
+/* Float animation */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Shimmer effect */
+@keyframes shimmer {
+    0% {
+        background-position: -200% center;
+    }
+    100% {
+        background-position: 200% center;
+    }
+}
+
+/* Pulse Scale */
+@keyframes pulse-scale {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Spin Slow */
+@keyframes spin-slow {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Heartbeat */
+@keyframes heartbeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+    14% {
+        transform: scale(1.1);
+    }
+    28% {
+        transform: scale(1);
+    }
+    42% {
+        transform: scale(1.1);
+    }
+    56% {
+        transform: scale(1);
+    }
+}
+
+/* Flicker */
+@keyframes flicker {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+    52% { opacity: 1; }
+    54% { opacity: 0.9; }
+    56% { opacity: 1; }
+}
+
+/* ============================================
+   CARD ANIMATIONS
+   ============================================ */
+
+/* Card Flip (Tarot style) */
+@keyframes card-flip {
+    0% {
+        transform: rotateY(0deg);
+    }
+    100% {
+        transform: rotateY(180deg);
+    }
+}
+
+/* Card reveal glow */
+@keyframes card-reveal-glow {
+    0% {
+        box-shadow: 0 0 0 rgba(124, 58, 237, 0);
+    }
+    50% {
+        box-shadow: 0 0 60px rgba(124, 58, 237, 0.6), 0 0 120px rgba(124, 58, 237, 0.3);
+    }
+    100% {
+        box-shadow: 0 0 30px rgba(124, 58, 237, 0.3);
+    }
+}
+
+/* Card hover lift */
+@keyframes card-hover {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-5px) scale(1.02);
+    }
+}
+
+/* ============================================
+   ROLE-SPECIFIC ANIMATIONS
+   ============================================ */
+
+/* Wolf Hunt - Red vignette pulse */
+@keyframes wolf-hunt {
+    0%, 100% {
+        box-shadow: inset 0 0 100px rgba(127, 29, 29, 0.3);
+    }
+    50% {
+        box-shadow: inset 0 0 150px rgba(127, 29, 29, 0.5);
+    }
+}
+
+/* Seer Vision - Purple ripple */
+@keyframes seer-vision {
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* Witch Brew - Bubbling effect */
+@keyframes witch-brew {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    25% {
+        transform: translateY(-3px);
+    }
+    75% {
+        transform: translateY(2px);
+    }
+}
+
+/* Guard Shield - Protective pulse */
+@keyframes shield-pulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(59, 130, 246, 0.6);
+    }
+}
+
+/* ============================================
+   TIMER ANIMATIONS
+   ============================================ */
+
+/* Timer urgent pulse */
+@keyframes timer-urgent {
+    0%, 100% {
+        transform: scale(1);
+        color: var(--color-gold);
+    }
+    50% {
+        transform: scale(1.1);
+        color: var(--color-blood);
+    }
+}
+
+/* Timer critical blink */
+@keyframes timer-critical {
+    0%, 100% {
+        opacity: 1;
+        color: var(--color-blood);
+    }
+    50% {
+        opacity: 0.5;
+        color: var(--color-blood);
+    }
+}
+
+/* Circle progress animation */
+@keyframes circle-progress {
+    from {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* ============================================
+   NOTIFICATION ANIMATIONS
+   ============================================ */
+
+/* Notification slide in */
+@keyframes notification-in {
+    from {
+        transform: translateY(-100%) translateX(-50%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) translateX(-50%);
+        opacity: 1;
+    }
+}
+
+/* Notification slide out */
+@keyframes notification-out {
+    from {
+        transform: translateY(0) translateX(-50%);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-100%) translateX(-50%);
+        opacity: 0;
+    }
+}
+
+/* ============================================
+   DEATH / ELIMINATION ANIMATIONS
+   ============================================ */
+
+/* Death reveal */
+@keyframes death-reveal {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+        filter: blur(10px);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.1);
+        filter: blur(0);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0);
+    }
+}
+
+/* Execution spotlight */
+@keyframes spotlight {
+    0% {
+        opacity: 0;
+        background: radial-gradient(circle at center, rgba(255,255,255,0.3) 0%, transparent 30%);
+    }
+    100% {
+        opacity: 1;
+        background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 50%);
+    }
+}
+
+/* Shatter effect */
+@keyframes shatter {
+    0% {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2) rotate(5deg);
+    }
+    100% {
+        transform: scale(0) rotate(-10deg);
+        opacity: 0;
+    }
+}
+
+/* ============================================
+   VICTORY / DEFEAT ANIMATIONS
+   ============================================ */
+
+/* Victory confetti burst */
+@keyframes confetti {
+    0% {
+        transform: translateY(0) rotate(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* Defeat scratch marks */
+@keyframes scratch {
+    0% {
+        clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+    }
+    100% {
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    }
+}
+
+/* ============================================
+   PARTICLE EFFECTS
+   ============================================ */
+
+/* Firefly float */
+@keyframes firefly {
+    0%, 100% {
+        transform: translate(0, 0);
+        opacity: 0.2;
+    }
+    25% {
+        transform: translate(10px, -20px);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-5px, -30px);
+        opacity: 0.6;
+    }
+    75% {
+        transform: translate(15px, -15px);
+        opacity: 0.8;
+    }
+}
+
+/* Dust particle */
+@keyframes dust {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.5;
+    }
+    90% {
+        opacity: 0.3;
+    }
+    100% {
+        transform: translateY(-100px) translateX(50px);
+        opacity: 0;
+    }
+}
+
+/* ============================================
+   UTILITY ANIMATION CLASSES
+   ============================================ */
+
+.animate-glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+.animate-heartbeat {
+    animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+.animate-flicker {
+    animation: flicker 3s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+    animation: spin-slow 20s linear infinite;
+}
+
+.animate-pulse-scale {
+    animation: pulse-scale 2s ease-in-out infinite;
+}
+
+.animate-wolf-hunt {
+    animation: wolf-hunt 2s ease-in-out infinite;
+}
+
+.animate-shield-pulse {
+    animation: shield-pulse 2s ease-in-out infinite;
+}
+
+.animate-timer-urgent {
+    animation: timer-urgent 1s ease-in-out infinite;
+}
+
+.animate-timer-critical {
+    animation: timer-critical 0.5s ease-in-out infinite;
+}
+
+/* Legacy support */
 .animate-blink {
-    animation: blink-red 0.5s steps(1) infinite;
-}
-
-@keyframes glitch-skew {
-    0% { transform: skew(0deg); }
-    20% { transform: skew(-10deg); }
-    40% { transform: skew(10deg); }
-    60% { transform: skew(-5deg); }
-    80% { transform: skew(5deg); }
-    100% { transform: skew(0deg); }
-}
-
-.glitch-hover:hover {
-    animation: glitch-skew 0.2s steps(2) infinite;
+    animation: timer-critical 0.5s ease-in-out infinite;
 }

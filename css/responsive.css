@@ -1,26 +1,226 @@
 /*
-   RESPONSIVE - GRILLE RIGIDE
+   RESPONSIVE - ÉCLIPSE & CRISTAL
+   Design adaptatif pour tous les écrans
 */
 
 :root {
     --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-area-inset-top: env(safe-area-inset-top, 0px);
 }
 
-/* Ajustements pour mobile */
-@media (max-width: 640px) {
+/* ============================================
+   BASE MOBILE FIRST
+   ============================================ */
+
+#app {
+    min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for mobile browsers */
+    width: 100%;
+}
+
+/* ============================================
+   MOBILE (< 640px)
+   ============================================ */
+
+@media (max-width: 639px) {
     body {
         font-size: 14px;
     }
+
+    .text-display {
+        font-size: 1.5rem;
+    }
+
+    .panel-glass {
+        padding: var(--spacing-md);
+        border-radius: var(--radius-md);
+    }
+
+    /* Player grid mobile */
+    .player-grid-mobile {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-sm);
+    }
+
+    /* Chat adjustments */
+    .chat-container-mobile {
+        height: 200px;
+    }
+
+    /* Bottom action bar */
+    .action-bar-mobile {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: var(--spacing-md);
+        padding-bottom: calc(var(--spacing-md) + var(--safe-area-inset-bottom));
+        background: var(--color-bg-glass);
+        backdrop-filter: blur(20px);
+        border-top: 1px solid var(--color-glass-border);
+    }
 }
 
-/* Tablette & Desktop - Centrage strict */
-@media (min-width: 768px) {
+/* ============================================
+   TABLET (640px - 1023px)
+   ============================================ */
+
+@media (min-width: 640px) and (max-width: 1023px) {
+    body {
+        font-size: 15px;
+    }
+
+    .player-grid-tablet {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--spacing-md);
+    }
+
+    .chat-container-tablet {
+        height: 250px;
+    }
+}
+
+/* ============================================
+   DESKTOP (1024px+)
+   ============================================ */
+
+@media (min-width: 1024px) {
+    body {
+        font-size: 16px;
+    }
+
     #app {
-        max-width: 800px;
+        max-width: 1200px;
         margin: 0 auto;
-        border-left: 2px solid var(--color-border);
-        border-right: 2px solid var(--color-border);
-        min-height: 100vh;
-        background-color: var(--color-bg-surface);
+    }
+
+    .player-grid-desktop {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--spacing-lg);
+    }
+
+    .chat-container-desktop {
+        height: 300px;
+    }
+
+    /* Side panels for desktop */
+    .game-layout-desktop {
+        display: grid;
+        grid-template-columns: 1fr 320px;
+        gap: var(--spacing-xl);
+    }
+}
+
+/* ============================================
+   LARGE DESKTOP (1440px+)
+   ============================================ */
+
+@media (min-width: 1440px) {
+    #app {
+        max-width: 1400px;
+    }
+
+    .player-grid-xl {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+/* ============================================
+   LANDSCAPE MOBILE
+   ============================================ */
+
+@media (max-height: 500px) and (orientation: landscape) {
+    .landscape-compact {
+        padding: var(--spacing-sm);
+    }
+
+    .landscape-hide {
+        display: none;
+    }
+
+    .landscape-scroll {
+        overflow-y: auto;
+        max-height: 100vh;
+    }
+}
+
+/* ============================================
+   HIGH DPI / RETINA
+   ============================================ */
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .glass {
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+    }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ============================================
+   DARK MODE PREFERENCE (already dark, but ensure)
+   ============================================ */
+
+@media (prefers-color-scheme: light) {
+    /* Keep dark theme regardless */
+    body {
+        background: linear-gradient(135deg, var(--color-bg-midnight) 0%, var(--color-bg-indigo) 100%);
+        color: var(--color-text-primary);
+    }
+}
+
+/* ============================================
+   TOUCH DEVICE OPTIMIZATIONS
+   ============================================ */
+
+@media (hover: none) and (pointer: coarse) {
+    /* Larger touch targets */
+    .btn-eclipse,
+    .btn-brutal {
+        min-height: 48px;
+        padding: 14px 24px;
+    }
+
+    /* Remove hover effects that don't work well on touch */
+    .hover\:scale-105:hover {
+        transform: none;
+    }
+}
+
+/* ============================================
+   PRINT STYLES (unlikely but good practice)
+   ============================================ */
+
+@media print {
+    body {
+        background: white;
+        color: black;
+    }
+
+    .glass,
+    .glass-card,
+    .panel-glass {
+        background: white;
+        border: 1px solid #ccc;
+        backdrop-filter: none;
+    }
+
+    .no-print {
+        display: none !important;
     }
 }
