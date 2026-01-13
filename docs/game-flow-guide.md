@@ -58,5 +58,30 @@
 - Performance: animations nombreuses (flou, box-shadow); prevoir mode low-motion (deja media reduce mais peu applique sur components). Optimiser images roles (RoleReveal) et gradients lourds.
 - Reseau: prevoir etats offline/retry pour Echo et axios; message clair si Reverb absent (gameStore.initializeEcho deja log).
 
+## Direction artistique (Dark Folklore)
+- Palette cible: Charcoal Black `#121212`, Burnt Orange `#D97706`, Blood Red `#991B1B`, Parchment Beige `#F5F5DC`. Utiliser ces valeurs comme tokens CSS (ex: --color-bg-charcoal, --color-accent-burnt, --color-accent-blood, --color-paper).
+- Textures: ajouter un grain fin (noise) en overlay basse opacité sur les backgrounds; cadres et boutons avec bords irréguliers (simulé via SVG inset shadow ou mask). Pas de gloss.
+- Typo: conserver "Inter" pour corps/inputs/chat; "Cinzel" pour titres, noms joueurs, headers de phase.
+- Icono/motifs: linogravure/woodcut. Prévoir pictos simples (œil voyante, loup, cœur, bouclier) en style trait ou assets monochromes.
+
+## Patterns UI par zone
+- ROLE CARD (RoleReveal): cadre tarot central avec bord noir épais, effet bois/pierre (texture ou border-image SVG). Fond parchment beige très léger derrière l'illustration. Bouton de confirmation = sceau de cire (Burnt Orange) avec texte Cinzel.
+- PLAYER GRID: portraits carrés. Etat mort: passer en désaturé + overlay vignette sombre ou remplacer par icône pierre tombale. Halo de sélection en Burnt Orange pour actions de vote/sélection.
+- BUTTONS: styles cire/bois, sans gloss. Variants: primaire Burnt Orange avec texture papier/cire, danger Blood Red, neutre charbon. Ajouter état focus visible (contour beige).
+- CHAT: fond transparent/grain, Inter pour messages, Cinzel pour noms/headers. Bordure fine noir charbon, surlignage des system messages en beige/gris.
+
+## Spécifiques écrans demandés
+- Night Phase: overlay bleu nuit texturé (ajouter layer grain). Intégrer motif œil "Seer" dans animation reveal (ex: pseudo-élément pulsant derrière la cible). Utiliser icônes loup/garde/sorcier monochromes.
+- Day Reveal: transition dark -> sépia matin (gradient charcoal -> parchment). Afficher assets Voyante/Chasseur (.webp) en cadre circulaire avec bord noir épais et halo Burnt Orange léger.
+- RoleReveal: appliquer frame tarot, fond parchment, flip conserve texture bois; bouton "J'accepte" en sceau cire.
+- Lobby/Home: remplacer orbs néon par aplats texturés charbon + lueurs Burnt Orange subtiles; titres Cinzel, boutons bois/cire.
+
+## Implémentation rapide (ordre)
+1) Ajouter tokens palette/texture dans css/app.css (section theme). Définir classes utilitaires: .bg-charcoal, .paper-card (fond parchment + grain), .frame-wood (border-image SVG), .btn-seal, .noise-overlay.
+2) Créer une couche layout phase (ex: `LayoutPhase.vue` wrapper) avec backgrounds par phase (night/day) pour retirer les duplications de gradients dans les composants.
+3) Mettre à jour RoleReveal, NightPhase, DayReveal, GameEnd, PlayerCard, ActionButton, ChatBox pour utiliser tokens et styles (cadres, boutons, chat transparent, portraits morts).
+4) Ajouter assets motifs (œil, tombe, sceau) en monochrome SVG; utiliser en background-image ou <img> avec filter grayscale.
+5) Passer responsive: conserver grilles existantes mais vérifier contrastes et poids des textures sur mobile (réduire grain en @media max-width).
+
 ## Next step
 - Utiliser ce guide pour dessiner un storyboard UI par phase (background, pane principale, side chat/panels), puis definir un design system (tokens couleurs, typographie, radius, ombres, components primaires) et l'appliquer aux composants ci-dessus.
